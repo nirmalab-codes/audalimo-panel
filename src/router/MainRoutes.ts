@@ -14,7 +14,12 @@ const MainRoutes = {
         {
             name: 'Drivers',
             path: '/apps/drivers',
-            component: () => import('@/views/apps/drivers/Drivers.vue')
+            component: () => import('@/views/apps/drivers/ListPage.vue')
+        },
+        {
+            name: 'Drivers Detail',
+            path: '/apps/drivers/:id',
+            component: () => import('@/views/apps/drivers/DetailPage.vue')
         },
         {
             name: 'Schedule',

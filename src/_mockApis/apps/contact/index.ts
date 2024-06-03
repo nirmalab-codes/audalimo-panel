@@ -20,7 +20,7 @@ export type KeyedObject = {
 
 const contacts: KeyedObject[] = [
     {
-        id: '#123',
+        id: '123',
         avatar: user1,
         userinfo: 'Hanna Gover',
         usermail: 'hgover@gmail.com',
@@ -30,7 +30,7 @@ const contacts: KeyedObject[] = [
         rolestatus: 'primary'
     },
     {
-        id: '#452',
+        id: '452',
         avatar: user2,
         userinfo: 'Daniel Kristeen',
         usermail: 'hgover@gmail.com',
@@ -40,7 +40,7 @@ const contacts: KeyedObject[] = [
         rolestatus: 'secondary'
     },
     {
-        id: '#565',
+        id: '565',
         avatar: user3,
         userinfo: 'Julian Josephs',
         usermail: 'hgover@gmail.com',
@@ -50,7 +50,7 @@ const contacts: KeyedObject[] = [
         rolestatus: 'error'
     },
     {
-        id: '#785',
+        id: '785',
         avatar: user4,
         userinfo: 'Jan Petrovic',
         usermail: 'hgover@gmail.com',
@@ -60,7 +60,7 @@ const contacts: KeyedObject[] = [
         rolestatus: 'success'
     },
     {
-        id: '#564',
+        id: '564',
         avatar: user5,
         userinfo: 'Leanne Graham',
         usermail: 'hgover@gmail.com',
@@ -70,7 +70,7 @@ const contacts: KeyedObject[] = [
         rolestatus: 'info'
     },
     {
-        id: '#980',
+        id: '980',
         avatar: user6,
         userinfo: 'Mrs. Dennis Schulist',
         usermail: 'hgover@gmail.com',
@@ -80,7 +80,7 @@ const contacts: KeyedObject[] = [
         rolestatus: 'warning'
     },
     {
-        id: '#521',
+        id: '521',
         avatar: user7,
         userinfo: 'Kurtis Weissnat',
         usermail: 'hgover@gmail.com',
@@ -90,7 +90,7 @@ const contacts: KeyedObject[] = [
         rolestatus: 'primary'
     },
     {
-        id: '#450',
+        id: '450',
         avatar: user8,
         userinfo: 'Nicholas Runolfsdottir V',
         usermail: 'hgover@gmail.com',
@@ -100,7 +100,7 @@ const contacts: KeyedObject[] = [
         rolestatus: 'secondary'
     },
     {
-        id: '#212',
+        id: '212',
         avatar: user9,
         userinfo: 'Glenna Reichert',
         usermail: 'hgover@gmail.com',
@@ -110,7 +110,7 @@ const contacts: KeyedObject[] = [
         rolestatus: 'error'
     },
     {
-        id: '#152',
+        id: '152',
         avatar: user10,
         userinfo: 'Clementina DuBuque',
         usermail: 'hgover@gmail.com',
