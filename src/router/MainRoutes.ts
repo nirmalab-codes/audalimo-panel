@@ -7,6 +7,38 @@ const MainRoutes = {
     component: () => import('@/layouts/full/FullLayout.vue'),
     children: [
         {
+            name: 'Dashboard',
+            path: '/dashboards',
+            component: () => import('@/views/dashboard/modern/index.vue')
+        },
+        {
+            name: 'Drivers',
+            path: '/apps/drivers',
+            component: () => import('@/views/apps/drivers/Drivers.vue')
+        },
+        {
+            name: 'Schedule',
+            path: '/apps/schedule',
+            component: () => import('@/views/apps/schedule/Schedule.vue')
+        },
+        {
+            name: 'Locations',
+            path: '/apps/locations',
+            component: () => import('@/views/apps/locations/Locations.vue')
+        },
+        {
+            name: 'Documents',
+            path: '/apps/documents',
+            component: () => import('@/views/apps/documents/Documents.vue')
+        },
+        {
+            name: 'Notifications',
+            path: '/apps/notifications',
+            component: () => import('@/views/apps/notifications/Notifications.vue')
+        },
+
+        
+        {
             name: 'Modern',
             path: '/dashboards/modern',
             component: () => import('@/views/dashboard/modern/index.vue')
