@@ -9,35 +9,21 @@ const store = useContactStore();
 onMounted(() => {
     store.fetchContacts();
 });
-const getContacts: any = computed(() => {
-    return store.contacts;
-});
 
 const valid = ref(true);
 const dialog = ref(false);
 const search = ref('');
-const rolesbg = ref(['primary', 'secondary', 'error', 'success', 'warning']);
 const desserts = ref(contact);
 const editedIndex = ref(-1);
 const editedItem = ref({
     id: '',
-    avatar: '1.jpg',
-    userinfo: '',
-    usermail: '',
-    phone: '',
-    jdate: '',
-    role: '',
-    rolestatus: ''
+    name: '',
+    urlGoogleMaps: ''
 });
 const defaultItem = ref({
     id: '',
-    avatar: '1.jpg',
-    userinfo: '',
-    usermail: '',
-    phone: '',
-    jdate: '',
-    role: '',
-    rolestatus: ''
+    name: '',
+    urlGoogleMaps: ''
 });
 
 //Methods
@@ -75,19 +61,19 @@ function save() {
 
 //Computed Property
 const formTitle = computed(() => {
-    return editedIndex.value === -1 ? 'New Contact' : 'Edit Contact';
+    return editedIndex.value === -1 ? 'New Document' : 'Edit Document';
 });
 </script>
 <template>
     <v-row>
         <v-col cols="12" lg="4" md="6">
-            <v-text-field density="compact" v-model="search" label="Search Contacts" hide-details variant="outlined"></v-text-field>
+            <v-text-field density="compact" v-model="search" label="Search Document" hide-details variant="outlined"></v-text-field>
         </v-col>
         <v-col cols="12" lg="8" md="6" class="text-right">
             <v-dialog v-model="dialog" max-width="500">
                 <template v-slot:activator="{ props }">
                     <v-btn color="primary" v-bind="props" flat class="ml-auto">
-                        <v-icon class="mr-2">mdi-account-multiple-plus</v-icon>Add Contact
+                        <v-icon class="mr-2">mdi-account-multiple-plus</v-icon>Add Document
                     </v-btn>
                 </template>
                 <v-card>
@@ -98,54 +84,11 @@ const formTitle = computed(() => {
                     <v-card-text>
                         <v-form ref="form" v-model="valid" lazy-validation>
                             <v-row>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field variant="outlined" hide-details v-model="editedItem.id" label="Id"></v-text-field>
+                                <v-col cols="12">
+                                    <v-text-field variant="outlined" hide-details v-model="defaultItem.name" label="Title"></v-text-field>
                                 </v-col>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field
-                                        variant="outlined"
-                                        hide-details
-                                        v-model="editedItem.userinfo"
-                                        label="User info"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field
-                                        variant="outlined"
-                                        hide-details
-                                        v-model="editedItem.usermail"
-                                        label="User email"
-                                        type="email"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field
-                                        variant="outlined"
-                                        hide-details
-                                        v-model="editedItem.phone"
-                                        label="Phone"
-                                        type="phone"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field
-                                        variant="outlined"
-                                        hide-details
-                                        v-model="editedItem.jdate"
-                                        label="Joining Date"
-                                    ></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="6">
-                                    <v-text-field variant="outlined" hide-details v-model="editedItem.role" label="Role"></v-text-field>
-                                </v-col>
-                                <v-col cols="12" sm="12">
-                                    <v-select
-                                        variant="outlined"
-                                        hide-details
-                                        :items="rolesbg"
-                                        v-model="editedItem.rolestatus"
-                                        label="Role Background"
-                                    ></v-select>
+                                <v-col cols="12">
+                                    <v-file-input label="File input" density="compact" variant="outlined"></v-file-input>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -156,7 +99,7 @@ const formTitle = computed(() => {
                         <v-btn color="error" @click="close">Cancel</v-btn>
                         <v-btn
                             color="secondary"
-                            :disabled="editedItem.userinfo == '' || editedItem.usermail == ''"
+                            :disabled="editedItem.name == '' || editedItem.urlGoogleMaps == ''"
                             variant="flat"
                             @click="save"
                             >Save</v-btn
@@ -201,7 +144,7 @@ const formTitle = computed(() => {
                     <div class="d-flex align-center">
                         <v-tooltip text="Detail">
                             <template v-slot:activator="{ props }">
-                                <router-link :to="`/apps/drivers/${item.id}`" v-bind="props">
+                                <router-link :to="`/apps/document/${item.id}`" v-bind="props">
                                     <v-btn icon flat><FileInfoIcon stroke-width="1.5" size="20" class="text-primary" /></v-btn>
                                 </router-link>
                             </template>

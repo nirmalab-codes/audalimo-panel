@@ -6,20 +6,21 @@ const MainRoutes = {
     redirect: '/main',
     component: () => import('@/layouts/full/FullLayout.vue'),
     children: [
+        // Used routes
         {
             name: 'Dashboard',
             path: '/dashboards',
             component: () => import('@/views/dashboard/modern/index.vue')
         },
         {
-            name: 'Drivers',
-            path: '/apps/drivers',
-            component: () => import('@/views/apps/drivers/ListPage.vue')
+            name: 'Driver',
+            path: '/apps/driver',
+            component: () => import('@/views/apps/driver/DriverListPage.vue')
         },
         {
-            name: 'Drivers Detail',
-            path: '/apps/drivers/:id',
-            component: () => import('@/views/apps/drivers/DetailPage.vue')
+            name: 'Driver Detail',
+            path: '/apps/driver/:id',
+            component: () => import('@/views/apps/driver/DriverDetailPage.vue')
         },
         {
             name: 'Schedule',
@@ -27,14 +28,14 @@ const MainRoutes = {
             component: () => import('@/views/apps/schedule/Schedule.vue')
         },
         {
-            name: 'Locations',
-            path: '/apps/locations',
-            component: () => import('@/views/apps/locations/Locations.vue')
+            name: 'Location',
+            path: '/apps/location',
+            component: () => import('@/views/apps/location/LocationListPage.vue')
         },
         {
             name: 'Documents',
             path: '/apps/documents',
-            component: () => import('@/views/apps/documents/Documents.vue')
+            component: () => import('@/views/apps/document/DocumentListPage.vue')
         },
         {
             name: 'Notifications',
@@ -42,7 +43,8 @@ const MainRoutes = {
             component: () => import('@/views/apps/notifications/Notifications.vue')
         },
 
-        
+        // TODO: remove unused routes
+        // Unused routes
         {
             name: 'Modern',
             path: '/dashboards/modern',
@@ -93,7 +95,6 @@ const MainRoutes = {
             path: '/apps/blog/:id',
             component: () => import('@/views/apps/blog/Detail.vue')
         },
-
         {
             name: 'UserProfile',
             path: '/apps/user/profile',

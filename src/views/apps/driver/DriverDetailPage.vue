@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 
 //Components
-import PersonalInfoTab from '@/components/forms/form-vertical/PersonalInfoTab.vue';
+import DriverPersonalInfoTab from '@/components/driver/tabs/DriverPersonalInfoTab.vue';
 
 /*tab*/
 const tab = ref(null);
@@ -29,7 +29,7 @@ const page = ref({ title: 'Driver Richard' });
        <v-card-text class="pa-sm-6 pa-3 pb-sm-6 pb-6">
            <v-window v-model="tab">
                 <v-window-item value="Documents">
-                    <PersonalInfoTab/>
+                    <DriverPersonalInfoTab/>
                 </v-window-item>
                 <v-window-item value="ApplicationForm">ApplicationForm</v-window-item>
                 <v-window-item value="OfferLetter">OfferLetter</v-window-item>
