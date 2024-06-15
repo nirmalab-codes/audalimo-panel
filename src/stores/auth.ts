@@ -1,31 +1,40 @@
 import { defineStore } from 'pinia';
 import { router } from '@/router';
 import { fetchWrapper } from '@/utils/helpers/fetch-wrapper';
-
-const baseUrl = `${import.meta.env.VITE_API_URL}/users`;
+import ApiService from '@/services/ApiService';
+import { LoginRequest } from '@/contracts/request/AuthRelated.request';
+import { UserVo } from '@/contracts/vo/User.vo';
+import { LoginResponse } from '@/contracts/response/AuthRelated.response';
+import SecureStorageService from '@/services/SecureStorageService';
+import AuthService from '@/services/AuthService';
 
 export const useAuthStore = defineStore({
     id: 'auth',
     state: () => ({
         // initialize state from local storage to enable user to stay logged in
         // @ts-ignore
-        user: JSON.parse(localStorage.getItem('user')),
+        user: JSON.parse(SecureStorageService.getItem(AuthService.USER_DATA_KEY)),
         returnUrl: null
     }),
     actions: {
-        async login(username: string, password: string) {
-            const user = await fetchWrapper.post(`${baseUrl}/authenticate`, { username, password });
-
+        async login(data: LoginRequest) {
+            const rawResponse = await ApiService.post('/auth/sign-in', data)
+            const parsedResponse = rawResponse.data as LoginResponse
             // update pinia state
-            this.user = user;
+            this.user = {
+                uid: parsedResponse.user.uid,
+                fullname: parsedResponse.fullname,
+                accessToken: parsedResponse.access_token,
+            } as UserVo;
             // store user details and jwt in local storage to keep user logged in between page refreshes
-            localStorage.setItem('user', JSON.stringify(user));
+            SecureStorageService.setItem(AuthService.USER_DATA_KEY, JSON.stringify(this.user))
             // redirect to previous url or default to home page
             router.push(this.returnUrl || '/dashboards/modern');
         },
-        logout() {
+        async logout() {
+            const rawResponse = await ApiService.post('/auth/logout', {})
             this.user = null;
-            localStorage.removeItem('user');
+            SecureStorageService.removeItem(AuthService.USER_DATA_KEY)
             router.push('/');
         }
     }
