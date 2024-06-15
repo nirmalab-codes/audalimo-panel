@@ -1,68 +1,61 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { useContactStore } from '@/stores/apps/contact';
+import { useLocationStore } from '@/stores/apps/location';
+import { getDefaultLocationVo, type LocationVo } from '@/contracts/vo/Location.vo';
+import { FormAttr } from '@/enums/LocationRelated.enum';
 
-import contact from '@/_mockApis/apps/contact';
-
-const store = useContactStore();
-
-onMounted(() => {
-    store.fetchContacts();
-});
-
+const store = useLocationStore();
 const valid = ref(true);
 const dialog = ref(false);
 const search = ref('');
-const desserts = ref(contact);
-const editedIndex = ref(-1);
-const editedItem = ref({
-    id: '',
-    name: '',
-    urlGoogleMaps: ''
+const isEdit = ref(false);
+const editedItem = ref<LocationVo | null>(null);
+const defaultItem = ref<LocationVo>(getDefaultLocationVo());
+
+onMounted(() => {
+    store.fetchLocations()
 });
-const defaultItem = ref({
-    id: '',
-    name: '',
-    urlGoogleMaps: ''
-});
+
+// Computed
+const locations = computed(() => store.locations);
+const formTitle = computed(() => editedItem.value ? 'Edit Location' : 'New Location');
+const filteredList = computed(() => locations.value.filter(location => location.title.toLowerCase().includes(search.value.toLowerCase())));
+const formAttrItems = computed(() => Object.values(FormAttr));
 
 //Methods
-const filteredList = computed(() => {
-    return desserts.value.filter((user: any) => {
-        return user.userinfo.toLowerCase().includes(search.value.toLowerCase());
-    });
-});
+const resetEditedItem = () => {
+  editedItem.value = {...defaultItem.value};
+  isEdit.value = false;
+};
 
-function editItem(item: any) {
-    editedIndex.value = desserts.value.indexOf(item);
-    editedItem.value = Object.assign({}, item);
+function editItem(location: LocationVo) {
+    editedItem.value = { ...location };
+    isEdit.value = true;
     dialog.value = true;
 }
-function deleteItem(item: any) {
-    const index = desserts.value.indexOf(item);
-    confirm('Are you sure you want to delete this item?') && desserts.value.splice(index, 1);
+
+async function deleteItem(location: LocationVo) {
+    if (confirm('Are you sure you want to delete this item?')) {
+        await store.deleteLocation(location.id);
+    }
 }
 
 function close() {
     dialog.value = false;
     setTimeout(() => {
-        editedItem.value = Object.assign({}, defaultItem.value);
-        editedIndex.value = -1;
+        editedItem.value = null;
+        isEdit.value = false;
     }, 300);
 }
-function save() {
-    if (editedIndex.value > -1) {
-        Object.assign(desserts.value[editedIndex.value], editedItem.value);
+
+async function save() {
+    if (isEdit.value) {
+        await store.updateLocation(editedItem.value);
     } else {
-        desserts.value.push(editedItem.value);
+        await store.createLocation(editedItem.value);
     }
     close();
 }
-
-//Computed Property
-const formTitle = computed(() => {
-    return editedIndex.value === -1 ? 'New Location' : 'Edit Location';
-});
 </script>
 <template>
     <v-row>
@@ -72,7 +65,7 @@ const formTitle = computed(() => {
         <v-col cols="12" lg="8" md="6" class="text-right">
             <v-dialog v-model="dialog" max-width="500">
                 <template v-slot:activator="{ props }">
-                    <v-btn color="primary" v-bind="props" flat class="ml-auto">
+                    <v-btn color="primary" v-bind="props" flat class="ml-auto" @click="resetEditedItem">
                         <v-icon class="mr-2">mdi-account-multiple-plus</v-icon>Add Location
                     </v-btn>
                 </template>
@@ -88,17 +81,36 @@ const formTitle = computed(() => {
                                     <v-text-field
                                         variant="outlined"
                                         hide-details
-                                        v-model="defaultItem.name"
+                                        v-model="editedItem.title"
                                         label="Title"
+                                        required
                                     ></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-text-field
                                         variant="outlined"
                                         hide-details
-                                        v-model="defaultItem.urlGoogleMaps"
+                                        v-model="editedItem.urlLink"
                                         label="URL Google Maps"
+                                        required
                                     ></v-text-field>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-select
+                                        variant="outlined"
+                                        hide-details
+                                        :items="formAttrItems"
+                                        v-model="editedItem.formAttr"
+                                        label="Form Attribute"
+                                        required
+                                    ></v-select>
+                                </v-col>
+                                <v-col cols="12">
+                                    <v-checkbox
+                                        v-model="editedItem.locationStatus"
+                                        label="Location Status"
+                                        hide-details
+                                    ></v-checkbox>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -109,7 +121,7 @@ const formTitle = computed(() => {
                         <v-btn color="error" @click="close">Cancel</v-btn>
                         <v-btn
                             color="secondary"
-                            :disabled="editedItem.name == '' || editedItem.urlGoogleMaps == ''"
+                            :disabled="editedItem.title == '' || editedItem.urlLink == ''"
                             variant="flat"
                             @click="save"
                             >Save</v-btn
@@ -122,43 +134,23 @@ const formTitle = computed(() => {
     <v-table class="mt-5">
         <thead>
             <tr>
-                <th class="text-subtitle-1 font-weight-semibold">Id</th>
-                <th class="text-subtitle-1 font-weight-semibold">UserInfo</th>
-                <th class="text-subtitle-1 font-weight-semibold">Phone</th>
-                <th class="text-subtitle-1 font-weight-semibold">Joining Date</th>
-                <th class="text-subtitle-1 font-weight-semibold">Role</th>
+                <th class="text-subtitle-1 font-weight-semibold">Title</th>
+                <th class="text-subtitle-1 font-weight-semibold">Url Link</th>
+                <th class="text-subtitle-1 font-weight-semibold">Form Attr</th>
+                <th class="text-subtitle-1 font-weight-semibold">Location Status</th>
                 <th class="text-subtitle-1 font-weight-semibold">Actions</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="item in filteredList" :key="item.id">
-                <td class="text-subtitle-1">{{ item.id }}</td>
+                <td class="text-subtitle-1">{{ item.title }}</td>
+                <td class="text-subtitle-1">{{ item.urlLink }}</td>
+                <td class="text-subtitle-1">{{ item.formAttr }}</td>
                 <td>
-                    <div class="d-flex align-center py-4">
-                        <div>
-                            <v-img :src="item.avatar" width="45px" class="rounded-circle img-fluid"></v-img>
-                        </div>
-
-                        <div class="ml-5">
-                            <h4 class="text-h6 font-weight-semibold">{{ item.userinfo }}</h4>
-                            <span class="text-subtitle-1 d-block mt-1 textSecondary">{{ item.usermail }}</span>
-                        </div>
-                    </div>
-                </td>
-                <td class="text-subtitle-1">{{ item.phone }}</td>
-                <td class="text-subtitle-1">{{ item.jdate }}</td>
-                <td>
-                    <v-chip :color="item.rolestatus" size="small" label>{{ item.role }}</v-chip>
+                    <v-chip :color="item.locationStatus ? 'success' : 'warning'" size="small" label>{{ item.locationStatus }}</v-chip>
                 </td>
                 <td>
                     <div class="d-flex align-center">
-                        <v-tooltip text="Detail">
-                            <template v-slot:activator="{ props }">
-                                <router-link :to="`/apps/location/${item.id}`" v-bind="props">
-                                    <v-btn icon flat><FileInfoIcon stroke-width="1.5" size="20" class="text-primary" /></v-btn>
-                                </router-link>
-                            </template>
-                        </v-tooltip>
                         <v-tooltip text="Edit">
                             <template v-slot:activator="{ props }">
                                 <v-btn icon flat @click="editItem(item)" v-bind="props"
