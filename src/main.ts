@@ -30,6 +30,9 @@ import VueScrollTo from 'vue-scrollto';
 //LightBox
 import VueEasyLightbox from 'vue-easy-lightbox';
 
+//imports for app initialization
+import ApiService from './services/ApiService';
+
 const i18n = createI18n({
     locale: 'en',
     messages: messages,
@@ -39,6 +42,7 @@ const i18n = createI18n({
 
 const app = createApp(App);
 fakeBackend();
+ApiService.init(app);
 app.use(router);
 app.component('EasyDataTable', Vue3EasyDataTable);
 app.use(PerfectScrollbar);

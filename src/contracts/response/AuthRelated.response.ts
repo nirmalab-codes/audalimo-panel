@@ -1,4 +1,4 @@
-import { BaseResponse } from "./Base.response";
+import { type BaseResponse } from "./Base.response";
 
 export type UserLoginDto = {
     uid: string,

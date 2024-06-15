@@ -2,9 +2,9 @@ import { defineStore } from 'pinia';
 import { router } from '@/router';
 import { fetchWrapper } from '@/utils/helpers/fetch-wrapper';
 import ApiService from '@/services/ApiService';
-import { LoginRequest } from '@/contracts/request/AuthRelated.request';
-import { UserVo } from '@/contracts/vo/User.vo';
-import { LoginResponse } from '@/contracts/response/AuthRelated.response';
+import { type LoginRequest } from '@/contracts/request/AuthRelated.request';
+import { type UserVo } from '@/contracts/vo/User.vo';
+import { type LoginResponse } from '@/contracts/response/AuthRelated.response';
 import SecureStorageService from '@/services/SecureStorageService';
 import AuthService from '@/services/AuthService';
 

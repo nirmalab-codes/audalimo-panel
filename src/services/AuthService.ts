@@ -1,4 +1,4 @@
-import { UserVo } from "../contracts/vo/User.vo";
+import { type UserVo } from "../contracts/vo/User.vo";
 import SecureStorageService from "./SecureStorageService";
 
 export const USER_DATA_KEY = "session_info" as string;
