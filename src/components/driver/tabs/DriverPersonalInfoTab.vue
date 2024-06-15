@@ -94,21 +94,30 @@ const changeStatusFormData = ref({
 });
 
 // Enums
-const changeStatusEnums = ref(['REJECTED', 'APPROVED']);
+const changeStatusEnums = ref(['rejected', 'approved']);
 
 // Add Note Form Related
-function closeAddNote() {
+const closeAddNote = () => {
     dialogAddNote.value = false;
 }
-function saveAddNote() {
+const saveAddNote = async () => {
+    if(!driverDocument.value) return
+    await driverStore.addNote(driverDocument.value.id, {
+        doc_notes:addNoteFormData.value.message,
+        doc_title_notes:addNoteFormData.value.title,
+    })
     closeAddNote();
 }
 
 // Change Status Form Related
-function closeChangeStatus() {
+const closeChangeStatus = () => {
     dialogChangeStatus.value = false;
 }
-function saveChangeStatus() {
+const saveChangeStatus = async () => {
+    if(!driverDocument.value) return
+    await driverStore.updateStatus(driverDocument.value.id, {
+        doc_status: changeStatusFormData.value.status
+    })
     closeChangeStatus();
 }
 </script>

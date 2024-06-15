@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { type SingleResponse, type ListResponse } from '../contracts/response/Base.response'
 import { type DriverDocumentItemDto, type DriverItemDto } from '../contracts/response/DriverRelated.response'
 import ApiService from "@/services/ApiService";
+import { type UpdateStatusRequest, type AddNoteRequest } from "@/contracts/request/DriverRelated.request";
 
 export const useDriverStore = defineStore({
     id: 'driver',
@@ -21,7 +22,16 @@ export const useDriverStore = defineStore({
                 }
             })
             const parsedResponse = rawResponse.data as SingleResponse<DriverDocumentItemDto>
-            // return parsedResponse.data.sort((a,b) => (new Date(b.created_at)).getTime() - (new Date(a.created_at)).getTime())
+            return parsedResponse.data
+        },
+        async addNote(documentId: string, payload: AddNoteRequest) {
+            const rawResponse = await ApiService.put(`/v1/kyc-document/notes/${documentId}`, payload)
+            const parsedResponse = rawResponse.data as SingleResponse<DriverDocumentItemDto>
+            return parsedResponse.data
+        },
+        async updateStatus(documentId: string, payload: UpdateStatusRequest) {
+            const rawResponse = await ApiService.put(`/v1/kyc-document/doc-status/${documentId}`, payload)
+            const parsedResponse = rawResponse.data as SingleResponse<DriverDocumentItemDto>
             return parsedResponse.data
         },
     }

@@ -18,7 +18,7 @@ export const useAuthStore = defineStore({
     }),
     actions: {
         async login(data: LoginRequest) {
-            const rawResponse = await ApiService.post('/auth/sign-in', data)
+            const rawResponse = await ApiService.post('/v1/auth/sign-in', data)
             const parsedResponse = rawResponse.data as LoginResponse
             // update pinia state
             this.user = {
@@ -34,7 +34,7 @@ export const useAuthStore = defineStore({
         },
         async logout() {
             try {
-                const rawResponse = await ApiService.post('/logout', {})
+                const rawResponse = await ApiService.post('/v1/logout', {})
             } catch (error) {
                 console.error(error)
             }finally{
