@@ -14,6 +14,7 @@
         "@tiptap/starter-kit": "2.0.0-beta.220",
         "@tiptap/vue-3": "2.0.0-beta.220",
         "@types/aos": "^3.0.4",
+        "@webzlodimir/vue-avatar": "^0.0.8",
         "aos": "^2.3.4",
         "apexcharts": "3.40.0",
         "axios": "^0.27.2",

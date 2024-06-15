@@ -90,7 +90,7 @@ const getCart = computed(() => {
         <!-- ---------------------------------------------- -->
         <!-- Notification -->
         <!-- ---------------------------------------------- -->
-        <NotificationDD />
+        <!-- <NotificationDD /> -->
 
         <!-- right sidebar -->
         <v-btn

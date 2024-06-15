@@ -938,6 +938,11 @@
   dependencies:
     vue-demi "*"
 
+"@webzlodimir/vue-avatar@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@webzlodimir/vue-avatar/-/vue-avatar-0.0.8.tgz#e260c2fdbf9bdb09ffb78d7ca7c81ec47580abd8"
+  integrity sha512-4UAMDMpzakYKwJt5POj/6QUcDQT3TbIGcbR2Aq3JdcuA1T/VBvhKbHhccoTdE6FgUomk7PaWDTIcgWiRSO1cJA==
+
 acorn-jsx@^5.3.2:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.3.2.tgz#7ed5bb55908b3b2f1bc55c6af1653bada7f07937"

@@ -28,14 +28,21 @@ export const useAuthStore = defineStore({
             } as UserVo;
             // store user details and jwt in local storage to keep user logged in between page refreshes
             SecureStorageService.setItem(AuthService.USER_DATA_KEY, JSON.stringify(this.user))
+            ApiService.setHeader()
             // redirect to previous url or default to home page
             router.push(this.returnUrl || '/dashboards/modern');
         },
         async logout() {
-            const rawResponse = await ApiService.post('/auth/logout', {})
-            this.user = null;
-            SecureStorageService.removeItem(AuthService.USER_DATA_KEY)
-            router.push('/');
+            try {
+                const rawResponse = await ApiService.post('/logout', {})
+            } catch (error) {
+                console.error(error)
+            }finally{
+                this.user = null;
+                SecureStorageService.removeItem(AuthService.USER_DATA_KEY)
+                ApiService.setHeader()
+                router.push('/');
+            }
         }
     }
 });

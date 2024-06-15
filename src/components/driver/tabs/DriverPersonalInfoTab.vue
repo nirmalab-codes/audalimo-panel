@@ -1,12 +1,84 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, type PropType, toRef } from 'vue';
 import { useContactStore } from '@/stores/apps/contact';
 import user1 from '@/assets/images/profile/user-1.jpg';
+import { type DriverDocumentItemDto, type DriverItemDto } from '@/contracts/response/DriverRelated.response';
+import { useDriverStore } from '@/stores/driver';
+import { useRouter } from 'vue-router';
+import ApiService from '@/services/ApiService';
+import { type DocumentItemDto } from '@/contracts/response/DocumentRelated.response';
 
-const store = useContactStore();
+const router = useRouter()
 
-onMounted(() => {
+const props = defineProps({
+    driverProp: { type: Object as PropType<DriverItemDto>, required: true }
+})
+const driver = toRef(props, 'driverProp')
+
+const driverStore = useDriverStore();
+
+const driverDocument = ref<DriverDocumentItemDto|null>()
+const selfieIds = ref<Map<string, string>>(new Map())
+const cvIds = ref<Map<string, string>>(new Map())
+const passportIds = ref<Map<string, string>>(new Map())
+const emirateIds = ref<Map<string, string>>(new Map())
+const visaIds = ref<Map<string, string>>(new Map())
+
+onMounted(async () => {
+    driverDocument.value = await driverStore.retrieveLatestDocuments(driver.value.id)
+    await Promise.all([
+        fetchSelfieId(),
+        fetchCvId(),
+        fetchPassportId(),
+        fetchEmirateId(),
+        fetchVisaId(),
+    ])
 });
+
+const fetchSelfieId = async () => {
+    let selfieIdRaw = driverDocument.value?.selfie_id || []
+    for (let i = 0; i < selfieIdRaw.length; i++) {
+        const element = selfieIdRaw[i];
+        selfieIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+    }
+}
+
+const fetchCvId = async () => {
+    let cvIdRaw = driverDocument.value?.cv_id || []
+    for (let i = 0; i < cvIdRaw.length; i++) {
+        const element = cvIdRaw[i];
+        cvIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+    }
+}
+
+const fetchPassportId = async () => {
+    let passportIdRaw = driverDocument.value?.photo_passport_id || []
+    for (let i = 0; i < passportIdRaw.length; i++) {
+        const element = passportIdRaw[i];
+        passportIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+    }
+}
+
+const fetchEmirateId = async () => {
+    let emirateIdRaw = driverDocument.value?.emirates_id || []
+    for (let i = 0; i < emirateIdRaw.length; i++) {
+        const element = emirateIdRaw[i];
+        emirateIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+    }
+}
+
+const fetchVisaId = async () => {
+    let visaIdRaw = driverDocument.value?.visa_residency || []
+    for (let i = 0; i < visaIdRaw.length; i++) {
+        const element = visaIdRaw[i];
+        visaIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+    }
+}
+
+const handleImageClick = (url: string) => {
+    if(!url) return
+    window.open(url, '_blank')?.focus();
+}
 
 const valid = ref(true);
 const dialogAddNote = ref(false);
@@ -41,15 +113,15 @@ function saveChangeStatus() {
 }
 </script>
 <template>
-    <div class="ma-4">
+    <div class="ma-4" v-if="driverDocument">
         <v-row>
             <v-col cols="12">
                 <div class="d-flex justify-space-between">
                     <div class="details">
                         <h2>Uploaded Documents</h2>
                         <h3>Education</h3>
-                        <p>High School: SMA Surabaya</p>
-                        <p>University: ISTTS</p>
+                        <p>High School: {{ driverDocument.high_school }}</p>
+                        <p>University: {{ driverDocument.university }}</p>
                     </div>
                     <div class="actions d-flex gap-2">
                         <v-dialog v-model="dialogAddNote" max-width="500">
@@ -172,8 +244,8 @@ function saveChangeStatus() {
                         >
                         <div class="mt-5">
                             <v-row>
-                                <v-col cols="12">
-                                    <v-img :src="user1" aspect-ratio="1" height="150"></v-img>
+                                <v-col cols="12" v-for="(item, k) in driverDocument.selfie_id" :key="`cam-item-${item.id}-${k}`">
+                                    <v-img :src="selfieIds.get(item.id) || ''" aspect-ratio="1" height="150" @click="handleImageClick(selfieIds.get(item.id) || '')"></v-img>
                                 </v-col>
                             </v-row>
                         </div>
@@ -194,11 +266,8 @@ function saveChangeStatus() {
                         >
                         <div class="mt-5">
                             <v-row>
-                                <v-col cols="6">
-                                    <v-img :src="user1" aspect-ratio="1" height="150"></v-img>
-                                </v-col>
-                                <v-col cols="6">
-                                    <v-img :src="user1" aspect-ratio="1" height="150"></v-img>
+                                <v-col cols="6" v-for="(item, k) in driverDocument.cv_id" :key="`cv-item-${item.id}-${k}`">
+                                    <v-img :src="cvIds.get(item.id) || ''" aspect-ratio="1" height="150" @click="handleImageClick(cvIds.get(item.id) || '')"></v-img>
                                 </v-col>
                             </v-row>
                         </div>
@@ -219,11 +288,8 @@ function saveChangeStatus() {
                         >
                         <div class="mt-5">
                             <v-row>
-                                <v-col cols="6">
-                                    <v-img :src="user1" aspect-ratio="1" height="150"></v-img>
-                                </v-col>
-                                <v-col cols="6">
-                                    <v-img :src="user1" aspect-ratio="1" height="150"></v-img>
+                                <v-col cols="6" v-for="(item, k) in driverDocument.photo_passport_id" :key="`passport-item-${item.id}-${k}`">
+                                    <v-img :src="passportIds.get(item.id) || ''" aspect-ratio="1" height="150" @click="handleImageClick(passportIds.get(item.id) || '')"></v-img>
                                 </v-col>
                             </v-row>
                         </div>
@@ -244,8 +310,8 @@ function saveChangeStatus() {
                         >
                         <div class="mt-5">
                             <v-row>
-                                <v-col cols="12">
-                                    <v-img :src="user1" aspect-ratio="1" height="150"></v-img>
+                                <v-col cols="6" v-for="(item, k) in driverDocument.emirates_id" :key="`emirate-item-${item.id}-${k}`">
+                                    <v-img :src="emirateIds.get(item.id) || ''" aspect-ratio="1" height="150" @click="handleImageClick(emirateIds.get(item.id) || '')"></v-img>
                                 </v-col>
                             </v-row>
                         </div>
@@ -260,14 +326,11 @@ function saveChangeStatus() {
                         <v-card-title class="text-h5">Current Visa</v-card-title>
                     </v-card-item>
                     <v-card-text>
-                        <span>Type of Visa: Residency Visa</span>
+                        <span>Type of Visa: {{ driverDocument.visa_type }}</span>
                         <div class="mt-5">
                             <v-row>
-                                <v-col cols="6">
-                                    <v-img :src="user1" aspect-ratio="1" height="150"></v-img>
-                                </v-col>
-                                <v-col cols="6">
-                                    <v-img :src="user1" aspect-ratio="1" height="150"></v-img>
+                                <v-col cols="6" v-for="(item, k) in driverDocument.visa_residency" :key="`visa-item-${item.id}-${k}`">
+                                    <v-img :src="visaIds.get(item.id) || ''" aspect-ratio="1" height="150" @click="handleImageClick(visaIds.get(item.id) || '')"></v-img>
                                 </v-col>
                             </v-row>
                         </div>
@@ -275,5 +338,8 @@ function saveChangeStatus() {
                 </v-card>
             </v-col>
         </v-row>
+    </div>
+    <div>
+        <p>Documents are currently not available</p>
     </div>
 </template>

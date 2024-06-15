@@ -3,11 +3,20 @@ import { ref, computed, onMounted } from 'vue';
 import { useContactStore } from '@/stores/apps/contact';
 
 import contact from '@/_mockApis/apps/contact';
+import { useDriverStore } from '@/stores/driver';
+import { storeToRefs } from 'pinia';
 
-const store = useContactStore();
+import VueAvatar from "@webzlodimir/vue-avatar";
+import "@webzlodimir/vue-avatar/dist/style.css";
+
+// const store = useContactStore();
+const driverStore = useDriverStore();
+
+const { driverList } = storeToRefs(driverStore)
 
 onMounted(() => {
-    store.fetchContacts();
+    // store.fetchContacts();
+    driverStore.retrieveList();
 });
 
 const valid = ref(true);
@@ -39,20 +48,15 @@ const defaultItem = ref({
 
 //Methods
 const filteredList = computed(() => {
-    return desserts.value.filter((user: any) => {
-        return user.userinfo.toLowerCase().includes(search.value.toLowerCase());
+    return driverList.value.filter((driver: any) => {
+        return driver.first_name?.toLowerCase().includes(search.value.toLowerCase())
+            || driver.middle_name?.toLowerCase().includes(search.value.toLowerCase())
+            || driver.last_name?.toLowerCase().includes(search.value.toLowerCase())
+            || driver.phone?.toLowerCase().includes(search.value.toLowerCase())
+            || driver.phone_home?.toLowerCase().includes(search.value.toLowerCase())
+            || driver.email?.toLowerCase().includes(search.value.toLowerCase())
     });
 });
-
-function editItem(item: any) {
-    editedIndex.value = desserts.value.indexOf(item);
-    editedItem.value = Object.assign({}, item);
-    dialog.value = true;
-}
-function deleteItem(item: any) {
-    const index = desserts.value.indexOf(item);
-    confirm('Are you sure you want to delete this item?') && desserts.value.splice(index, 1);
-}
 
 function close() {
     dialog.value = false;
@@ -80,7 +84,7 @@ const formTitle = computed(() => {
         <v-col cols="12" lg="4" md="6">
             <v-text-field density="compact" v-model="search" label="Search Driver" hide-details variant="outlined"></v-text-field>
         </v-col>
-        <v-col cols="12" lg="8" md="6" class="text-right">
+        <!-- <v-col cols="12" lg="8" md="6" class="text-right">
             <v-dialog v-model="dialog" max-width="500">
                 <template v-slot:activator="{ props }">
                     <v-btn color="primary" v-bind="props" flat class="ml-auto">
@@ -161,38 +165,40 @@ const formTitle = computed(() => {
                     </v-card-actions>
                 </v-card>
             </v-dialog>
-        </v-col>
+        </v-col> -->
     </v-row>
     <v-table class="mt-5">
         <thead>
             <tr>
-                <th class="text-subtitle-1 font-weight-semibold">Id</th>
+                <th class="text-subtitle-1 font-weight-semibold">#</th>
                 <th class="text-subtitle-1 font-weight-semibold">UserInfo</th>
                 <th class="text-subtitle-1 font-weight-semibold">Phone</th>
                 <th class="text-subtitle-1 font-weight-semibold">Joining Date</th>
-                <th class="text-subtitle-1 font-weight-semibold">Role</th>
+                <th class="text-subtitle-1 font-weight-semibold">Status</th>
                 <th class="text-subtitle-1 font-weight-semibold">Actions</th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="item in filteredList" :key="item.id">
-                <td class="text-subtitle-1">{{ item.id }}</td>
+            <tr v-for="(item, k) in filteredList" :key="item.id">
+                <td class="text-subtitle-1">{{ k+1 }}</td>
                 <td>
                     <div class="d-flex align-center py-4">
                         <div>
-                            <v-img :src="item.avatar" width="45px" class="rounded-circle img-fluid"></v-img>
+                            <vue-avatar v-if="item.first_name && item.last_name" :username="`${item.first_name || ''} ${item.last_name || ''}`" />
+                            <vue-avatar v-else username="Unknown User" />
                         </div>
 
                         <div class="ml-5">
-                            <h4 class="text-h6 font-weight-semibold">{{ item.userinfo }}</h4>
-                            <span class="text-subtitle-1 d-block mt-1 textSecondary">{{ item.usermail }}</span>
+                            <h4 class="text-h6 font-weight-semibold">{{ item.first_name || '' }} {{ item.middle_name || '' }} {{ item.last_name || '' }}</h4>
+                            <span class="text-subtitle-1 d-block mt-1 textSecondary">{{ item.email }}</span>
                         </div>
                     </div>
                 </td>
                 <td class="text-subtitle-1">{{ item.phone }}</td>
-                <td class="text-subtitle-1">{{ item.jdate }}</td>
+                <td class="text-subtitle-1">{{ (new Date(item.created_at)).toLocaleDateString() }}</td>
                 <td>
-                    <v-chip :color="item.rolestatus" size="small" label>{{ item.role }}</v-chip>
+                    <!-- <v-chip :color="item.rolestatus" size="small" label>{{ item.role }}</v-chip> -->
+                    <v-chip size="small" label>UNKNOWN</v-chip>
                 </td>
                 <td>
                     <div class="d-flex align-center">
@@ -201,20 +207,6 @@ const formTitle = computed(() => {
                                 <router-link :to="`/apps/driver/${item.id}`" v-bind="props">
                                     <v-btn icon flat><FileInfoIcon stroke-width="1.5" size="20" class="text-primary" /></v-btn>
                                 </router-link>
-                            </template>
-                        </v-tooltip>
-                        <v-tooltip text="Edit">
-                            <template v-slot:activator="{ props }">
-                                <v-btn icon flat @click="editItem(item)" v-bind="props"
-                                    ><PencilIcon stroke-width="1.5" size="20" class="text-primary"
-                                /></v-btn>
-                            </template>
-                        </v-tooltip>
-                        <v-tooltip text="Delete">
-                            <template v-slot:activator="{ props }">
-                                <v-btn icon flat @click="deleteItem(item)" v-bind="props"
-                                    ><TrashIcon stroke-width="1.5" size="20" class="text-error"
-                                /></v-btn>
                             </template>
                         </v-tooltip>
                     </div>
