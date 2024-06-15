@@ -4,6 +4,7 @@ import { useDocumentStore } from '@/stores/apps/document';
 import { useUploadStore } from '@/stores/apps/upload';
 import { getDefaultDocumentVo, type DocumentVo, type DocIdVo } from '@/contracts/vo/Document.vo';
 import { FormAttr } from '@/enums/DocumentRelated.enum';
+import { type UploadDto } from '@/contracts/response/UploadRelated.response';
 
 const store = useDocumentStore();
 const uploadStore = useUploadStore();
@@ -11,8 +12,8 @@ const valid = ref(true);
 const dialog = ref(false);
 const search = ref('');
 const isEdit = ref(false);
-const editedItem = ref<DocumentVo | null>(null);
 const defaultItem = ref<DocumentVo>(getDefaultDocumentVo());
+const editedItem = ref<DocumentVo>(defaultItem.value);  
 const fileToUpload = ref<File | null>(null);
 
 onMounted(() => {
@@ -29,6 +30,7 @@ const formAttrItems = computed(() => Object.values(FormAttr));
 const resetEditedItem = () => {
   editedItem.value = {...defaultItem.value};
   isEdit.value = false;
+  fileToUpload.value = null;
 };
 
 function editItem(document: DocumentVo) {
@@ -46,35 +48,41 @@ async function deleteItem(document: DocumentVo) {
 function close() {
     dialog.value = false;
     setTimeout(() => {
-        editedItem.value = null;
-        isEdit.value = false;
+        resetEditedItem()
     }, 300);
 }
 
 async function save() {
     if (fileToUpload.value) {
-        const uploadResponse = await uploadStore.upload(fileToUpload.value);
+        const uploadResponse: UploadDto | null = await uploadStore.upload(fileToUpload.value);
+        
         if (uploadResponse) {
-            console.log('uploadResponse', uploadResponse);
-            
             const docId: DocIdVo = {
                 id: uploadResponse.id,
                 signedUrl: uploadResponse.signed_url
             };
             editedItem.value.docId.push(docId);
+            
+            if (isEdit.value) {
+                await store.updateDocument(editedItem.value);
+            } else {
+                await store.createDocument(editedItem.value);
+            }
         }
-    }
-
-    if (isEdit.value) {
-        await store.updateDocument(editedItem.value);
-    } else {
-        await store.createDocument(editedItem.value);
     }
     close();
 }
 
-function onFileChange(e) {
+function onFileChange(e: any) {
     fileToUpload.value = e.target.files[0];
+}
+
+async function openFile(document: DocumentVo) {
+    if (document.docId.length === 0) {
+        return;
+    }
+    const docIdSignedUrl = document.docId[0].signedUrl;
+    window.open(docIdSignedUrl, '_blank');
 }
 </script>
 <template>
@@ -113,7 +121,7 @@ function onFileChange(e) {
                                         required
                                     ></v-select>
                                 </v-col>
-                                <v-col cols="12">
+                                <v-col cols="12" v-if="!isEdit">
                                     <v-checkbox
                                         v-model="editedItem.urlDocStatus"
                                         label="Document Status"
@@ -129,7 +137,7 @@ function onFileChange(e) {
                         <v-btn color="error" @click="close">Cancel</v-btn>
                         <v-btn
                             color="secondary"
-                            :disabled="editedItem.title == '' || editedItem.urlLink == ''"
+                            :disabled="!editedItem.title || !editedItem.formAttr"
                             variant="flat"
                             @click="save"
                             >Save</v-btn
@@ -143,22 +151,27 @@ function onFileChange(e) {
         <thead>
             <tr>
                 <th class="text-subtitle-1 font-weight-semibold">Title</th>
-                <th class="text-subtitle-1 font-weight-semibold">Url Link</th>
                 <th class="text-subtitle-1 font-weight-semibold">Form Attr</th>
-                <th class="text-subtitle-1 font-weight-semibold">Document Status</th>
+                <th class="text-subtitle-1 font-weight-semibold">URL Document Status</th>
                 <th class="text-subtitle-1 font-weight-semibold">Actions</th>
             </tr>
         </thead>
         <tbody>
             <tr v-for="item in filteredList" :key="item.id">
                 <td class="text-subtitle-1">{{ item.title }}</td>
-                <td class="text-subtitle-1">{{ item.urlLink }}</td>
                 <td class="text-subtitle-1">{{ item.formAttr }}</td>
                 <td>
-                    <v-chip :color="item.documentStatus ? 'success' : 'warning'" size="small" label>{{ item.documentStatus }}</v-chip>
+                    <v-chip :color="item.urlDocStatus ? 'success' : 'warning'" size="small" label>{{ item.urlDocStatus }}</v-chip>
                 </td>
                 <td>
                     <div class="d-flex align-center">
+                        <v-tooltip text="Open">
+                            <template v-slot:activator="{ props }">
+                                <v-btn icon flat @click="openFile(item)" v-bind="props">
+                                    <DownloadIcon stroke-width="1.5" size="20" class="text-success"/>
+                                </v-btn>
+                            </template>
+                        </v-tooltip>
                         <v-tooltip text="Edit">
                             <template v-slot:activator="{ props }">
                                 <v-btn icon flat @click="editItem(item)" v-bind="props"

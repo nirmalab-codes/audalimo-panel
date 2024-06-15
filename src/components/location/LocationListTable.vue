@@ -9,8 +9,8 @@ const valid = ref(true);
 const dialog = ref(false);
 const search = ref('');
 const isEdit = ref(false);
-const editedItem = ref<LocationVo | null>(null);
 const defaultItem = ref<LocationVo>(getDefaultLocationVo());
+const editedItem = ref<LocationVo>(defaultItem.value);
 
 onMounted(() => {
     store.fetchLocations()
@@ -43,8 +43,7 @@ async function deleteItem(location: LocationVo) {
 function close() {
     dialog.value = false;
     setTimeout(() => {
-        editedItem.value = null;
-        isEdit.value = false;
+        resetEditedItem();
     }, 300);
 }
 
@@ -105,7 +104,7 @@ async function save() {
                                         required
                                     ></v-select>
                                 </v-col>
-                                <v-col cols="12">
+                                <v-col cols="12" v-if="!isEdit">
                                     <v-checkbox
                                         v-model="editedItem.locationStatus"
                                         label="Location Status"
@@ -121,7 +120,7 @@ async function save() {
                         <v-btn color="error" @click="close">Cancel</v-btn>
                         <v-btn
                             color="secondary"
-                            :disabled="editedItem.title == '' || editedItem.urlLink == ''"
+                            :disabled="!editedItem.title || !editedItem.urlLink || !editedItem.formAttr"
                             variant="flat"
                             @click="save"
                             >Save</v-btn

@@ -1,10 +1,12 @@
 import { defineStore } from 'pinia';
 // project imports
-import { type LocationListResponse } from '@/contracts/response/LocationRelated.response';
-import { type LocationVo } from '@/contracts/vo/Location.vo';
-import ApiService from '@/services/ApiService';
-import { FormAttr } from '@/enums/LocationRelated.enum';
 import { type LocationCreateRequest, type LocationUpdateRequest } from '@/contracts/request/LocationRelated.request';
+import { type BaseResponse, type ListResponse, type SingleResponse } from '@/contracts/response/Base.response';
+import { type LocationDto } from '@/contracts/response/LocationRelated.response';
+import { type LocationVo } from '@/contracts/vo/Location.vo';
+import { FormAttr } from '@/enums/LocationRelated.enum';
+import ApiService from '@/services/ApiService';
+import { toast } from 'vue3-toastify';
 
 export const useLocationStore = defineStore({
     id: 'Location',
@@ -14,8 +16,8 @@ export const useLocationStore = defineStore({
     getters: {},
     actions: {
         async fetchLocations() {
-            const rawResponse = await ApiService.get('/location');
-            const parsedResponse = rawResponse.data as LocationListResponse;
+            const rawResponse = await ApiService.query('/v1/location', {});
+            const parsedResponse = rawResponse.data as ListResponse<LocationDto>;
             const locations: Array<LocationVo> = parsedResponse.data.map((location) => {
                 return {
                     id: location.id,
@@ -28,22 +30,28 @@ export const useLocationStore = defineStore({
             this.locations = locations;
         },
         async createLocation(location: LocationVo) {
-            const request = toCreateRequest(location);
-            const response = await ApiService.post('/location', request);
-            if (response.status === 201) {
+            const payload: LocationCreateRequest = toCreateRequest(location);
+            const rawResponse = await ApiService.post('/v1/location', payload);
+            const parsedResponse = rawResponse.data as SingleResponse<LocationDto>;
+            if (rawResponse.status === 201) {
+                toast.success(parsedResponse.message);
                 await this.fetchLocations();
             }
         },
         async updateLocation(location: LocationVo) {
-            const request = toUpdateRequest(location);
-            const response = await ApiService.put(`/location/${location.id}`, request);
-            if (response.status === 200) {
+            const payload: LocationUpdateRequest = toUpdateRequest(location);
+            const rawResponse = await ApiService.put(`/v1/location/${location.id}`, payload);
+            const parsedResponse = rawResponse.data as SingleResponse<LocationDto>;
+            if (rawResponse.status === 200) {
+                toast.success(parsedResponse.message);
                 await this.fetchLocations();
             }
         },
         async deleteLocation(locationId: string) {
-            const response = await ApiService.delete(`/location/soft-delete/${locationId}`);
-            if (response.status === 200) {
+            const rawResponse = await ApiService.delete(`/v1/location/soft-delete/${locationId}`);
+            const parsedResponse = rawResponse.data as BaseResponse;
+            if (rawResponse.status === 200) {
+                toast.success(parsedResponse.message);
                 await this.fetchLocations();
             }
         }

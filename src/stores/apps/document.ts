@@ -1,10 +1,11 @@
-import { defineStore } from 'pinia';
-// project imports
-import { type DocumentListResponse } from '@/contracts/response/DocumentRelated.response';
-import { type DocumentVo } from '@/contracts/vo/Document.vo';
-import ApiService from '@/services/ApiService';
-import { FormAttr } from '@/enums/DocumentRelated.enum';
 import { type DocumentCreateRequest, type DocumentUpdateRequest } from '@/contracts/request/DocumentRelated.request';
+import { type BaseResponse, type SingleResponse, type ListResponse } from '@/contracts/response/Base.response';
+import { type DocumentDto } from '@/contracts/response/DocumentRelated.response';
+import { type DocumentVo } from '@/contracts/vo/Document.vo';
+import { FormAttr } from '@/enums/DocumentRelated.enum';
+import ApiService from '@/services/ApiService';
+import { defineStore } from 'pinia';
+import { toast } from 'vue3-toastify';
 
 export const useDocumentStore = defineStore({
     id: 'Document',
@@ -14,8 +15,8 @@ export const useDocumentStore = defineStore({
     getters: {},
     actions: {
         async fetchDocuments() {
-            const rawResponse = await ApiService.get('/document');
-            const parsedResponse = rawResponse.data as DocumentListResponse;
+            const rawResponse = await ApiService.query('/v1/url-document', {});
+            const parsedResponse = rawResponse.data as ListResponse<DocumentDto>;
             const documents: Array<DocumentVo> = parsedResponse.data.map((document) => {
                 return {
                     id: document.id,
@@ -32,21 +33,27 @@ export const useDocumentStore = defineStore({
         },
         async createDocument(document: DocumentVo) {
             const request = toCreateRequest(document);
-            const response = await ApiService.post('/document', request);
-            if (response.status === 201) {
+            const rawResponse = await ApiService.post('/v1/url-document', request);
+            const parsedResponse = rawResponse.data as SingleResponse<DocumentDto>;
+            if (rawResponse.status === 201) {
+                toast.success(parsedResponse.message);
                 await this.fetchDocuments();
             }
         },
         async updateDocument(document: DocumentVo) {
             const request = toUpdateRequest(document);
-            const response = await ApiService.put(`/document/${document.id}`, request);
-            if (response.status === 200) {
+            const rawResponse = await ApiService.put(`/v1/url-document/${document.id}`, request);
+            const parsedResponse = rawResponse.data as SingleResponse<DocumentDto>;
+            if (rawResponse.status === 200) {
+                toast.success(parsedResponse.message);
                 await this.fetchDocuments();
             }
         },
         async deleteDocument(documentId: string) {
-            const response = await ApiService.delete(`/document/soft-delete/${documentId}`);
-            if (response.status === 200) {
+            const rawResponse = await ApiService.delete(`/v1/url-document/soft-delete/${documentId}`);
+            const parsedResponse = rawResponse.data as BaseResponse;
+            if (rawResponse.status === 200) {
+                toast.success(parsedResponse.message);
                 await this.fetchDocuments();
             }
         }
@@ -56,7 +63,7 @@ export const useDocumentStore = defineStore({
 function toCreateRequest(document: DocumentVo): DocumentCreateRequest {
     return {
         title: document.title,
-        doc_id: document.docId.map(docIdVo => ({
+        doc_id: document.docId.map((docIdVo) => ({
             id: docIdVo.id,
             signed_url: docIdVo.signedUrl
         })),

@@ -6,5 +6,3 @@ export type LocationDto = BaseDto & {
     form_attr: string,
     location_status: boolean,
 }
-
-export type LocationListResponse = ListResponse<LocationDto>

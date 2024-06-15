@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
-import axios from 'axios';
 import { type UploadListResponse } from '@/contracts/response/UploadRelated.response';
+import axios from 'axios';
+import { defineStore } from 'pinia';
 
 
 export const useUploadStore = defineStore({
@@ -20,21 +20,23 @@ export const useUploadStore = defineStore({
         
             try {
                 const formData = new FormData();
-                formData.append('file', file);
-                const rawResponse = await axios.post('/upload', formData, {
+                formData.append('file_upload', file);
+                formData.append('type', 'image');
+
+                // TODO: Move this to ApiService
+                const rawResponse = await axios.post('/v1/upload', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
+                const parsedResponse = rawResponse.data as UploadListResponse;
         
-                const response = rawResponse.data as UploadListResponse;
-                console.log('response', response);
-        
-                this.signedUrl = response.data[0].signed_url;
+                this.signedUrl = parsedResponse.data[0].signed_url;
                 this.uploadSuccess = true;
                 this.uploading = false;
-                return response.data[0];
+                return parsedResponse.data[0];
             } catch (error) {
+                console.error('>> error', error);
                 this.uploadError = 'Failed to upload file';
                 this.uploading = false;
                 return null;

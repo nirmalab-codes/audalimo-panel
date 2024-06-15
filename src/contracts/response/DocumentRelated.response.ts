@@ -11,5 +11,3 @@ export type DocumentDto = BaseDto & {
     form_attr: string,
     url_doc_status: boolean,
 }
-
-export type DocumentListResponse = ListResponse<DocumentDto>
