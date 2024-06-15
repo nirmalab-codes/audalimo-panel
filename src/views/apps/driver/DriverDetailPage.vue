@@ -10,6 +10,10 @@ import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
 
 //Components
 import DriverPersonalInfoTab from '@/components/driver/tabs/DriverPersonalInfoTab.vue';
+import DriverApplicationFormTab from '@/components/driver/tabs/DriverApplicationFormTab.vue';
+import DriverOfferLetterTab from '@/components/driver/tabs/DriverOfferLetterTab.vue';
+import DriverEmploymentResidencyTab from '@/components/driver/tabs/DriverEmploymentResidencyTab.vue';
+import DriverRtaTrainingTab from '@/components/driver/tabs/DriverRtaTrainingTab.vue';
 import { useDriverStore } from '@/stores/driver';
 import { storeToRefs } from 'pinia';
 import { useRoute } from 'vue-router';
@@ -55,10 +59,18 @@ onMounted(async () => {
                 <v-window-item value="Documents">
                     <DriverPersonalInfoTab :driverProp="driver" v-if="driver"/>
                 </v-window-item>
-                <v-window-item value="ApplicationForm">ApplicationForm</v-window-item>
-                <v-window-item value="OfferLetter">OfferLetter</v-window-item>
-                <v-window-item value="EmploymentResidency">EmploymentResidency</v-window-item>
-                <v-window-item value="RtaTraining">RtaTraining</v-window-item>
+                <v-window-item value="ApplicationForm">
+                    <DriverApplicationFormTab/>
+                </v-window-item>
+                <v-window-item value="OfferLetter">
+                    <DriverOfferLetterTab/>
+                </v-window-item>
+                <v-window-item value="EmploymentResidency">
+                    <DriverEmploymentResidencyTab/>
+                </v-window-item>
+                <v-window-item value="RtaTraining">
+                    <DriverRtaTrainingTab/>
+                </v-window-item>
            </v-window>
        </v-card-text>
    </v-card>
