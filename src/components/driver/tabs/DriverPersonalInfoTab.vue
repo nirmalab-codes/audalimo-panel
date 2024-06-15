@@ -99,6 +99,10 @@ const changeStatusEnums = ref(['rejected', 'approved']);
 // Add Note Form Related
 const closeAddNote = () => {
     dialogAddNote.value = false;
+    addNoteFormData.value = {
+        title: '',
+        message: ''
+    }
 }
 const saveAddNote = async () => {
     if(!driverDocument.value) return
@@ -112,6 +116,9 @@ const saveAddNote = async () => {
 // Change Status Form Related
 const closeChangeStatus = () => {
     dialogChangeStatus.value = false;
+    changeStatusFormData.value = {
+        status: '',
+    }
 }
 const saveChangeStatus = async () => {
     if(!driverDocument.value) return

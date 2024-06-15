@@ -1,9 +1,10 @@
 import type { App } from 'vue';
 import axios from 'axios';
 import VueAxios from 'vue-axios';
-import type { AxiosResponse } from 'axios';
+import type { AxiosError, AxiosResponse } from 'axios';
 import AuthService from './AuthService';
-import * as binary from 'bops';
+import { toast } from 'vue3-toastify';
+import { type BaseResponse } from '@/contracts/response/Base.response';
 
 /**
  * @description service to call HTTP request via Axios
@@ -22,6 +23,48 @@ class ApiService {
         ApiService.vueInstance.use(VueAxios, axios);
         ApiService.vueInstance.axios.defaults.baseURL = import.meta.env.VITE_APP_API_URL;
         ApiService.setHeader();
+
+        // Add a request interceptor
+        ApiService.vueInstance.axios.interceptors.request.use(function (config) {
+            // Do something before request is sent
+            return config;
+        }, function (error) {
+            // Do something with request error
+            return Promise.reject(error);
+        });
+
+        // Add a response interceptor
+        ApiService.vueInstance.axios.interceptors.response.use(function (response) {
+            // Any status code that lie within the range of 2xx cause this function to trigger
+            // Do something with response data
+            return response;
+        }, function (error: AxiosError) {
+            // Any status codes that falls outside the range of 2xx cause this function to trigger
+            // Do something with response error
+
+            if(error.response){ // Toastable error
+                const is4xxError = error.response.status >= 400 &&  error.response.status < 500
+                const is5xxError = error.response.status >= 500 &&  error.response.status < 600
+                let errMessage = ""
+                if(is4xxError){
+                    let baseResponse = error.response.data as BaseResponse
+                    if(baseResponse?.errors){
+                        errMessage = baseResponse?.errors[Object.keys(baseResponse?.errors)[0]]
+                    }else if(baseResponse?.message){
+                        errMessage = baseResponse?.message
+                    }else{
+                        errMessage = error.message
+                    }
+                }else if(is5xxError){
+                    errMessage = "Oops... something went wrong"
+                }
+
+                toast.error(errMessage)
+            }
+            
+            return Promise.reject(error);
+        });
+
     }
 
     /**

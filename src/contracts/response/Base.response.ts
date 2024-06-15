@@ -1,6 +1,9 @@
 export type BaseResponse = {
     statusCode: number,
     message: string,
+    errors?: {
+        [key: string]: string
+    },
 }
 
 export type ListResponse<T> = BaseResponse & {

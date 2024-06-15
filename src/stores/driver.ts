@@ -3,6 +3,7 @@ import { type SingleResponse, type ListResponse } from '../contracts/response/Ba
 import { type DriverDocumentItemDto, type DriverItemDto } from '../contracts/response/DriverRelated.response'
 import ApiService from "@/services/ApiService";
 import { type UpdateStatusRequest, type AddNoteRequest } from "@/contracts/request/DriverRelated.request";
+import { toast } from "vue3-toastify";
 
 export const useDriverStore = defineStore({
     id: 'driver',
@@ -27,11 +28,13 @@ export const useDriverStore = defineStore({
         async addNote(documentId: string, payload: AddNoteRequest) {
             const rawResponse = await ApiService.put(`/v1/kyc-document/notes/${documentId}`, payload)
             const parsedResponse = rawResponse.data as SingleResponse<DriverDocumentItemDto>
+            toast.success(parsedResponse.message)
             return parsedResponse.data
         },
         async updateStatus(documentId: string, payload: UpdateStatusRequest) {
             const rawResponse = await ApiService.put(`/v1/kyc-document/doc-status/${documentId}`, payload)
             const parsedResponse = rawResponse.data as SingleResponse<DriverDocumentItemDto>
+            toast.success(parsedResponse.message)
             return parsedResponse.data
         },
     }

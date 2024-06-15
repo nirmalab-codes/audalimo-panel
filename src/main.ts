@@ -33,6 +33,10 @@ import VueEasyLightbox from 'vue-easy-lightbox';
 //imports for app initialization
 import ApiService from './services/ApiService';
 
+//import toast
+import Vue3Toastify, { type ToastContainerOptions } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+
 const i18n = createI18n({
     locale: 'en',
     messages: messages,
@@ -57,6 +61,10 @@ app.use(VueRecaptcha, {
 app.use(i18n);
 app.use(Maska);
 app.use(VueApexCharts);
+app.use(Vue3Toastify, {
+    theme: 'auto',
+    autoClose: 3000,
+  } as ToastContainerOptions);
 app.use(vuetify).mount('#app');
 
 //ScrollTop Use
