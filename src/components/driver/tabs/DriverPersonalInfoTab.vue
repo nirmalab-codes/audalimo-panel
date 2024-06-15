@@ -339,7 +339,7 @@ function saveChangeStatus() {
             </v-col>
         </v-row>
     </div>
-    <div>
+    <div v-else>
         <p>Documents are currently not available</p>
     </div>
 </template>
