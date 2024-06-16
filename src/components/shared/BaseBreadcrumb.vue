@@ -2,6 +2,7 @@
 import { ChevronRightIcon } from 'vue-tabler-icons';
 const props = defineProps({
     title: String,
+    description: String,
     breadcrumbs: Array as any,
     icon: String
 });
@@ -14,6 +15,7 @@ const props = defineProps({
                 <div class="d-flex py-0 align-center">
                     <div>
                         <h3 class="text-h3 mb-2">{{ title }}</h3>
+                        <span>{{ description }}</span>
                         <v-breadcrumbs :items="breadcrumbs" class="text-h6 font-weight-medium pa-0 ml-n1">
                             <template v-slot:divider>
                                 <div class="d-flex align-center text-h3 mt-n4">.</div>

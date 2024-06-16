@@ -6,6 +6,45 @@ const MainRoutes = {
     redirect: '/main',
     component: () => import('@/layouts/full/FullLayout.vue'),
     children: [
+        // Used routes
+        {
+            name: 'Dashboard',
+            path: '/dashboards',
+            component: () => import('@/views/dashboard/modern/index.vue')
+        },
+        {
+            name: 'Driver',
+            path: '/apps/driver',
+            component: () => import('@/views/apps/driver/DriverListPage.vue')
+        },
+        {
+            name: 'Driver Detail',
+            path: '/apps/driver/:id',
+            component: () => import('@/views/apps/driver/DriverDetailPage.vue')
+        },
+        {
+            name: 'Schedule',
+            path: '/apps/schedule',
+            component: () => import('@/views/apps/schedule/Schedule.vue')
+        },
+        {
+            name: 'Location',
+            path: '/apps/location',
+            component: () => import('@/views/apps/location/LocationListPage.vue')
+        },
+        {
+            name: 'Documents',
+            path: '/apps/documents',
+            component: () => import('@/views/apps/document/DocumentListPage.vue')
+        },
+        {
+            name: 'Notifications',
+            path: '/apps/notifications',
+            component: () => import('@/views/apps/notifications/Notifications.vue')
+        },
+
+        // TODO: remove unused routes
+        // Unused routes
         {
             name: 'Modern',
             path: '/dashboards/modern',
@@ -56,7 +95,6 @@ const MainRoutes = {
             path: '/apps/blog/:id',
             component: () => import('@/views/apps/blog/Detail.vue')
         },
-
         {
             name: 'UserProfile',
             path: '/apps/user/profile',
