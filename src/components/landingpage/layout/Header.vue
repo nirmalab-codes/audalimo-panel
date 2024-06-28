@@ -25,9 +25,9 @@ const customizer = useCustomizerStore();
                             <RtlLogo />
                         </div>
                         <div v-else>
-                        <Logo />
+                            <Logo />
                         </div>
-                        
+
                         <!-- Desktop view Navigation -->
                         <div class="navigation ml-auto d-lg-flex d-none">
                             <Navigations />

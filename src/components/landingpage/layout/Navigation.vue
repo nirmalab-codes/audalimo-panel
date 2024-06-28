@@ -10,7 +10,7 @@ import { HelpIcon, ChevronDownIcon } from 'vue-tabler-icons';
     <!-- ---------------------------------------------- -->
     <!-- mega menu DD -->
     <!-- ---------------------------------------------- -->
-    <v-menu open-on-hover :close-on-content-click="false" class="lp_wrapper position-relative">
+    <!-- <v-menu open-on-hover :close-on-content-click="false" class="lp_wrapper position-relative">
         <template v-slot:activator="{ props }">
             <v-btn class="hidden-sm-and-down nav-links custom-hover-primary" rounded="sm" variant="text" color="primary" v-bind="props"
                 >Demos<ChevronDownIcon size="18" class="mt-1 ml-1" />
@@ -82,10 +82,9 @@ import { HelpIcon, ChevronDownIcon } from 'vue-tabler-icons';
                 </v-row>
             </div>
         </v-sheet>
-    </v-menu>
-    <v-btn variant="text" color="primary" class="custom-hover-primary nav-links" href="https://demos.adminmart.com/premium/vue/modernize-vuejs/docs/index.html" target="_blank">Documentation</v-btn>
-    <v-btn variant="text" color="primary" class="custom-hover-primary nav-links" href="https://adminmart.com/support/" target="_blank">Support</v-btn>
-    <v-btn class="custom-hover-primary bg-primary ml-2 text-white" flat href="/auth/login" target="_blank"
-        ><span class="text-white">Login</span></v-btn
+    </v-menu> -->
+    <v-btn variant="text" color="primary" class="custom-hover-primary nav-links" href="#" target="_blank">Documentation</v-btn>
+    <v-btn variant="text" color="primary" class="custom-hover-primary nav-links" href="#" target="_blank">Support</v-btn>
+    <v-btn class="custom-hover-primary bg-primary ml-2 text-white" flat href="/auth/login"><span class="text-white">Login</span></v-btn
     >
 </template>
