@@ -160,3 +160,39 @@ export type DriverApplicationFormItemDto = {
     application_status: string,
     driver: DriverItemDto,
 }
+
+export type DriverOfferLetterItemDto = {
+    id: string,
+    created_at: Date,
+    updated_at: Date,
+    driver_id: string,
+    link_letter: string | null,
+    letter_id: Array<DocumentItemDto>,
+    letter_status: string,
+    letter_title_notes: string | null,
+    letter_notes: string | null,
+    lo_status: string,
+    driver: DriverItemDto
+}
+
+export type DriverEmploymentResidencyItemDto = {
+    id: string,
+    created_at: Date,
+    updated_at: Date,
+    driver_id: string,
+    link_visit_permit: string | null,
+    link_amer_center: string | null,
+    link_emirates_bio: string | null,
+    link_labor: string | null,
+    doc_papper_id: Array<DocumentItemDto>,
+    doc_labor_id: Array<DocumentItemDto>,
+    doc_contract_id: Array<DocumentItemDto>,
+    doc_status: string,
+    link_english_test: string | null,
+    english_id: Array<DocumentItemDto>,
+    english_status: string,
+    police_id: Array<DocumentItemDto>,
+    police_status: string,
+    residency_status: boolean,
+    driver: DriverItemDto
+}

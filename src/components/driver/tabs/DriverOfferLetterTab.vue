@@ -1,75 +1,153 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
+import type { DriverOfferLetterItemDto, DriverItemDto } from '@/contracts/response/DriverRelated.response';
+import type { BufferedDocIdVo } from '@/contracts/vo/Document.vo';
+import ApiService from '@/services/ApiService';
+import { useDriverStore } from '@/stores/driver';
+import { onMounted, type PropType, ref, toRef } from 'vue';
+import { useRouter } from 'vue-router';
+import { ArrowDownCircleIcon } from 'vue-tabler-icons';
 
-const fileToUpload = ref<File | null>(null);
-const isUploadDone = ref(false);
+const nativeWindow = window
 
+const props = defineProps({
+    driverProp: { type: Object as PropType<DriverItemDto>, required: true }
+})
+const driver = toRef(props, 'driverProp')
 
-const downloadOfferLetter = () => {
-    // Add your logic to download the offer letter
-};
+const driverStore = useDriverStore();
 
-function onFileChange(e: any) {
-    fileToUpload.value = e.target.files[0];
-}
+const driverOfferLetter = ref<DriverOfferLetterItemDto|null>()
+const letters = ref<Map<string, BufferedDocIdVo>>(new Map())
 
-async function save() {
-    if (fileToUpload.value) {
-        
+// Enums
+const changeLoStatusEnums = ref(['rejected', 'approved']);
+
+onMounted(async () => {
+    console.log('>> 1');
+    console.log('>> driver', driver.value);
+    driverOfferLetter.value = await driverStore.retrieveLatestOfferLetter(driver.value.id)
+    await fetchLetters();
+});
+
+const fetchLetters = async () => {
+    let letterIdRaw = driverOfferLetter.value?.letter_id || []
+    for (let i = 0; i < letterIdRaw.length; i++) {
+        const element = letterIdRaw[i];
+        let urlSplit = element.signed_url.split('/')
+        letters.value.set(element.id, {
+            id: element.id,
+            signedUrl: element.signed_url,
+            byteUrl: await ApiService.bufferAsByteUrl(element.signed_url),
+            name: urlSplit[urlSplit.length - 1]
+        })
     }
 }
+
+const dialogChangeStatus = ref(false);
+const changeStatusFormData = ref({ lo_status: '' });
+const closeChangeStatus = () => {
+    dialogChangeStatus.value = false;
+    changeStatusFormData.value = {
+        lo_status: '',
+    }
+}
+const saveChangeStatus = async () => {
+    if(!driverOfferLetter.value) return
+    await driverStore.updateOfferLetterStatus(driverOfferLetter.value.id, {
+        lo_status: changeStatusFormData.value.lo_status
+    })
+    closeChangeStatus();
+}
 </script>
+
 <template>
-    <div class="ma-4">
-        <v-row justify="center">
+    <form v-if="driverOfferLetter">
+        <v-row>
             <v-col cols="12">
-                <h2>Offer Letter</h2>
-                <h3 class="text-success">Please upload and fill your form</h3>
-                <p class="mb-4">
-                    As required by our Terms and Conditions, each driver must complete their offer letter form. You'll need to
-                    upload and download documents listed below.
-                </p>
-                <v-card class="pa-4 mb-4">
-                    <v-card-text>
-                        <div class="d-flex align-center">
-                            <div class="text-white font-weight-bold mr-4">1</div>
-                            <div class="flex-grow-1 ml-4">
-                                <h3 class="mb-2">Download Offer Letter</h3>
-                                <p class="caption">Please download, fill and sign the offer letter with Signatory and Thumb Print.</p>
-                            </div>
-                            <div>
-                                <v-btn color="primary" @click="downloadOfferLetter">
-                                    <v-icon left>mdi-download</v-icon>
-                                    Download
+                <div class="d-flex justify-end">
+                    <div class="actions d-flex gap-2">
+                        <v-dialog v-model="dialogChangeStatus" max-width="500">
+                            <template v-slot:activator="{ props }">
+                                <v-btn color="primary" v-bind="props" flat class="ml-auto">
+                                    <v-icon class="mr-2">mdi-account-multiple-plus</v-icon>Change Status
                                 </v-btn>
-                            </div>
-                        </div>
-                    </v-card-text>
-                </v-card>
+                            </template>
+                            <v-card>
+                                <v-card-title class="pa-4 bg-secondary">
+                                    <span class="title text-white">Add Note</span>
+                                </v-card-title>
+                                <v-card-subtitle class="pb-4 bg-secondary text-subtitle-1" :style="{ 'white-space': 'preserve' }">
+                                    <span class="title text-white"
+                                        >To change the form status so that the driver can proceed to the next step.</span
+                                    >
+                                </v-card-subtitle>
+                                <v-card-text>
+                                    <v-form ref="form" lazy-validation>
+                                        <v-row>
+                                            <v-col cols="12" sm="12">
+                                                <v-select
+                                                    variant="outlined"
+                                                    hide-details
+                                                    :items="changeLoStatusEnums"
+                                                    v-model="changeStatusFormData.lo_status"
+                                                    label="Status"
+                                                ></v-select>
+                                            </v-col>
+                                        </v-row>
+                                    </v-form>
+                                </v-card-text>
 
-                <v-card class="pa-4 mb-4">
-                    <v-card-text>
-                        <div class="d-flex align-center mb-4">
-                            <div class="text-white font-weight-bold mr-4">2</div>
-                            <div class="flex-grow-1 ml-4">
-                                <h3 class="mb-2">Upload Offer Letter</h3>
-                                <p class="caption">Upload your offer letter document.</p>
-                            </div>
-                            <div class="text-right">
-                                <v-chip v-if="isUploadDone" color="success" class="ma-2">Completed</v-chip>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="d-flex">
-                                <v-file-input ref="fileInputRef" label="File input" density="compact" variant="outlined" @change="onFileChange"></v-file-input>
-                                <v-btn class="ml-4" color="success" @click="save">Upload</v-btn>
-                            </div>
-                        </div>
-                    </v-card-text>
-                </v-card>
-
-                <p class="caption text-center">It will take just a few minutes from here</p>
+                                <v-card-actions class="pa-4">
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="error" @click="closeChangeStatus">Cancel</v-btn>
+                                    <v-btn
+                                        color="secondary"
+                                        :disabled="changeStatusFormData.lo_status == ''"
+                                        variant="flat"
+                                        @click="saveChangeStatus"
+                                        >Save</v-btn
+                                    >
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                    </div>
+                </div>
             </v-col>
         </v-row>
-    </div>
+        <h2 class="mb-2">Driver Letter Information</h2>
+        <v-row>
+            <v-col cols="12" md="6" class="mb-1">
+                <v-label class="font-weight-medium">Letter Status</v-label>
+                <v-text-field variant="outlined" type="text" hide-details :value="driverOfferLetter?.letter_status" readonly />
+            </v-col>
+            <v-col cols="12" md="6" class="mb-1">
+                <v-label class="font-weight-medium">LO Status</v-label>
+                <v-text-field variant="outlined" type="text" hide-details :value="driverOfferLetter?.lo_status" readonly />
+            </v-col>
+        </v-row>
+
+        <h2 class="mb-2 mt-4">Letter Documents</h2>
+        <v-table>
+            <thead>
+            <tr>
+                <th class="text-left">Filename</th>
+                <th class="text-left">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+                v-for="(item,key) in Array.from(letters.entries())"
+                :key="`letter-${item[1].id}-${key}`"
+            >
+                <td>{{ item[1].name }}</td>
+                <td>
+                    <v-btn icon color="secondary" variant="flat" size="x-small" @click="nativeWindow.open(item[1].byteUrl, '_blank')">
+                        <ArrowDownCircleIcon size="16" />
+                    </v-btn>
+                </td>
+            </tr>
+            </tbody>
+        </v-table>
+    </form>
+    <div v-else>Offer Letter is currently not available</div>
 </template>

@@ -219,7 +219,7 @@ const saveChangeStatus = async () => {
                                                     hide-details
                                                     :items="changeStatusEnums"
                                                     v-model="changeStatusFormData.status"
-                                                    label="Role Background"
+                                                    label="Status"
                                                 ></v-select>
                                             </v-col>
                                         </v-row>
