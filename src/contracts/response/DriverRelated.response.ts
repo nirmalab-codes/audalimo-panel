@@ -196,3 +196,22 @@ export type DriverEmploymentResidencyItemDto = {
     residency_status: boolean,
     driver: DriverItemDto
 }
+
+export type DriverRtaItemDto = {
+    id: string,
+    created_at: Date,
+    updated_at: Date,
+    driver_id: string,
+    link_our_office: string | null,
+    training_date: string | null,
+    training_time: string | null,
+    training_location: string | null,
+    link_medical_test: string | null,
+    medical_test_id: Array<DocumentItemDto>,
+    medical_status: string,
+    link_rta_test: string | null,
+    link_rta_permit: string | null,
+    rta_permit_status: string,
+    rta_status: boolean,
+    driver: DriverItemDto
+}

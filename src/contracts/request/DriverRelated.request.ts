@@ -15,3 +15,21 @@ export type UpdateOfferLetterNotesRequest = {
     letter_title_notes: string;
     letter_notes: string;
 };
+
+export type UpdateEmploymentResidencyStatusRequest = {
+    residency_status: string;
+};
+
+export type UpdateEmploymentResidencyNotesRequest = {
+    residency_title_notes: string;
+    residency_notes: string;
+};
+
+export type UpdateRtaStatusRequest = {
+    rta_status: string;
+};
+
+export type UpdateRtaNotesRequest = {
+    rta_title_notes: string;
+    rta_notes: string;
+};

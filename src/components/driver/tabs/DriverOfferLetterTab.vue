@@ -7,63 +7,144 @@ import { onMounted, type PropType, ref, toRef } from 'vue';
 import { useRouter } from 'vue-router';
 import { ArrowDownCircleIcon } from 'vue-tabler-icons';
 
-const nativeWindow = window
+const nativeWindow = window;
 
 const props = defineProps({
     driverProp: { type: Object as PropType<DriverItemDto>, required: true }
-})
-const driver = toRef(props, 'driverProp')
+});
+const driver = toRef(props, 'driverProp');
 
 const driverStore = useDriverStore();
 
-const driverOfferLetter = ref<DriverOfferLetterItemDto|null>()
-const letters = ref<Map<string, BufferedDocIdVo>>(new Map())
+const driverOfferLetter = ref<DriverOfferLetterItemDto | null>();
+const letters = ref<Map<string, BufferedDocIdVo>>(new Map());
 
 // Enums
-const changeLoStatusEnums = ref(['rejected', 'approved']);
+const changeStatusEnums = ref(['rejected', 'approved']);
 
 onMounted(async () => {
-    driverOfferLetter.value = await driverStore.retrieveLatestOfferLetter(driver.value.id)
+    driverOfferLetter.value = await driverStore.retrieveLatestOfferLetter(driver.value.id);
     await fetchLetters();
 });
 
 const fetchLetters = async () => {
-    let letterIdRaw = driverOfferLetter.value?.letter_id || []
+    let letterIdRaw = driverOfferLetter.value?.letter_id || [];
     for (let i = 0; i < letterIdRaw.length; i++) {
         const element = letterIdRaw[i];
-        let urlSplit = element.signed_url.split('/')
+        let urlSplit = element.signed_url.split('/');
         letters.value.set(element.id, {
             id: element.id,
             signedUrl: element.signed_url,
             byteUrl: await ApiService.bufferAsByteUrl(element.signed_url),
             name: urlSplit[urlSplit.length - 1]
-        })
+        });
     }
-}
+};
+
+const dialogChangeNotes = ref(false);
+const changeNotesFormData = ref({
+    letter_title_notes: '',
+    letter_notes: ''
+});
+const closeChangeNotes = () => {
+    dialogChangeNotes.value = false;
+    changeNotesFormData.value = {
+        letter_title_notes: '',
+        letter_notes: ''
+    };
+};
+const saveChangeNotes = async () => {
+    if (!driverOfferLetter.value) return;
+    await driverStore.updateOfferLetterNotes(driverOfferLetter.value.id, {
+        letter_title_notes: changeNotesFormData.value.letter_title_notes,
+        letter_notes: changeNotesFormData.value.letter_notes
+    });
+    closeChangeNotes();
+};
 
 const dialogChangeStatus = ref(false);
-const changeStatusFormData = ref({ lo_status: '' });
+const changeStatusFormData = ref({
+    lo_status: ''
+});
 const closeChangeStatus = () => {
     dialogChangeStatus.value = false;
     changeStatusFormData.value = {
-        lo_status: '',
-    }
-}
+        lo_status: ''
+    };
+};
 const saveChangeStatus = async () => {
-    if(!driverOfferLetter.value) return
+    if (!driverOfferLetter.value) return;
     await driverStore.updateOfferLetterStatus(driverOfferLetter.value.id, {
         lo_status: changeStatusFormData.value.lo_status
-    })
+    });
     closeChangeStatus();
-}
+};
 </script>
 
 <template>
-    <form v-if="driverOfferLetter">
+    <v-container v-if="driverOfferLetter">
         <v-row>
             <v-col cols="12">
                 <div class="d-flex justify-end">
                     <div class="actions d-flex gap-2">
+                        <v-dialog v-model="dialogChangeNotes" max-width="500">
+                            <template v-slot:activator="{ props }">
+                                <v-btn color="primary" v-bind="props" flat class="ml-auto">
+                                    <v-icon class="mr-2">mdi-note</v-icon>Add Note
+                                </v-btn>
+                            </template>
+                            <v-card>
+                                <v-card-title class="pa-4 bg-secondary">
+                                    <span class="title text-white">Add Note</span>
+                                </v-card-title>
+                                <v-card-subtitle class="pb-4 bg-secondary text-subtitle-1" :style="{ 'white-space': 'preserve' }">
+                                    <span class="title text-white"
+                                        >To send notifications or intructions to the driver, fields or forms need to be correct.</span
+                                    >
+                                </v-card-subtitle>
+                                <v-card-text>
+                                    <v-form ref="form" lazy-validation>
+                                        <v-row>
+                                            <v-col cols="12">
+                                                <v-text-field
+                                                    variant="outlined"
+                                                    hide-details
+                                                    v-model="changeNotesFormData.letter_title_notes"
+                                                    label="Title"
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-textarea
+                                                    label="Message"
+                                                    v-model="changeNotesFormData.letter_notes"
+                                                    auto-grow
+                                                    variant="outlined"
+                                                    placeholder="Hi, Do you  have a moment to talk Jeo ?"
+                                                    rows="4"
+                                                    color="primary"
+                                                    row-height="25"
+                                                    shaped
+                                                    hide-details
+                                                ></v-textarea>
+                                            </v-col>
+                                        </v-row>
+                                    </v-form>
+                                </v-card-text>
+
+                                <v-card-actions class="pa-4">
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="error" @click="closeChangeNotes">Cancel</v-btn>
+                                    <v-btn
+                                        color="secondary"
+                                        :disabled="changeNotesFormData.letter_title_notes == '' || changeNotesFormData.letter_notes == ''"
+                                        variant="flat"
+                                        @click="saveChangeNotes"
+                                        >Save</v-btn
+                                    >
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+
                         <v-dialog v-model="dialogChangeStatus" max-width="500">
                             <template v-slot:activator="{ props }">
                                 <v-btn color="primary" v-bind="props" flat class="ml-auto">
@@ -86,7 +167,7 @@ const saveChangeStatus = async () => {
                                                 <v-select
                                                     variant="outlined"
                                                     hide-details
-                                                    :items="changeLoStatusEnums"
+                                                    :items="changeStatusEnums"
                                                     v-model="changeStatusFormData.lo_status"
                                                     label="Status"
                                                 ></v-select>
@@ -127,25 +208,22 @@ const saveChangeStatus = async () => {
         <h2 class="mb-2 mt-4">Letter Documents</h2>
         <v-table>
             <thead>
-            <tr>
-                <th class="text-left">Filename</th>
-                <th class="text-left">Action</th>
-            </tr>
+                <tr>
+                    <th class="text-left">Filename</th>
+                    <th class="text-left">Action</th>
+                </tr>
             </thead>
             <tbody>
-            <tr
-                v-for="(item,key) in Array.from(letters.entries())"
-                :key="`letter-${item[1].id}-${key}`"
-            >
-                <td>{{ item[1].name }}</td>
-                <td>
-                    <v-btn icon color="secondary" variant="flat" size="x-small" @click="nativeWindow.open(item[1].byteUrl, '_blank')">
-                        <ArrowDownCircleIcon size="16" />
-                    </v-btn>
-                </td>
-            </tr>
+                <tr v-for="(item, key) in Array.from(letters.entries())" :key="`letter-${item[1].id}-${key}`">
+                    <td>{{ item[1].name }}</td>
+                    <td>
+                        <v-btn icon color="secondary" variant="flat" size="x-small" @click="nativeWindow.open(item[1].byteUrl, '_blank')">
+                            <ArrowDownCircleIcon size="16" />
+                        </v-btn>
+                    </td>
+                </tr>
             </tbody>
         </v-table>
-    </form>
+    </v-container>
     <div v-else>Offer Letter is currently not available</div>
 </template>
