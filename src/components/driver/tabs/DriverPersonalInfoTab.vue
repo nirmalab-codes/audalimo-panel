@@ -36,7 +36,7 @@ const fetchSelfieId = async () => {
     let selfieIdRaw = driverDocument.value?.selfie_id || []
     for (let i = 0; i < selfieIdRaw.length; i++) {
         const element = selfieIdRaw[i];
-        selfieIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+        selfieIds.value.set(element.id, await ApiService.bufferAsByteUrl(element.signed_url))
     }
 }
 
@@ -44,7 +44,7 @@ const fetchCvId = async () => {
     let cvIdRaw = driverDocument.value?.cv_id || []
     for (let i = 0; i < cvIdRaw.length; i++) {
         const element = cvIdRaw[i];
-        cvIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+        cvIds.value.set(element.id, await ApiService.bufferAsByteUrl(element.signed_url))
     }
 }
 
@@ -52,7 +52,7 @@ const fetchPassportId = async () => {
     let passportIdRaw = driverDocument.value?.photo_passport_id || []
     for (let i = 0; i < passportIdRaw.length; i++) {
         const element = passportIdRaw[i];
-        passportIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+        passportIds.value.set(element.id, await ApiService.bufferAsByteUrl(element.signed_url))
     }
 }
 
@@ -60,7 +60,7 @@ const fetchEmirateId = async () => {
     let emirateIdRaw = driverDocument.value?.emirates_id || []
     for (let i = 0; i < emirateIdRaw.length; i++) {
         const element = emirateIdRaw[i];
-        emirateIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+        emirateIds.value.set(element.id, await ApiService.bufferAsByteUrl(element.signed_url))
     }
 }
 
@@ -68,7 +68,7 @@ const fetchVisaId = async () => {
     let visaIdRaw = driverDocument.value?.visa_residency || []
     for (let i = 0; i < visaIdRaw.length; i++) {
         const element = visaIdRaw[i];
-        visaIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+        visaIds.value.set(element.id, await ApiService.bufferAsByteUrl(element.signed_url))
     }
 }
 

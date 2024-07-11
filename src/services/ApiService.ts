@@ -145,7 +145,7 @@ class ApiService {
      * @param resource: string
      * @returns Promise<AxiosResponse>
      */
-    public static bufferAsImage(resource: string): Promise<string> {
+    public static bufferAsByteUrl(resource: string): Promise<string> {
         resource = resource.replace(import.meta.env.VITE_APP_API_URL, '');
         return ApiService.vueInstance.axios
             .get(resource, { responseType: 'blob' })
