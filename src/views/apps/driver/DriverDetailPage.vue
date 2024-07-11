@@ -60,7 +60,7 @@ onMounted(async () => {
                     <DriverPersonalInfoTab :driverProp="driver" v-if="driver"/>
                 </v-window-item>
                 <v-window-item value="ApplicationForm">
-                    <DriverApplicationFormTab/>
+                    <DriverApplicationFormTab :driverProp="driver" v-if="driver"/>
                 </v-window-item>
                 <v-window-item value="OfferLetter">
                     <DriverOfferLetterTab/>

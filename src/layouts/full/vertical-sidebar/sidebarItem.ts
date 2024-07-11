@@ -36,11 +36,6 @@ const sidebarItem: menu[] = [
         to: '/apps/driver'
     },
     {
-        title: 'Schedule',
-        icon: CalendarIcon,
-        to: '/apps/schedule'
-    },
-    {
         title: 'Location',
         icon: GpsIcon,
         to: '/apps/location'
@@ -49,11 +44,6 @@ const sidebarItem: menu[] = [
         title: 'Documents',
         icon: FileTextIcon,
         to: '/apps/documents'
-    },
-    {
-        title: 'Notifications',
-        icon: NotificationIcon,
-        to: '/apps/notifications'
     },
 ];
 

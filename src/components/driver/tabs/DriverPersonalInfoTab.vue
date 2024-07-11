@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, type PropType, toRef } from 'vue';
-import { useContactStore } from '@/stores/apps/contact';
-import user1 from '@/assets/images/profile/user-1.jpg';
-import { type DriverDocumentItemDto, type DriverItemDto } from '@/contracts/response/DriverRelated.response';
+import type { DriverDocumentItemDto, DriverItemDto } from '@/contracts/response/DriverRelated.response';
 import { useDriverStore } from '@/stores/driver';
 import { useRouter } from 'vue-router';
 import ApiService from '@/services/ApiService';
-import { type DocumentItemDto } from '@/contracts/response/DocumentRelated.response';
 
 const router = useRouter()
 
