@@ -23,8 +23,6 @@ const letters = ref<Map<string, BufferedDocIdVo>>(new Map())
 const changeLoStatusEnums = ref(['rejected', 'approved']);
 
 onMounted(async () => {
-    console.log('>> 1');
-    console.log('>> driver', driver.value);
     driverOfferLetter.value = await driverStore.retrieveLatestOfferLetter(driver.value.id)
     await fetchLetters();
 });

@@ -68,7 +68,6 @@ export const useDriverStore = defineStore({
             return parsedResponse.data
         },
         async retrieveLatestEmploymentResidency(id: string) {
-            console.log('retrieveLatestEmploymentResidency')
             const rawResponse = await ApiService.query('/v1/kyc-residency', {
                 params: {
                     driver_id: id
