@@ -1,10 +1,19 @@
-export type AddNoteRequest = {
+export type UpdateNoteRequest = {
     doc_title_notes: string;
     doc_notes: string;
 };
 
 export type UpdateStatusRequest = {
     doc_status: string;
+};
+
+export type UpdateApplicationFormStatusRequest = {
+    application_status: string;
+};
+
+export type UpdateApplicationFormNotesRequest = {
+    application_title_notes: string;
+    application_notes: string;
 };
 
 export type UpdateOfferLetterStatusRequest = {

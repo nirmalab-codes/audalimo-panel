@@ -69,7 +69,7 @@ onMounted(async () => {
                     <DriverEmploymentResidencyTab :driverProp="driver" v-if="driver"/>
                 </v-window-item>
                 <v-window-item value="RtaTraining">
-                    <DriverRtaTrainingTab/>
+                    <DriverRtaTrainingTab :driverProp="driver" v-if="driver"/>
                 </v-window-item>
            </v-window>
        </v-card-text>

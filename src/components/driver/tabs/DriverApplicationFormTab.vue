@@ -6,10 +6,8 @@ import { UserGender } from '@/enums/UserRelated.enum';
 import ApiService from '@/services/ApiService';
 import { useDriverStore } from '@/stores/driver';
 import { onMounted, type PropType, ref, toRef } from 'vue';
-import { useRouter } from 'vue-router';
 import { ArrowDownCircleIcon } from 'vue-tabler-icons';
 
-const router = useRouter()
 const nativeWindow = window
 
 const props = defineProps({
@@ -22,12 +20,17 @@ const driverStore = useDriverStore();
 const driverApplicationForm = ref<DriverApplicationFormItemDto|null>()
 const medicalInformations = ref<Map<string, BufferedDocIdVo>>(new Map())
 
+// Enums
+const changeStatusEnums = ref(['rejected', 'approved']);
+
 onMounted(async () => {
-    driverApplicationForm.value = await driverStore.retrieveLatestApplicationForm(driver.value.id)
-    await Promise.all([
-        fetchMedicalInformations(),
-    ])
+    await fetchData();
+    await fetchMedicalInformations();
 });
+
+const fetchData = async () => {
+    driverApplicationForm.value = await driverStore.retrieveLatestApplicationForm(driver.value.id)
+};
 
 const fetchMedicalInformations = async () => {
     let medicalIdRaw = driverApplicationForm.value?.medical_form_id || []
@@ -42,9 +45,165 @@ const fetchMedicalInformations = async () => {
         })
     }
 }
+
+const dialogChangeNotes = ref(false);
+const changeNotesFormData = ref({
+    application_title_notes: '',
+    application_notes: ''
+});
+const closeChangeNotes = () => {
+    dialogChangeNotes.value = false;
+    changeNotesFormData.value = {
+        application_title_notes: '',
+        application_notes: ''
+    };
+};
+const saveChangeNotes = async () => {
+    if (!driverApplicationForm.value) return;
+    const data = await driverStore.updateApplicationFormNotes(driverApplicationForm.value.id, {
+        application_title_notes: changeNotesFormData.value.application_title_notes,
+        application_notes: changeNotesFormData.value.application_notes
+    });
+    if (data) {
+        await fetchData();
+    }
+    closeChangeNotes();
+};
+
+const dialogChangeStatus = ref(false);
+const changeStatusFormData = ref({
+    application_status: ''
+});
+const closeChangeStatus = () => {
+    dialogChangeStatus.value = false;
+    changeStatusFormData.value = {
+        application_status: ''
+    };
+};
+const saveChangeStatus = async () => {
+    if (!driverApplicationForm.value) return;
+    const data = await driverStore.updateApplicationFormStatus(driverApplicationForm.value.id, {
+        application_status: changeStatusFormData.value.application_status
+    });
+    if (data) {
+        await fetchData();
+    }
+    closeChangeStatus();
+};
 </script>
 <template>
-    <form v-if="driverApplicationForm">
+    <v-container v-if="driverApplicationForm">
+        <v-row>
+            <v-col cols="12">
+                <div class="d-flex justify-end">
+                    <div class="actions d-flex gap-2">
+                        <v-dialog v-model="dialogChangeNotes" max-width="500">
+                            <template v-slot:activator="{ props }">
+                                <v-btn color="primary" v-bind="props" flat class="ml-auto">
+                                    <v-icon class="mr-2">mdi-note</v-icon>Add Note
+                                </v-btn>
+                            </template>
+                            <v-card>
+                                <v-card-title class="pa-4 bg-secondary">
+                                    <span class="title text-white">Add Note</span>
+                                </v-card-title>
+                                <v-card-subtitle class="pb-4 bg-secondary text-subtitle-1" :style="{ 'white-space': 'preserve' }">
+                                    <span class="title text-white"
+                                        >To send notifications or intructions to the driver, fields or forms need to be correct.</span
+                                    >
+                                </v-card-subtitle>
+                                <v-card-text>
+                                    <v-form ref="form" lazy-validation>
+                                        <v-row>
+                                            <v-col cols="12">
+                                                <v-text-field
+                                                    variant="outlined"
+                                                    hide-details
+                                                    v-model="changeNotesFormData.application_title_notes"
+                                                    label="Title"
+                                                ></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-textarea
+                                                    label="Message"
+                                                    v-model="changeNotesFormData.application_notes"
+                                                    auto-grow
+                                                    variant="outlined"
+                                                    placeholder="Hi, Do you  have a moment to talk Jeo ?"
+                                                    rows="4"
+                                                    color="primary"
+                                                    row-height="25"
+                                                    shaped
+                                                    hide-details
+                                                ></v-textarea>
+                                            </v-col>
+                                        </v-row>
+                                    </v-form>
+                                </v-card-text>
+
+                                <v-card-actions class="pa-4">
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="error" @click="closeChangeNotes">Cancel</v-btn>
+                                    <v-btn
+                                        color="secondary"
+                                        :disabled="changeNotesFormData.application_title_notes == '' || changeNotesFormData.application_notes == ''"
+                                        variant="flat"
+                                        @click="saveChangeNotes"
+                                        >Save</v-btn
+                                    >
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+
+                        <v-dialog v-model="dialogChangeStatus" max-width="500">
+                            <template v-slot:activator="{ props }">
+                                <v-btn color="primary" v-bind="props" flat class="ml-auto">
+                                    <v-icon class="mr-2">mdi-account-multiple-plus</v-icon>Change Status
+                                </v-btn>
+                            </template>
+                            <v-card>
+                                <v-card-title class="pa-4 bg-secondary">
+                                    <span class="title text-white">Add Note</span>
+                                </v-card-title>
+                                <v-card-subtitle class="pb-4 bg-secondary text-subtitle-1" :style="{ 'white-space': 'preserve' }">
+                                    <span class="title text-white"
+                                        >To change the form status so that the driver can proceed to the next step.</span
+                                    >
+                                </v-card-subtitle>
+                                <v-card-text>
+                                    <v-form ref="form" lazy-validation>
+                                        <v-row>
+                                            <v-col cols="12" sm="12">
+                                                <v-select
+                                                    variant="outlined"
+                                                    hide-details
+                                                    :items="changeStatusEnums"
+                                                    v-model="changeStatusFormData.application_status"
+                                                    label="Status"
+                                                ></v-select>
+                                            </v-col>
+                                        </v-row>
+                                    </v-form>
+                                </v-card-text>
+
+                                <v-card-actions class="pa-4">
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="error" @click="closeChangeStatus">Cancel</v-btn>
+                                    <v-btn
+                                        color="secondary"
+                                        :disabled="changeStatusFormData.application_status == ''"
+                                        variant="flat"
+                                        @click="saveChangeStatus"
+                                        >Save</v-btn
+                                    >
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+                    </div>
+                </div>
+            </v-col>
+        </v-row>
+
         <h2 class="mb-2">Personal Information</h2>
         <v-row>
             <v-col cols="12" class="mb-1">
@@ -314,6 +473,6 @@ const fetchMedicalInformations = async () => {
             </tr>
             </tbody>
         </v-table>
-    </form>
+    </v-container>
     <div v-else>Application Form is currently not available</div>
 </template>

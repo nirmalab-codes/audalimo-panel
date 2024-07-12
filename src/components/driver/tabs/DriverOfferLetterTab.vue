@@ -4,7 +4,6 @@ import type { BufferedDocIdVo } from '@/contracts/vo/Document.vo';
 import ApiService from '@/services/ApiService';
 import { useDriverStore } from '@/stores/driver';
 import { onMounted, type PropType, ref, toRef } from 'vue';
-import { useRouter } from 'vue-router';
 import { ArrowDownCircleIcon } from 'vue-tabler-icons';
 
 const nativeWindow = window;
@@ -23,9 +22,13 @@ const letters = ref<Map<string, BufferedDocIdVo>>(new Map());
 const changeStatusEnums = ref(['rejected', 'approved']);
 
 onMounted(async () => {
-    driverOfferLetter.value = await driverStore.retrieveLatestOfferLetter(driver.value.id);
+    await fetchData();
     await fetchLetters();
 });
+
+const fetchData = async () => {
+    driverOfferLetter.value = await driverStore.retrieveLatestOfferLetter(driver.value.id);
+};
 
 const fetchLetters = async () => {
     let letterIdRaw = driverOfferLetter.value?.letter_id || [];
@@ -55,10 +58,13 @@ const closeChangeNotes = () => {
 };
 const saveChangeNotes = async () => {
     if (!driverOfferLetter.value) return;
-    await driverStore.updateOfferLetterNotes(driverOfferLetter.value.id, {
+    const data = await driverStore.updateOfferLetterNotes(driverOfferLetter.value.id, {
         letter_title_notes: changeNotesFormData.value.letter_title_notes,
         letter_notes: changeNotesFormData.value.letter_notes
     });
+    if (data) {
+        await fetchData();
+    }
     closeChangeNotes();
 };
 
@@ -74,9 +80,12 @@ const closeChangeStatus = () => {
 };
 const saveChangeStatus = async () => {
     if (!driverOfferLetter.value) return;
-    await driverStore.updateOfferLetterStatus(driverOfferLetter.value.id, {
+    const data = await driverStore.updateOfferLetterStatus(driverOfferLetter.value.id, {
         lo_status: changeStatusFormData.value.lo_status
     });
+    if (data) {
+        await fetchData();
+    }
     closeChangeStatus();
 };
 </script>

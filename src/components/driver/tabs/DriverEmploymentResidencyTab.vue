@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import type { DriverEmploymentResidencyItemDto, DriverItemDto } from '@/contracts/response/DriverRelated.response';
 import type { BufferedDocIdVo } from '@/contracts/vo/Document.vo';
-import { getEnumKeyByEnumValue } from '@/enums/base';
-import { UserGender } from '@/enums/UserRelated.enum';
 import ApiService from '@/services/ApiService';
 import { useDriverStore } from '@/stores/driver';
 import { onMounted, type PropType, ref, toRef } from 'vue';
-import { useRouter } from 'vue-router';
 import { ArrowDownCircleIcon } from 'vue-tabler-icons';
 
 const nativeWindow = window;
@@ -29,13 +26,17 @@ const polices = ref<Map<string, BufferedDocIdVo>>(new Map());
 const changeStatusEnums = ref(['rejected', 'approved']);
 
 onMounted(async () => {
-    driverEmploymentResidency.value = await driverStore.retrieveLatestEmploymentResidency(driver.value.id);
+    await fetchData();
     await fetchPapers();
     await fetchLabors();
     await fetchContracts();
     await fetchEnglishs();
     await fetchPolices();
 });
+
+const fetchData = async () => {
+    driverEmploymentResidency.value = await driverStore.retrieveLatestEmploymentResidency(driver.value.id);
+};
 
 const fetchPapers = async () => {
     let docPapperIdRaw = driverEmploymentResidency.value?.doc_papper_id || [];
@@ -121,10 +122,13 @@ const closeChangeNotes = () => {
 };
 const saveChangeNotes = async () => {
     if (!driverEmploymentResidency.value) return;
-    await driverStore.updateEmploymentResidencyNotes(driverEmploymentResidency.value.id, {
+    const data = await driverStore.updateEmploymentResidencyNotes(driverEmploymentResidency.value.id, {
         residency_title_notes: changeNotesFormData.value.residency_title_notes,
         residency_notes: changeNotesFormData.value.residency_notes
     });
+    if (data) {
+        await fetchData();
+    }
     closeChangeNotes();
 };
 
@@ -140,9 +144,12 @@ const closeChangeStatus = () => {
 };
 const saveChangeStatus = async () => {
     if (!driverEmploymentResidency.value) return;
-    await driverStore.updateEmploymentResidencyStatus(driverEmploymentResidency.value.id, {
+    const data = await driverStore.updateEmploymentResidencyStatus(driverEmploymentResidency.value.id, {
         residency_status: changeStatusFormData.value.residency_status
     });
+    if (data) {
+        await fetchData();
+    }
     closeChangeStatus();
 };
 </script>
