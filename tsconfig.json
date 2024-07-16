@@ -7,9 +7,12 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "allowJs": true
+    "allowJs": true,
+    "skipLibCheck": false,
+    "preserveValueImports": false,
+    "importsNotUsedAsValues": "remove",
+    "verbatimModuleSyntax": true,
   },
-
   "references": [
     {
       "path": "./tsconfig.vite-config.json"

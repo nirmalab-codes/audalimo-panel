@@ -23,11 +23,6 @@ const MainRoutes = {
             component: () => import('@/views/apps/driver/DriverDetailPage.vue')
         },
         {
-            name: 'Schedule',
-            path: '/apps/schedule',
-            component: () => import('@/views/apps/schedule/Schedule.vue')
-        },
-        {
             name: 'Location',
             path: '/apps/location',
             component: () => import('@/views/apps/location/LocationListPage.vue')
@@ -36,11 +31,6 @@ const MainRoutes = {
             name: 'Documents',
             path: '/apps/documents',
             component: () => import('@/views/apps/document/DocumentListPage.vue')
-        },
-        {
-            name: 'Notifications',
-            path: '/apps/notifications',
-            component: () => import('@/views/apps/notifications/Notifications.vue')
         },
 
         // TODO: remove unused routes
