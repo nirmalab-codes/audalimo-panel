@@ -20,7 +20,7 @@ const customizer = useCustomizerStore();
                 <Logo />
             </div>
         </div>
-        <v-list class="right-sidebar py-0 px-2">
+        <!-- <v-list class="right-sidebar py-0 px-2">
             <v-list-group value="Apps">
                 <template v-slot:activator="{ props }">
                     <v-list-item v-bind="props" rounded="md">
@@ -83,11 +83,10 @@ const customizer = useCustomizerStore();
                     </div>
                 </v-list-item>
             </v-list-group>
-        </v-list>
+        </v-list> -->
         <v-list class="py-0 px-2">
             <v-list-item rounded="md">
-                <v-btn variant="text" class="custom-hover-primary px-0 text-left" flat
-                    href="https://demos.adminmart.com/premium/vue/modernize-vuejs/docs/index.html" target="_blank">
+                <v-btn variant="text" class="custom-hover-primary px-0 text-left" flat href="#">
                     <h5 class="text-subtitle-1">Documentation</h5>
                 </v-btn>
             </v-list-item>

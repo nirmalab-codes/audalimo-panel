@@ -60,16 +60,16 @@ onMounted(async () => {
                     <DriverPersonalInfoTab :driverProp="driver" v-if="driver"/>
                 </v-window-item>
                 <v-window-item value="ApplicationForm">
-                    <DriverApplicationFormTab/>
+                    <DriverApplicationFormTab :driverProp="driver" v-if="driver"/>
                 </v-window-item>
                 <v-window-item value="OfferLetter">
-                    <DriverOfferLetterTab/>
+                    <DriverOfferLetterTab :driverProp="driver" v-if="driver"/>
                 </v-window-item>
                 <v-window-item value="EmploymentResidency">
-                    <DriverEmploymentResidencyTab/>
+                    <DriverEmploymentResidencyTab :driverProp="driver" v-if="driver"/>
                 </v-window-item>
                 <v-window-item value="RtaTraining">
-                    <DriverRtaTrainingTab/>
+                    <DriverRtaTrainingTab :driverProp="driver" v-if="driver"/>
                 </v-window-item>
            </v-window>
        </v-card-text>

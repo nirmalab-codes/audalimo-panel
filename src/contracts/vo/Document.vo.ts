@@ -5,6 +5,13 @@ export type DocIdVo = {
     signedUrl: string,
 }
 
+export type BufferedDocIdVo = {
+    id: string,
+    signedUrl: string,
+    byteUrl: string,
+    name?: string,
+}
+
 export type DocumentVo = {
     id: string,
     title: string,

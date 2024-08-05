@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, type PropType, toRef } from 'vue';
-import { useContactStore } from '@/stores/apps/contact';
-import user1 from '@/assets/images/profile/user-1.jpg';
-import { type DriverDocumentItemDto, type DriverItemDto } from '@/contracts/response/DriverRelated.response';
+import type { DriverDocumentItemDto, DriverItemDto } from '@/contracts/response/DriverRelated.response';
 import { useDriverStore } from '@/stores/driver';
 import { useRouter } from 'vue-router';
 import ApiService from '@/services/ApiService';
-import { type DocumentItemDto } from '@/contracts/response/DocumentRelated.response';
 
 const router = useRouter()
 
@@ -24,8 +21,11 @@ const passportIds = ref<Map<string, string>>(new Map())
 const emirateIds = ref<Map<string, string>>(new Map())
 const visaIds = ref<Map<string, string>>(new Map())
 
+// Enums
+const changeStatusEnums = ref(['rejected', 'approved']);
+
 onMounted(async () => {
-    driverDocument.value = await driverStore.retrieveLatestDocuments(driver.value.id)
+    await fetchData();
     await Promise.all([
         fetchSelfieId(),
         fetchCvId(),
@@ -35,11 +35,15 @@ onMounted(async () => {
     ])
 });
 
+const fetchData = async () => {
+    driverDocument.value = await driverStore.retrieveLatestDocuments(driver.value.id)
+};
+
 const fetchSelfieId = async () => {
     let selfieIdRaw = driverDocument.value?.selfie_id || []
     for (let i = 0; i < selfieIdRaw.length; i++) {
         const element = selfieIdRaw[i];
-        selfieIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+        selfieIds.value.set(element.id, await ApiService.bufferAsByteUrl(element.signed_url))
     }
 }
 
@@ -47,7 +51,7 @@ const fetchCvId = async () => {
     let cvIdRaw = driverDocument.value?.cv_id || []
     for (let i = 0; i < cvIdRaw.length; i++) {
         const element = cvIdRaw[i];
-        cvIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+        cvIds.value.set(element.id, await ApiService.bufferAsByteUrl(element.signed_url))
     }
 }
 
@@ -55,7 +59,7 @@ const fetchPassportId = async () => {
     let passportIdRaw = driverDocument.value?.photo_passport_id || []
     for (let i = 0; i < passportIdRaw.length; i++) {
         const element = passportIdRaw[i];
-        passportIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+        passportIds.value.set(element.id, await ApiService.bufferAsByteUrl(element.signed_url))
     }
 }
 
@@ -63,7 +67,7 @@ const fetchEmirateId = async () => {
     let emirateIdRaw = driverDocument.value?.emirates_id || []
     for (let i = 0; i < emirateIdRaw.length; i++) {
         const element = emirateIdRaw[i];
-        emirateIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+        emirateIds.value.set(element.id, await ApiService.bufferAsByteUrl(element.signed_url))
     }
 }
 
@@ -71,7 +75,7 @@ const fetchVisaId = async () => {
     let visaIdRaw = driverDocument.value?.visa_residency || []
     for (let i = 0; i < visaIdRaw.length; i++) {
         const element = visaIdRaw[i];
-        visaIds.value.set(element.id, await ApiService.bufferAsImage(element.signed_url))
+        visaIds.value.set(element.id, await ApiService.bufferAsByteUrl(element.signed_url))
     }
 }
 
@@ -80,53 +84,51 @@ const handleImageClick = (url: string) => {
     window.open(url, '_blank')?.focus();
 }
 
-const valid = ref(true);
-const dialogAddNote = ref(false);
-const dialogChangeStatus = ref(false);
-
-// Form Data
-const addNoteFormData = ref({
-    title: '',
-    message: ''
+const dialogChangeNotes = ref(false);
+const changeNotesFormData = ref({
+    doc_title_notes: '',
+    doc_notes: ''
 });
-const changeStatusFormData = ref({
-    status: '',
-});
-
-// Enums
-const changeStatusEnums = ref(['rejected', 'approved']);
-
-// Add Note Form Related
-const closeAddNote = () => {
-    dialogAddNote.value = false;
-    addNoteFormData.value = {
-        title: '',
-        message: ''
+const closeChangeNotes = () => {
+    dialogChangeNotes.value = false;
+    changeNotesFormData.value = {
+        doc_title_notes: '',
+        doc_notes: ''
+    };
+};
+const saveChangeNotes = async () => {
+    if (!driverDocument.value) return;
+    const data = await driverStore.updateNote(driverDocument.value.id, {
+        doc_title_notes: changeNotesFormData.value.doc_title_notes,
+        doc_notes: changeNotesFormData.value.doc_notes
+    });
+    if (data) {
+        await fetchData();
     }
-}
-const saveAddNote = async () => {
-    if(!driverDocument.value) return
-    await driverStore.addNote(driverDocument.value.id, {
-        doc_notes:addNoteFormData.value.message,
-        doc_title_notes:addNoteFormData.value.title,
-    })
-    closeAddNote();
-}
+    closeChangeNotes();
+};
 
-// Change Status Form Related
+const dialogChangeStatus = ref(false);
+const changeStatusFormData = ref({
+    doc_status: ''
+});
 const closeChangeStatus = () => {
     dialogChangeStatus.value = false;
     changeStatusFormData.value = {
-        status: '',
-    }
-}
+        doc_status: ''
+    };
+};
 const saveChangeStatus = async () => {
-    if(!driverDocument.value) return
-    await driverStore.updateStatus(driverDocument.value.id, {
-        doc_status: changeStatusFormData.value.status
-    })
+    if (!driverDocument.value) return;
+    const data = await driverStore.updateStatus(driverDocument.value.id, {
+        doc_status: changeStatusFormData.value.doc_status
+    });
+    if (data) {
+        await fetchData();
+    }
     closeChangeStatus();
-}
+};
+
 </script>
 <template>
     <div class="ma-4" v-if="driverDocument">
@@ -140,7 +142,7 @@ const saveChangeStatus = async () => {
                         <p>University: {{ driverDocument.university }}</p>
                     </div>
                     <div class="actions d-flex gap-2">
-                        <v-dialog v-model="dialogAddNote" max-width="500">
+                        <v-dialog v-model="dialogChangeNotes" max-width="500">
                             <template v-slot:activator="{ props }">
                                 <v-btn color="primary" v-bind="props" flat class="ml-auto">
                                     <v-icon class="mr-2">mdi-note</v-icon>Add Note
@@ -156,20 +158,20 @@ const saveChangeStatus = async () => {
                                     >
                                 </v-card-subtitle>
                                 <v-card-text>
-                                    <v-form ref="form" v-model="valid" lazy-validation>
+                                    <v-form ref="form" lazy-validation>
                                         <v-row>
                                             <v-col cols="12">
                                                 <v-text-field
                                                     variant="outlined"
                                                     hide-details
-                                                    v-model="addNoteFormData.title"
+                                                    v-model="changeNotesFormData.doc_title_notes"
                                                     label="Title"
                                                 ></v-text-field>
                                             </v-col>
                                             <v-col cols="12">
                                                 <v-textarea
                                                     label="Message"
-                                                    v-model="addNoteFormData.message"
+                                                    v-model="changeNotesFormData.doc_notes"
                                                     auto-grow
                                                     variant="outlined"
                                                     placeholder="Hi, Do you  have a moment to talk Jeo ?"
@@ -186,12 +188,12 @@ const saveChangeStatus = async () => {
 
                                 <v-card-actions class="pa-4">
                                     <v-spacer></v-spacer>
-                                    <v-btn color="error" @click="closeAddNote">Cancel</v-btn>
+                                    <v-btn color="error" @click="closeChangeNotes">Cancel</v-btn>
                                     <v-btn
                                         color="secondary"
-                                        :disabled="addNoteFormData.title == '' || addNoteFormData.message == ''"
+                                        :disabled="changeNotesFormData.doc_title_notes == '' || changeNotesFormData.doc_notes == ''"
                                         variant="flat"
-                                        @click="saveAddNote"
+                                        @click="saveChangeNotes"
                                         >Save</v-btn
                                     >
                                 </v-card-actions>
@@ -214,15 +216,15 @@ const saveChangeStatus = async () => {
                                     >
                                 </v-card-subtitle>
                                 <v-card-text>
-                                    <v-form ref="form" v-model="valid" lazy-validation>
+                                    <v-form ref="form" lazy-validation>
                                         <v-row>
                                             <v-col cols="12" sm="12">
                                                 <v-select
                                                     variant="outlined"
                                                     hide-details
                                                     :items="changeStatusEnums"
-                                                    v-model="changeStatusFormData.status"
-                                                    label="Role Background"
+                                                    v-model="changeStatusFormData.doc_status"
+                                                    label="Status"
                                                 ></v-select>
                                             </v-col>
                                         </v-row>
@@ -234,7 +236,7 @@ const saveChangeStatus = async () => {
                                     <v-btn color="error" @click="closeChangeStatus">Cancel</v-btn>
                                     <v-btn
                                         color="secondary"
-                                        :disabled="changeStatusFormData.status == ''"
+                                        :disabled="changeStatusFormData.doc_status == ''"
                                         variant="flat"
                                         @click="saveChangeStatus"
                                         >Save</v-btn
