@@ -13,7 +13,6 @@
     "skipLibCheck": false,
     "preserveValueImports": false,
     "importsNotUsedAsValues": "remove",
-    "verbatimModuleSyntax": true,
   },
   "references": [
     {
