@@ -10,7 +10,7 @@ const props = defineProps({
 
 <template>
     <v-card class="bg-lightprimary elevation-0 rounded-md mb-8">
-        <div class="px-8 py-8 py-lg-0">
+        <div class="px-8 py-8">
             <div class="d-flex justify-space-between">
                 <div class="d-flex py-0 align-center">
                     <div>
