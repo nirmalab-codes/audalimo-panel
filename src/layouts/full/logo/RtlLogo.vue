@@ -9,6 +9,7 @@ const customizer = useCustomizerStore();
 //const dark = ref(false);
 const dark = computed(() => {
   if (
+    customizer.actTheme === "DARK_PRIMARY_THEME" ||
     customizer.actTheme === "DARK_BLUE_THEME" ||
     customizer.actTheme === "DARK_AQUA_THEME" ||
     customizer.actTheme === "DARK_ORANGE_THEME" ||

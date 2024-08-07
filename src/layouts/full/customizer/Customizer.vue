@@ -46,6 +46,7 @@ const themeColors = ref([
 
 // Dark Theme Colors
 const DarkthemeColors = ref([
+    { name: 'DARK_PRIMARY_THEME', bg: 'themeDarkPrimary' },
     { name: 'DARK_BLUE_THEME', bg: 'themeDarkBlue' },
     { name: 'DARK_AQUA_THEME', bg: 'themeDarkAqua' },
     { name: 'DARK_PURPLE_THEME', bg: 'themeDarkPurple' },
