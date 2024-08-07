@@ -28,7 +28,7 @@ const props = defineProps({
                 </div>
                 <div class="d-none py-0 d-lg-block overflow-hidden">
                     <div class="mb-n16 mt-3">
-                        <img src="@/assets/images/breadcrumb/ChatBc.png" alt="breadcrumb" />
+                        <img src="@/assets/images/logos/limo.png" alt="breadcrumb" />
                     </div>
                 </div>
             </div>
