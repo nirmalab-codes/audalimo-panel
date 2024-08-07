@@ -1,3 +1,5 @@
+import type { DocId } from "./DocumentRelated.request";
+
 export type UpdateNoteRequest = {
     doc_title_notes: string;
     doc_notes: string;
@@ -42,3 +44,7 @@ export type UpdateRtaNotesRequest = {
     rta_title_notes: string;
     rta_notes: string;
 };
+
+export type UpdateRtaPermitRequest = {
+    rta_permit_id: DocId[]
+}

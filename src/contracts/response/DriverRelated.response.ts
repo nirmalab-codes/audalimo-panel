@@ -221,3 +221,21 @@ export type DriverRtaItemDto = {
     rta_status: string,
     driver: DriverItemDto
 }
+
+export type DriverStepItemDto = {
+    id: string,
+    created_at: Date,
+    updated_at: Date,
+    driver_id: string,
+    step: string,
+    progress: number,
+    status_step: string
+}
+
+export enum StatusStep {
+    Open = 'open',
+    Pending = 'pending',
+    Review = 'review',
+    Approved = 'approved',
+    Rejected = 'rejected',
+}
