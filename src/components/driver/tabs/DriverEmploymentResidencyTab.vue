@@ -462,4 +462,5 @@ const saveChangeStatus = async () => {
             </tbody>
         </v-table>
     </v-container>
+    <div v-else>Employment Residency is currently not available</div>
 </template>
