@@ -22,7 +22,7 @@ onMounted(() => {
 
 // Computed
 const documents = computed(() => store.documents);
-const formTitle = computed(() => editedItem.value ? 'Edit Document' : 'New Document');
+const formTitle = computed(() => editedItem.value.id ? 'Edit Document' : 'New Document');
 const filteredList = computed(() => documents.value.filter(document => document.title.toLowerCase().includes(search.value.toLowerCase())));
 const formAttrItems = computed(() => Object.values(FormAttr));
 
@@ -65,8 +65,10 @@ async function save() {
             editedItem.value.docId.push(docId);
             
             if (isEdit.value) {
+                console.log('Updated document: ', editedItem.value);
                 await store.updateDocument(editedItem.value);
             } else {
+                console.log('Created document: ', editedItem.value);
                 await store.createDocument(editedItem.value);
             }
         }
@@ -122,10 +124,10 @@ async function openFile(document: DocumentVo) {
                                         required
                                     ></v-select>
                                 </v-col>
-                                <v-col cols="12" v-if="!isEdit">
+                                <v-col cols="12">
                                     <v-checkbox
                                         v-model="editedItem.urlDocStatus"
-                                        label="Document Status"
+                                        label="Visible"
                                         hide-details
                                     ></v-checkbox>
                                 </v-col>
