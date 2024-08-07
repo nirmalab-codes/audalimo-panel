@@ -27,7 +27,7 @@ onMounted(async () => {
 });
 
 const fetchData = async () => {
-    driverRta.value = await driverStore.retrieveLatestRta(driver.value.id);
+    driverRta.value = await driverStore.retrieveLatestRtaTraining(driver.value.id);
 };
 
 const fetchMedicalTests = async () => {

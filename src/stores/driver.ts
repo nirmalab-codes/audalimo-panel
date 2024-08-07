@@ -6,7 +6,8 @@ import type {
     DriverEmploymentResidencyItemDto,
     DriverItemDto,
     DriverOfferLetterItemDto,
-    DriverRtaItemDto
+    DriverRtaItemDto,
+    DriverStepItemDto
 } from '../contracts/response/DriverRelated.response';
 import ApiService from '@/services/ApiService';
 import type {
@@ -19,7 +20,8 @@ import type {
     UpdateRtaStatusRequest,
     UpdateRtaNotesRequest,
     UpdateApplicationFormStatusRequest,
-    UpdateApplicationFormNotesRequest
+    UpdateApplicationFormNotesRequest,
+    UpdateRtaPermitRequest
 } from '@/contracts/request/DriverRelated.request';
 import { toast } from 'vue3-toastify';
 
@@ -34,6 +36,7 @@ export const useDriverStore = defineStore({
             const parsedResponse = rawResponse.data as ListResponse<DriverItemDto>;
             this.driverList = parsedResponse.data;
         },
+        // TODO: Apakah ada satu endpoint untuk mendapatkan semua status dari dokumen sampai RTA training
         async retrieveLatestDocuments(id: string) {
             const rawResponse = await ApiService.query('/v1/kyc-document', {
                 params: {
@@ -70,13 +73,18 @@ export const useDriverStore = defineStore({
             const parsedResponse = rawResponse.data as SingleResponse<DriverEmploymentResidencyItemDto>;
             return parsedResponse.data;
         },
-        async retrieveLatestRta(id: string) {
+        async retrieveLatestRtaTraining(id: string) {
             const rawResponse = await ApiService.query('/v1/kyc-rta', {
                 params: {
                     driver_id: id
                 }
             });
             const parsedResponse = rawResponse.data as SingleResponse<DriverRtaItemDto>;
+            return parsedResponse.data;
+        },
+        async retrieveAllStatus(id: string) {
+            const rawResponse = await ApiService.get(`/v1/get-all-status/${id}`);
+            const parsedResponse = rawResponse.data as SingleResponse<Array<DriverStepItemDto>>;
             return parsedResponse.data;
         },
         async updateNote(documentId: string, payload: UpdateNoteRequest) {
@@ -135,6 +143,12 @@ export const useDriverStore = defineStore({
         },
         async updateRtaNotes(documentId: string, payload: UpdateRtaNotesRequest) {
             const rawResponse = await ApiService.put(`/v1/kyc-rta/notes/${documentId}`, payload);
+            const parsedResponse = rawResponse.data as SingleResponse<DriverRtaItemDto>;
+            toast.success(parsedResponse.message);
+            return parsedResponse.data;
+        },
+        async updateRtaPermit(documentId: string, payload: UpdateRtaPermitRequest) {
+            const rawResponse = await ApiService.put(`/v1/kyc-rta/upload-rta-permit/${documentId}`, payload);
             const parsedResponse = rawResponse.data as SingleResponse<DriverRtaItemDto>;
             toast.success(parsedResponse.message);
             return parsedResponse.data;
