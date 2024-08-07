@@ -63,16 +63,23 @@ export const useDocumentStore = defineStore({
 function toCreateRequest(document: DocumentVo): DocumentCreateRequest {
     return {
         title: document.title,
-        doc_id: document.docId.map((docIdVo) => ({
-            id: docIdVo.id,
-            signed_url: docIdVo.signedUrl
-        })),
-        form_attr: document.formAttr
+        doc_id: [{
+            id: document.docId[0].id,
+            signed_url: document.docId[0].signedUrl
+        }],
+        form_attr: document.formAttr,
+        url_doc_status: document.urlDocStatus
     };
 }
 
 function toUpdateRequest(document: DocumentVo): DocumentUpdateRequest {
     return {
+        title: document.title,
+        doc_id: [{
+            id: document.docId[0].id,
+            signed_url: document.docId[0].signedUrl
+        }],
+        form_attr: document.formAttr,
         url_doc_status: document.urlDocStatus
     };
 }

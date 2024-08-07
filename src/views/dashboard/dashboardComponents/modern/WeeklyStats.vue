@@ -1,9 +1,52 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { weeklyStatsData } from '@/_mockApis/components/dashboard/modernData';
+import { computed, onMounted, ref } from 'vue';
 
 import { getPrimary } from '@/utils/UpdateColors';
+import ApiService from '@/services/ApiService';
 
+const loading = ref(true)
+const progress = ref([])
+const getProgress = async () => {
+    try {
+        loading.value = true;
+        const params = { pageSize: 1000 }
+        const response = await ApiService.vueInstance.axios.get("/v1/progress", { params });
+        const { data: { data } } = response
+        progress.value = data;
+        console.log(progress.value)
+    } finally {
+        loading.value = false;
+    }
+};
+
+onMounted(async () => {
+    await getProgress();
+});
+
+/*--Weeekly Stas--*/
+const weeklyStatsData: any[] = [
+    {
+        title: "On Going",
+        subtitle: "Pending KYC",
+        rank: "0",
+        bgcolor: "primary",
+        textcolor: "primary",
+    },
+    {
+        title: "Approved",
+        subtitle: "Approved Driver",
+        rank: "0",
+        bgcolor: "success",
+        textcolor: "success",
+    },
+    {
+        title: "Rejected",
+        subtitle: "Rejected Driver",
+        rank: "0",
+        bgcolor: "error",
+        textcolor: "error",
+    },
+];
 /* Chart */
 const chartOptions = computed(() => {
     return {
@@ -53,10 +96,10 @@ const Chart = [
 ];
 </script>
 <template>
-    <v-card elevation="10" >
+    <v-card elevation="10">
         <v-card-item>
-            <v-card-title class="text-h5">Weekly Stats</v-card-title>
-            <v-card-subtitle class="text-subtitle-1 textSecondary">Average sales</v-card-subtitle>
+            <v-card-title class="text-h5">Driver Stats</v-card-title>
+            <v-card-subtitle class="text-subtitle-1 textSecondary">Total Kyc</v-card-subtitle>
             <div class="mt-7">
                 <apexchart type="area" height="135" :options="chartOptions" :series="Chart"> </apexchart>
             </div>
@@ -69,9 +112,10 @@ const Chart = [
                         <h6 class="text-h6">{{ list.title }}</h6>
                         <h5 class="text-subtitle-1 textSecondary mt-1">{{ list.subtitle }}</h5>
                     </div>
-                    <v-chip class="ml-auto font-weight-semibold text-subtitle-1" :color="list.bgcolor" rounded="sm" size="small">{{
-                        list.rank
-                    }}</v-chip>
+                    <v-chip class="ml-auto font-weight-semibold text-subtitle-1" :color="list.bgcolor" rounded="sm"
+                        size="small">{{
+                            list.rank
+                        }}</v-chip>
                 </div>
             </div>
         </v-card-item>

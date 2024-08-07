@@ -75,7 +75,7 @@ const customizer = useCustomizerStore();
                 <v-container fluid class="page-wrapper pb-sm-15 pb-10">
                     <div :class="customizer.boxed ? 'maxWidth' : ''">
                         <RouterView />
-                        <v-btn
+                        <!-- <v-btn
                             class="customizer-btn"
                             size="large"
                             icon
@@ -84,7 +84,7 @@ const customizer = useCustomizerStore();
                             @click.stop="customizer.SET_CUSTOMIZER_DRAWER(!customizer.Customizer_drawer)"
                         >
                             <SettingsIcon />
-                        </v-btn>
+                        </v-btn> -->
                     </div>
                 </v-container>
             </v-main>
