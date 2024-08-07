@@ -24,6 +24,7 @@ export const useAuthStore = defineStore({
             this.user = {
                 uid: parsedResponse.user.uid,
                 fullname: parsedResponse.fullname,
+                email: parsedResponse.email,
                 accessToken: parsedResponse.access_token,
             } as UserVo;
             // store user details and jwt in local storage to keep user logged in between page refreshes

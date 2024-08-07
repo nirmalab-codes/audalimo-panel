@@ -9,5 +9,6 @@ export type LoginResponse = BaseResponse & {
     expires_in: number,
     token_type: string,
     user: UserLoginDto,
+    email: string,
     fullname: string,
 }

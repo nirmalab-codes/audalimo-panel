@@ -35,6 +35,7 @@ const { user } = storeToRefs(authStore)
                     </v-avatar>
                     <div class="ml-3">
                         <h6 class="text-h6 mb-n1">{{ user.fullname }}</h6>
+                        <small class="text-subtitle-1 d-block mt-1 textSecondary">{{ user.email }}</small>
                         <!-- <span class="text-subtitle-1 font-weight-regular textSecondary">Designer</span>
                         <div class="d-flex align-center mt-1">
                             <MailIcon size="18" stroke-width="1.5" />

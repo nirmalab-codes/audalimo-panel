@@ -18,11 +18,12 @@ const { user } = storeToRefs(authStore)
             </v-avatar>
             <div class="ml-4">
                 <h4 class="mb-n1 text-h6 textPrimary">{{ user.fullname }}</h4>
+                <small class="text-subtitle-1 d-block mt-1 textSecondary"
+                    style="width: 100px;overflow: hidden;text-overflow: ellipsis;">{{ user.email }}</small>
             </div>
             <div class="ml-auto">
                 <v-btn variant="text" icon rounded="md" color="primary" @click="authStore.logout()">
                     <PowerIcon />
-
                     <v-tooltip activator="parent" location="top">Logout</v-tooltip>
                 </v-btn>
             </div>
@@ -34,6 +35,7 @@ const { user } = storeToRefs(authStore)
     position: relative;
     overflow: hidden;
 }
+
 .line-height-none {
     line-height: normal;
 }
