@@ -153,7 +153,7 @@ async function openFile(document: DocumentVo) {
             <tr>
                 <th class="text-subtitle-1 font-weight-semibold">Title</th>
                 <th class="text-subtitle-1 font-weight-semibold">Form Attr</th>
-                <th class="text-subtitle-1 font-weight-semibold">URL Document Status</th>
+                <th class="text-subtitle-1 font-weight-semibold">Visible</th>
                 <th class="text-subtitle-1 font-weight-semibold">Actions</th>
             </tr>
         </thead>

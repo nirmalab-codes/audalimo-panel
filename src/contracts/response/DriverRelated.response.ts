@@ -36,6 +36,7 @@ export type DriverItemDto = {
     is_blocked: boolean,
     upload_id: string,
     upload: string,
+    status_step: string,
     sessions: Array<DriverSessionItemDto>
 }
 

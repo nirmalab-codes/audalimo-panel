@@ -5,5 +5,6 @@ export enum FormAttr {
   OUR_OFFICE = "our_office",
   AMER_CENTER = "amer_center",
   BIOMETRIC = "biometric",
-  LABOR_CLASS = "labor_class"
+  LABOR_CLASS = "labor_class",
+  TRAINING_LOCATION = "training_location"
 }

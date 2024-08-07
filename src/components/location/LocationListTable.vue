@@ -24,8 +24,8 @@ const formAttrItems = computed(() => Object.values(FormAttr));
 
 //Methods
 const resetEditedItem = () => {
-  editedItem.value = {...defaultItem.value};
-  isEdit.value = false;
+    editedItem.value = { ...defaultItem.value };
+    isEdit.value = false;
 };
 
 function editItem(location: LocationVo) {
@@ -59,7 +59,8 @@ async function save() {
 <template>
     <v-row>
         <v-col cols="12" lg="4" md="6">
-            <v-text-field density="compact" v-model="search" label="Search Location" hide-details variant="outlined"></v-text-field>
+            <v-text-field density="compact" v-model="search" label="Search Location" hide-details
+                variant="outlined"></v-text-field>
         </v-col>
         <v-col cols="12" lg="8" md="6" class="text-right">
             <v-dialog v-model="dialog" max-width="500">
@@ -77,39 +78,20 @@ async function save() {
                         <v-form ref="form" v-model="valid" lazy-validation>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-text-field
-                                        variant="outlined"
-                                        hide-details
-                                        v-model="editedItem.title"
-                                        label="Title"
-                                        required
-                                    ></v-text-field>
+                                    <v-text-field variant="outlined" hide-details v-model="editedItem.title"
+                                        label="Title" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field
-                                        variant="outlined"
-                                        hide-details
-                                        v-model="editedItem.urlLink"
-                                        label="URL Google Maps"
-                                        required
-                                    ></v-text-field>
+                                    <v-text-field variant="outlined" hide-details v-model="editedItem.urlLink"
+                                        label="URL Google Maps" required></v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-select
-                                        variant="outlined"
-                                        hide-details
-                                        :items="formAttrItems"
-                                        v-model="editedItem.formAttr"
-                                        label="Form Attribute"
-                                        required
-                                    ></v-select>
+                                    <v-select variant="outlined" hide-details :items="formAttrItems"
+                                        v-model="editedItem.formAttr" label="Form Attribute" required></v-select>
                                 </v-col>
                                 <v-col cols="12" v-if="!isEdit">
-                                    <v-checkbox
-                                        v-model="editedItem.locationStatus"
-                                        label="Location Status"
-                                        hide-details
-                                    ></v-checkbox>
+                                    <v-checkbox v-model="editedItem.locationStatus" label="Visible"
+                                        hide-details></v-checkbox>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -118,13 +100,9 @@ async function save() {
                     <v-card-actions class="pa-4">
                         <v-spacer></v-spacer>
                         <v-btn color="error" @click="close">Cancel</v-btn>
-                        <v-btn
-                            color="secondary"
-                            :disabled="!editedItem.title || !editedItem.urlLink || !editedItem.formAttr"
-                            variant="flat"
-                            @click="save"
-                            >Save</v-btn
-                        >
+                        <v-btn color="secondary"
+                            :disabled="!editedItem.title || !editedItem.urlLink || !editedItem.formAttr" variant="flat"
+                            @click="save">Save</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -136,7 +114,7 @@ async function save() {
                 <th class="text-subtitle-1 font-weight-semibold">Title</th>
                 <th class="text-subtitle-1 font-weight-semibold">Url Link</th>
                 <th class="text-subtitle-1 font-weight-semibold">Form Attr</th>
-                <th class="text-subtitle-1 font-weight-semibold">Location Status</th>
+                <th class="text-subtitle-1 font-weight-semibold">Visible</th>
                 <th class="text-subtitle-1 font-weight-semibold">Actions</th>
             </tr>
         </thead>
@@ -146,22 +124,24 @@ async function save() {
                 <td class="text-subtitle-1">{{ item.urlLink }}</td>
                 <td class="text-subtitle-1">{{ item.formAttr }}</td>
                 <td>
-                    <v-chip :color="item.locationStatus ? 'success' : 'warning'" size="small" label>{{ item.locationStatus }}</v-chip>
+                    <v-chip :color="item.locationStatus ? 'success' : 'warning'" size="small" label>
+                        {{ item.locationStatus }}
+                    </v-chip>
                 </td>
                 <td>
                     <div class="d-flex align-center">
                         <v-tooltip text="Edit">
                             <template v-slot:activator="{ props }">
-                                <v-btn icon flat @click="editItem(item)" v-bind="props"
-                                    ><PencilIcon stroke-width="1.5" size="20" class="text-primary"
-                                /></v-btn>
+                                <v-btn icon flat @click="editItem(item)" v-bind="props">
+                                    <PencilIcon stroke-width="1.5" size="20" class="text-primary" />
+                                </v-btn>
                             </template>
                         </v-tooltip>
                         <v-tooltip text="Delete">
                             <template v-slot:activator="{ props }">
-                                <v-btn icon flat @click="deleteItem(item)" v-bind="props"
-                                    ><TrashIcon stroke-width="1.5" size="20" class="text-error"
-                                /></v-btn>
+                                <v-btn icon flat @click="deleteItem(item)" v-bind="props">
+                                    <TrashIcon stroke-width="1.5" size="20" class="text-error" />
+                                </v-btn>
                             </template>
                         </v-tooltip>
                     </div>
