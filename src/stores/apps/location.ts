@@ -62,12 +62,16 @@ function toCreateRequest(location: LocationVo): LocationCreateRequest {
     return {
         title: location.title,
         url_link: location.urlLink,
-        form_attr: location.formAttr
+        form_attr: location.formAttr,
+        location_status: location.locationStatus
     };
 }
 
 function toUpdateRequest(location: LocationVo): LocationUpdateRequest {
     return {
+        title: location.title,
+        url_link: location.urlLink,
+        form_attr: location.formAttr,
         location_status: location.locationStatus
     };
 }

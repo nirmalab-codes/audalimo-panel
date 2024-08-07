@@ -18,7 +18,7 @@ onMounted(() => {
 
 // Computed
 const locations = computed(() => store.locations);
-const formTitle = computed(() => editedItem.value ? 'Edit Location' : 'New Location');
+const formTitle = computed(() => editedItem.value.id ? 'Edit Location' : 'New Location');
 const filteredList = computed(() => locations.value.filter(location => location.title.toLowerCase().includes(search.value.toLowerCase())));
 const formAttrItems = computed(() => Object.values(FormAttr));
 
@@ -89,7 +89,7 @@ async function save() {
                                     <v-select variant="outlined" hide-details :items="formAttrItems"
                                         v-model="editedItem.formAttr" label="Form Attribute" required></v-select>
                                 </v-col>
-                                <v-col cols="12" v-if="!isEdit">
+                                <v-col cols="12">
                                     <v-checkbox v-model="editedItem.locationStatus" label="Visible"
                                         hide-details></v-checkbox>
                                 </v-col>
