@@ -134,7 +134,7 @@ const formatTime = (timeString: string | null) => {
             <v-col cols="12">
                 <div class="d-flex justify-end">
                     <div class="actions d-flex gap-2">
-                        <v-dialog v-model="dialogChangeNotes" max-width="500">
+                        <v-dialog v-model="dialogChangeNotes" max-width="1000">
                             <template v-slot:activator="{ props }">
                                 <v-btn color="primary" v-bind="props" flat class="ml-auto">
                                     <v-icon class="mr-2">mdi-note</v-icon>Add Note
@@ -153,9 +153,6 @@ const formatTime = (timeString: string | null) => {
                                     <v-form ref="form" lazy-validation>
                                         <v-row>
                                             <v-col cols="12">
-                                                <v-checkbox v-model="notificationData.sendNotif" label="Send Notification"></v-checkbox>
-                                            </v-col>
-                                            <v-col cols="12">
                                                 <v-text-field
                                                     variant="outlined"
                                                     hide-details
@@ -169,9 +166,9 @@ const formatTime = (timeString: string | null) => {
                                                     v-model="changeNotesFormData.rta_notes"
                                                     auto-grow
                                                     variant="outlined"
-                                                    rows="4"
+                                                    rows="2"
                                                     color="primary"
-                                                    row-height="25"
+                                                    row-height="10"
                                                     shaped
                                                     hide-details
                                                 ></v-textarea>
@@ -184,6 +181,9 @@ const formatTime = (timeString: string | null) => {
                                                         plugins: 'lists link image table code help wordcount'
                                                     }"
                                                     />
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-checkbox v-model="notificationData.sendNotif" label="Send notification also using email?"></v-checkbox>
                                             </v-col>
                                         </v-row>
                                     </v-form>
@@ -211,7 +211,7 @@ const formatTime = (timeString: string | null) => {
                             </template>
                             <v-card>
                                 <v-card-title class="pa-4 bg-secondary">
-                                    <span class="title text-white">Add Note</span>
+                                    <span class="title text-white">Change Status</span>
                                 </v-card-title>
                                 <v-card-subtitle class="pb-4 bg-secondary text-subtitle-1" :style="{ 'white-space': 'preserve' }">
                                     <span class="title text-white"

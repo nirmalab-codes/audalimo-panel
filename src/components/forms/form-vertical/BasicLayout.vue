@@ -20,7 +20,7 @@
             <v-label class="font-weight-medium mb-2">Message</v-label>
              <VTextarea
                 auto-grow
-                placeholder="Hi, Do you  have a moment to talk Jeo ?"
+                placeholder="Please fill lead message."
                 rows="2"
                 color="primary"
                 row-height="25"

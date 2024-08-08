@@ -42,7 +42,7 @@ import { UserIcon, BuildingArchIcon, MailIcon, PhoneIcon, Message2Icon } from 'v
             <v-textarea
                 auto-grow
                 variant="outlined"
-                placeholder="Hi, Do you  have a moment to talk Jeo ?"
+                placeholder="Please fill lead message."
                 rows="2"
                 color="primary"
                 row-height="25"
