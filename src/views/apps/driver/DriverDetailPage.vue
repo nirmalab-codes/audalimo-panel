@@ -135,22 +135,22 @@ const tabBadges = computed(() => {
         <v-card-text class="pa-sm-6 pa-3 pb-sm-6 pb-6">
             <v-window v-model="tab">
                 <v-window-item value="Documents">
-                    <DriverPersonalInfoTab :driverProp="driver" v-if="driver" />
+                    <DriverPersonalInfoTab :driverProp="driver" :statusProp="allStatus.find(i => i.step == 'step1')" v-if="driver" />
                 </v-window-item>
                 <v-window-item value="ApplicationForm">
-                    <DriverApplicationFormTab :driverProp="driver" v-if="driver" />
+                    <DriverApplicationFormTab :driverProp="driver" :statusProp="allStatus.find(i => i.step == 'step2')" v-if="driver" />
                 </v-window-item>
                 <v-window-item value="OfferLetter">
-                    <DriverOfferLetterTab :driverProp="driver" v-if="driver" />
+                    <DriverOfferLetterTab :driverProp="driver" :statusProp="allStatus.find(i => i.step == 'step3')" v-if="driver" />
                 </v-window-item>
                 <v-window-item value="EmploymentResidency">
-                    <DriverEmploymentResidencyTab :driverProp="driver" v-if="driver" />
+                    <DriverEmploymentResidencyTab :driverProp="driver" :statusProp="allStatus.find(i => i.step == 'step4')" v-if="driver" />
                 </v-window-item>
                 <v-window-item value="RtaTraining">
-                    <DriverRtaTrainingTab :driverProp="driver" v-if="driver" />
+                    <DriverRtaTrainingTab :driverProp="driver" :statusProp="allStatus.find(i => i.step == 'step5')" v-if="driver" />
                 </v-window-item>
                 <v-window-item value="RtaTest">
-                    <DriverRtaTestTab :driverProp="driver" v-if="driver" />
+                    <DriverRtaTestTab :driverProp="driver" :statusProp="allStatus.find(i => i.step == 'step6')" v-if="driver" />
                 </v-window-item>
             </v-window>
         </v-card-text>
