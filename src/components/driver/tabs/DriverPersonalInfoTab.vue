@@ -9,6 +9,7 @@ import { useNotificationStore } from '@/stores/notification';
 import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter()
+const nativeWindow = window
 
 const props = defineProps({
     driverProp: { type: Object as PropType<DriverItemDto>, required: true },
@@ -292,91 +293,70 @@ const saveChangeStatus = async () => {
                             </v-card-text>
                         </v-card>
                     </v-col>
-
-                    <!-- CV Upload -->
-                    <v-col cols="12" md="4">
-                        <v-card elevation="10">
-                            <v-card-item>
-                                <v-card-title class="text-h5">CV Upload</v-card-title>
-                            </v-card-item>
-                            <v-card-text>
-
-                                <div class="mt-5">
-                                    <v-row>
-                                        <v-col cols="6" v-for="(item, k) in driverDocument.cv_id"
-                                            :key="`cv-item-${item.id}-${k}`">
-                                            <v-img :src="cvIds.get(item.id) || ''" aspect-ratio="1" height="150"
-                                                @click="handleImageClick(cvIds.get(item.id) || '')"></v-img>
-                                        </v-col>
-                                    </v-row>
-                                </div>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-
-                    <!-- CV Upload -->
-                    <v-col cols="12" md="4">
-                        <v-card elevation="10">
-                            <v-card-item>
-                                <v-card-title class="text-h5">Passport</v-card-title>
-                            </v-card-item>
-                            <v-card-text>
-
-                                <div class="mt-5">
-                                    <v-row>
-                                        <v-col cols="6" v-for="(item, k) in driverDocument.photo_passport_id"
-                                            :key="`passport-item-${item.id}-${k}`">
-                                            <v-img :src="passportIds.get(item.id) || ''" aspect-ratio="1" height="150"
-                                                @click="handleImageClick(passportIds.get(item.id) || '')"></v-img>
-                                        </v-col>
-                                    </v-row>
-                                </div>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-
-                    <!-- Emirates ID -->
-                    <v-col cols="12" md="4">
-                        <v-card elevation="10">
-                            <v-card-item class="pb-sm-8 pb-6">
-                                <v-card-title class="text-h5">Emirates ID</v-card-title>
-                            </v-card-item>
-                            <v-card-text>
-
-                                <div class="mt-5">
-                                    <v-row>
-                                        <v-col cols="6" v-for="(item, k) in driverDocument.emirates_id"
-                                            :key="`emirate-item-${item.id}-${k}`">
-                                            <v-img :src="emirateIds.get(item.id) || ''" aspect-ratio="1" height="150"
-                                                @click="handleImageClick(emirateIds.get(item.id) || '')"></v-img>
-                                        </v-col>
-                                    </v-row>
-                                </div>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-
-                    <!-- Current Visa -->
-                    <v-col cols="12" md="4">
-                        <v-card elevation="10">
-                            <v-card-item>
-                                <v-card-title class="text-h5">Current Visa</v-card-title>
-                            </v-card-item>
-                            <v-card-text>
-                                <span>Type of Visa: {{ driverDocument.visa_type }}</span>
-                                <div class="mt-5">
-                                    <v-row>
-                                        <v-col cols="6" v-for="(item, k) in driverDocument.visa_residency"
-                                            :key="`visa-item-${item.id}-${k}`">
-                                            <v-img :src="visaIds.get(item.id) || ''" aspect-ratio="1" height="150"
-                                                @click="handleImageClick(visaIds.get(item.id) || '')"></v-img>
-                                        </v-col>
-                                    </v-row>
-                                </div>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
                 </v-row>
+            </v-card-item>
+        </v-card>
+
+        <v-card elevation="10" class="mt-8">
+            <v-card-item>
+                <h2 class="mb-2 mt-4">Document Information</h2>
+                <v-table>
+                    <thead>
+                        <tr>
+                            <th class="text-left">Document</th>
+                            <th class="text-left">Type Visa</th>
+                            <th class="text-left">Filename</th>
+                            <th class="text-left">Download</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, k) in driverDocument.cv_id" :key="`cv-item-${item.id}-${k}`">
+                            <td>CV Document</td>
+                            <td>CV Document</td>
+                            <td>{{ item.signed_url }}</td>
+                            <td>
+                                <v-btn icon color="secondary" variant="flat" size="x-small"
+                                    @click="nativeWindow.open(cvIds.get(item.id) || '', '_blank')">
+                                    <ArrowDownCircleIcon size="16" />
+                                </v-btn>
+                            </td>
+                        </tr>
+                        <tr v-for="(item, k) in driverDocument.photo_passport_id"
+                            :key="`passport-item-${item.id}-${k}`">
+                            <td>Passport</td>
+                            <td>Passport</td>
+                            <td>{{ item.signed_url }}</td>
+                            <td>
+                                <v-btn icon color="secondary" variant="flat" size="x-small"
+                                    @click="nativeWindow.open(passportIds.get(item.id) || '', '_blank')">
+                                    <ArrowDownCircleIcon size="16" />
+                                </v-btn>
+                            </td>
+                        </tr>
+                        <tr v-for="(item, k) in driverDocument.emirates_id" :key="`emirate-item-${item.id}-${k}`">
+                            <td>Emirates ID</td>
+                            <td>Emirates ID</td>
+                            <td>{{ item.signed_url }}</td>
+                            <td>
+                                <v-btn icon color="secondary" variant="flat" size="x-small"
+                                    @click="nativeWindow.open(emirateIds.get(item.id) || '', '_blank')">
+                                    <ArrowDownCircleIcon size="16" />
+                                </v-btn>
+                            </td>
+                        </tr>
+                        <tr v-for="(item, k) in driverDocument.visa_residency" :key="`visa-item-${item.id}-${k}`">
+                            <td>Current Visa</td>
+                            <td>{{ driverDocument.visa_type }}</td>
+                            <td>{{ item.signed_url }}</td>
+                            <td>
+                                <v-btn icon color="secondary" variant="flat" size="x-small"
+                                    @click="nativeWindow.open(visaIds.get(item.id), '_blank')">
+                                    <ArrowDownCircleIcon size="16" />
+                                </v-btn>
+                            </td>
+                        </tr>
+                    </tbody>
+                </v-table>
             </v-card-item>
         </v-card>
     </div>
