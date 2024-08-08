@@ -1,21 +1,28 @@
 <script setup lang="ts">
-import type { DriverApplicationFormItemDto, DriverItemDto } from '@/contracts/response/DriverRelated.response';
+import type { DriverApplicationFormItemDto, DriverItemDto, DriverStepItemDto } from '@/contracts/response/DriverRelated.response';
 import type { BufferedDocIdVo } from '@/contracts/vo/Document.vo';
 import { getEnumKeyByEnumValue } from '@/enums/base';
 import { UserGender } from '@/enums/UserRelated.enum';
 import ApiService from '@/services/ApiService';
+import { useAuthStore } from '@/stores/auth';
 import { useDriverStore } from '@/stores/driver';
+import { useNotificationStore } from '@/stores/notification';
 import { onMounted, type PropType, ref, toRef } from 'vue';
 import { ArrowDownCircleIcon } from 'vue-tabler-icons';
+import Editor from '@tinymce/tinymce-vue'
 
 const nativeWindow = window
 
 const props = defineProps({
-    driverProp: { type: Object as PropType<DriverItemDto>, required: true }
+    driverProp: { type: Object as PropType<DriverItemDto>, required: true },
+    statusProp: { type: Object as PropType<DriverStepItemDto>, required: true },
 })
 const driver = toRef(props, 'driverProp')
+const status = toRef(props, 'statusProp')
 
 const driverStore = useDriverStore();
+const authStore = useAuthStore();
+const notificationStore = useNotificationStore();
 
 const driverApplicationForm = ref<DriverApplicationFormItemDto|null>()
 const medicalInformations = ref<Map<string, BufferedDocIdVo>>(new Map())
@@ -51,12 +58,20 @@ const changeNotesFormData = ref({
     application_title_notes: '',
     application_notes: ''
 });
+const notificationData = ref({
+    content: '',
+    sendNotif: false,
+});
 const closeChangeNotes = () => {
     dialogChangeNotes.value = false;
     changeNotesFormData.value = {
         application_title_notes: '',
         application_notes: ''
     };
+    notificationData.value = {
+        content: '',
+        sendNotif: false,
+    }
 };
 const saveChangeNotes = async () => {
     if (!driverApplicationForm.value) return;
@@ -64,6 +79,18 @@ const saveChangeNotes = async () => {
         application_title_notes: changeNotesFormData.value.application_title_notes,
         application_notes: changeNotesFormData.value.application_notes
     });
+    if(notificationData.value.sendNotif){
+        await notificationStore.sendNotification({
+            driver_id: driver.value.id,
+            user_id: authStore.user.uid,
+            step: "step1",
+            message: changeNotesFormData.value.application_notes,
+            title: changeNotesFormData.value.application_title_notes,
+            content: notificationData.value.content,
+            status: status.value.status_step,
+            withEmail: true,
+        })
+    }
     if (data) {
         await fetchData();
     }
@@ -116,6 +143,9 @@ const saveChangeStatus = async () => {
                                     <v-form ref="form" lazy-validation>
                                         <v-row>
                                             <v-col cols="12">
+                                                <v-checkbox v-model="notificationData.sendNotif" label="Send Notification"></v-checkbox>
+                                            </v-col>
+                                            <v-col cols="12">
                                                 <v-text-field
                                                     variant="outlined"
                                                     hide-details
@@ -129,13 +159,21 @@ const saveChangeStatus = async () => {
                                                     v-model="changeNotesFormData.application_notes"
                                                     auto-grow
                                                     variant="outlined"
-                                                    placeholder="Hi, Do you  have a moment to talk Jeo ?"
                                                     rows="4"
                                                     color="primary"
                                                     row-height="25"
                                                     shaped
                                                     hide-details
                                                 ></v-textarea>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <Editor
+                                                    v-model="notificationData.content"
+                                                    tinymce-script-src="/assets/js/tinymce/tinymce.min.js"
+                                                    :init="{
+                                                        plugins: 'lists link image table code help wordcount'
+                                                    }"
+                                                    />
                                             </v-col>
                                         </v-row>
                                     </v-form>

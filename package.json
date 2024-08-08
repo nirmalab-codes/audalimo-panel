@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@braks/vue-flow": "0.4.38",
+        "@tinymce/tinymce-vue": "^5",
         "@tiptap/pm": "^2.0.0-beta.220",
         "@tiptap/starter-kit": "2.0.0-beta.220",
         "@tiptap/vue-3": "2.0.0-beta.220",

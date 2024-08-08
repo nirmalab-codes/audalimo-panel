@@ -1,18 +1,25 @@
 <script setup lang="ts">
-import { ref, onMounted, type PropType, toRef } from 'vue';
-import type { DriverDocumentItemDto, DriverItemDto } from '@/contracts/response/DriverRelated.response';
+import { ref, onMounted, type PropType, toRef, computed } from 'vue';
+import type { DriverDocumentItemDto, DriverItemDto, DriverStepItemDto } from '@/contracts/response/DriverRelated.response';
 import { useDriverStore } from '@/stores/driver';
 import { useRouter } from 'vue-router';
 import ApiService from '@/services/ApiService';
+import Editor from '@tinymce/tinymce-vue'
+import { useNotificationStore } from '@/stores/notification';
+import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter()
 
 const props = defineProps({
-    driverProp: { type: Object as PropType<DriverItemDto>, required: true }
+    driverProp: { type: Object as PropType<DriverItemDto>, required: true },
+    statusProp: { type: Object as PropType<DriverStepItemDto>, required: true },
 })
 const driver = toRef(props, 'driverProp')
+const status = toRef(props, 'statusProp')
 
 const driverStore = useDriverStore();
+const authStore = useAuthStore();
+const notificationStore = useNotificationStore();
 
 const driverDocument = ref<DriverDocumentItemDto|null>()
 const selfieIds = ref<Map<string, string>>(new Map())
@@ -87,7 +94,11 @@ const handleImageClick = (url: string) => {
 const dialogChangeNotes = ref(false);
 const changeNotesFormData = ref({
     doc_title_notes: '',
-    doc_notes: ''
+    doc_notes: '',
+});
+const notificationData = ref({
+    content: '',
+    sendNotif: false,
 });
 const closeChangeNotes = () => {
     dialogChangeNotes.value = false;
@@ -95,6 +106,10 @@ const closeChangeNotes = () => {
         doc_title_notes: '',
         doc_notes: ''
     };
+    notificationData.value = {
+        content: '',
+        sendNotif: false,
+    }
 };
 const saveChangeNotes = async () => {
     if (!driverDocument.value) return;
@@ -102,6 +117,18 @@ const saveChangeNotes = async () => {
         doc_title_notes: changeNotesFormData.value.doc_title_notes,
         doc_notes: changeNotesFormData.value.doc_notes
     });
+    if(notificationData.value.sendNotif){
+        await notificationStore.sendNotification({
+            driver_id: driver.value.id,
+            user_id: authStore.user.uid,
+            step: "step1",
+            message: changeNotesFormData.value.doc_notes,
+            title: changeNotesFormData.value.doc_title_notes,
+            content: notificationData.value.content,
+            status: status.value.status_step,
+            withEmail: true,
+        })
+    }
     if (data) {
         await fetchData();
     }
@@ -148,7 +175,7 @@ const saveChangeStatus = async () => {
                                     <v-icon class="mr-2">mdi-note</v-icon>Add Note
                                 </v-btn>
                             </template>
-                            <v-card>
+                            <v-card width="100%">
                                 <v-card-title class="pa-4 bg-secondary">
                                     <span class="title text-white">Add Note</span>
                                 </v-card-title>
@@ -160,6 +187,9 @@ const saveChangeStatus = async () => {
                                 <v-card-text>
                                     <v-form ref="form" lazy-validation>
                                         <v-row>
+                                            <v-col cols="12">
+                                                <v-checkbox v-model="notificationData.sendNotif" label="Send Notification"></v-checkbox>
+                                            </v-col>
                                             <v-col cols="12">
                                                 <v-text-field
                                                     variant="outlined"
@@ -181,6 +211,15 @@ const saveChangeStatus = async () => {
                                                     shaped
                                                     hide-details
                                                 ></v-textarea>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <Editor
+                                                    v-model="notificationData.content"
+                                                    tinymce-script-src="/assets/js/tinymce/tinymce.min.js"
+                                                    :init="{
+                                                        plugins: 'lists link image table code help wordcount'
+                                                    }"
+                                                    />
                                             </v-col>
                                         </v-row>
                                     </v-form>
