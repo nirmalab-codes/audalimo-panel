@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import type { DriverRtaItemDto, DriverItemDto } from '@/contracts/response/DriverRelated.response';
+import type { DriverRtaItemDto, DriverItemDto, DriverStepItemDto } from '@/contracts/response/DriverRelated.response';
 import type { BufferedDocIdVo } from '@/contracts/vo/Document.vo';
 import ApiService from '@/services/ApiService';
 import { useDriverStore } from '@/stores/driver';
 import { onMounted, type PropType, ref, toRef } from 'vue';
 import { ArrowDownCircleIcon } from 'vue-tabler-icons';
+import Editor from '@tinymce/tinymce-vue'
+import { useNotificationStore } from '@/stores/notification';
+import { useAuthStore } from '@/stores/auth';
 
 const nativeWindow = window;
 
 const props = defineProps({
-    driverProp: { type: Object as PropType<DriverItemDto>, required: true }
+    driverProp: { type: Object as PropType<DriverItemDto>, required: true },
+        statusProp: { type: Object as PropType<DriverStepItemDto>, required: true },
 });
 const driver = toRef(props, 'driverProp');
+const status = toRef(props, 'statusProp')
 
 const driverStore = useDriverStore();
+const authStore = useAuthStore();
+const notificationStore = useNotificationStore();
 
 const driverRta = ref<DriverRtaItemDto | null>();
 const medicalTests = ref<Map<string, BufferedDocIdVo>>(new Map());
@@ -49,12 +56,20 @@ const changeNotesFormData = ref({
     rta_title_notes: '',
     rta_notes: ''
 });
+const notificationData = ref({
+    content: '',
+    sendNotif: false,
+});
 const closeChangeNotes = () => {
     dialogChangeNotes.value = false;
     changeNotesFormData.value = {
         rta_title_notes: '',
         rta_notes: ''
     };
+    notificationData.value = {
+        content: '',
+        sendNotif: false,
+    }
 };
 const saveChangeNotes = async () => {
     if (!driverRta.value) return;
@@ -62,6 +77,18 @@ const saveChangeNotes = async () => {
         rta_title_notes: changeNotesFormData.value.rta_title_notes,
         rta_notes: changeNotesFormData.value.rta_notes
     });
+    if(notificationData.value.sendNotif){
+        await notificationStore.sendNotification({
+            driver_id: driver.value.id,
+            user_id: authStore.user.uid,
+            step: "step1",
+            message: changeNotesFormData.value.rta_notes,
+            title: changeNotesFormData.value.rta_title_notes,
+            content: notificationData.value.content,
+            status: status.value.status_step,
+            withEmail: true,
+        })
+    }
     if (data) {
         await fetchData();
     }
@@ -126,6 +153,9 @@ const formatTime = (timeString: string | null) => {
                                     <v-form ref="form" lazy-validation>
                                         <v-row>
                                             <v-col cols="12">
+                                                <v-checkbox v-model="notificationData.sendNotif" label="Send Notification"></v-checkbox>
+                                            </v-col>
+                                            <v-col cols="12">
                                                 <v-text-field
                                                     variant="outlined"
                                                     hide-details
@@ -139,13 +169,21 @@ const formatTime = (timeString: string | null) => {
                                                     v-model="changeNotesFormData.rta_notes"
                                                     auto-grow
                                                     variant="outlined"
-                                                    placeholder="Hi, Do you  have a moment to talk Jeo ?"
                                                     rows="4"
                                                     color="primary"
                                                     row-height="25"
                                                     shaped
                                                     hide-details
                                                 ></v-textarea>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <Editor
+                                                    v-model="notificationData.content"
+                                                    tinymce-script-src="/assets/js/tinymce/tinymce.min.js"
+                                                    :init="{
+                                                        plugins: 'lists link image table code help wordcount'
+                                                    }"
+                                                    />
                                             </v-col>
                                         </v-row>
                                     </v-form>
