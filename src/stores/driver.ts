@@ -147,8 +147,8 @@ export const useDriverStore = defineStore({
             toast.success(parsedResponse.message);
             return parsedResponse.data;
         },
-        async updateRtaPermit(driverId: string, payload: UpdateRtaPermitRequest) {
-            const rawResponse = await ApiService.put(`/v1/kyc-rta/upload-rta-permit/${driverId}`, payload);
+        async updateRtaPermit(documentId: string, payload: UpdateRtaPermitRequest) {
+            const rawResponse = await ApiService.put(`/v1/kyc-rta/upload-permit/${documentId}`, payload);
             const parsedResponse = rawResponse.data as SingleResponse<DriverRtaItemDto>;
             toast.success(parsedResponse.message);
             return parsedResponse.data;

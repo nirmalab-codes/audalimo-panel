@@ -115,7 +115,7 @@ const tabBadges = computed(() => {
                 </v-tab>
             </template>
             <template v-if="tabBadges.RtaTraining">
-                <v-tab value="RtaTraining" class="text-medium-emphasis" :disabled="tabBadges?.RtaTraining?.disabled">
+                <v-tab value="RtaTraining" class="text-medium-emphasis" :disabled="tabBadges?.EmploymentResidency?.disabled">
                     RTA Training
                     <v-chip :color="tabBadges.RtaTraining.color" size="small" class="ml-2">
                         <small>{{ tabBadges.RtaTraining.label }}</small>
@@ -123,7 +123,7 @@ const tabBadges = computed(() => {
                 </v-tab>
             </template>
             <template v-if="tabBadges.RtaTest">
-                <v-tab value="RtaTest" class="text-medium-emphasis" :disabled="tabBadges?.RtaTest?.disabled">
+                <v-tab value="RtaTest" class="text-medium-emphasis" :disabled="tabBadges?.RtaTraining?.disabled">
                     RTA Test
                     <v-chip :color="tabBadges.RtaTest.color" size="small" class="ml-2">
                         <small>{{ tabBadges.RtaTest.label }}</small>

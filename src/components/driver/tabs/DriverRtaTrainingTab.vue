@@ -13,7 +13,7 @@ const nativeWindow = window;
 
 const props = defineProps({
     driverProp: { type: Object as PropType<DriverItemDto>, required: true },
-        statusProp: { type: Object as PropType<DriverStepItemDto>, required: true },
+    statusProp: { type: Object as PropType<DriverStepItemDto>, required: true },
 });
 const driver = toRef(props, 'driverProp');
 const status = toRef(props, 'statusProp')
@@ -77,7 +77,7 @@ const saveChangeNotes = async () => {
         rta_title_notes: changeNotesFormData.value.rta_title_notes,
         rta_notes: changeNotesFormData.value.rta_notes
     });
-    if(notificationData.value.sendNotif){
+    if (notificationData.value.sendNotif) {
         await notificationStore.sendNotification({
             driver_id: driver.value.id,
             user_id: authStore.user.uid,
@@ -118,13 +118,13 @@ const saveChangeStatus = async () => {
 
 // Utils
 const formatDate = (dateString: string | null) => {
-  if (!dateString) return 'N/A';
-  return new Date(dateString).toLocaleDateString();
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString();
 };
 
 const formatTime = (timeString: string | null) => {
-  if (!timeString) return 'N/A';
-  return new Date(`1970-01-01T${timeString}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (!timeString) return 'N/A';
+    return new Date(`1970-01-01T${timeString}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 </script>
 
@@ -144,46 +144,34 @@ const formatTime = (timeString: string | null) => {
                                 <v-card-title class="pa-4 bg-secondary">
                                     <span class="title text-white">Add Note</span>
                                 </v-card-title>
-                                <v-card-subtitle class="pb-4 bg-secondary text-subtitle-1" :style="{ 'white-space': 'preserve' }">
-                                    <span class="title text-white"
-                                        >To send notifications or intructions to the driver, fields or forms need to be correct.</span
-                                    >
+                                <v-card-subtitle class="pb-4 bg-secondary text-subtitle-1"
+                                    :style="{ 'white-space': 'preserve' }">
+                                    <span class="title text-white">To send notifications or intructions to the driver,
+                                        fields or forms need to be
+                                        correct.</span>
                                 </v-card-subtitle>
                                 <v-card-text>
                                     <v-form ref="form" lazy-validation>
                                         <v-row>
                                             <v-col cols="12">
-                                                <v-text-field
-                                                    variant="outlined"
-                                                    hide-details
+                                                <v-text-field variant="outlined" hide-details
                                                     v-model="changeNotesFormData.rta_title_notes"
-                                                    label="Title"
-                                                ></v-text-field>
+                                                    label="Title"></v-text-field>
                                             </v-col>
                                             <v-col cols="12">
-                                                <v-textarea
-                                                    label="Message"
-                                                    v-model="changeNotesFormData.rta_notes"
-                                                    auto-grow
-                                                    variant="outlined"
-                                                    rows="2"
-                                                    color="primary"
-                                                    row-height="10"
-                                                    shaped
-                                                    hide-details
-                                                ></v-textarea>
+                                                <v-textarea label="Message" v-model="changeNotesFormData.rta_notes"
+                                                    auto-grow variant="outlined" rows="2" color="primary"
+                                                    row-height="10" shaped hide-details></v-textarea>
                                             </v-col>
                                             <v-col cols="12">
-                                                <Editor
-                                                    v-model="notificationData.content"
-                                                    tinymce-script-src="/assets/js/tinymce/tinymce.min.js"
-                                                    :init="{
+                                                <Editor v-model="notificationData.content"
+                                                    tinymce-script-src="/assets/js/tinymce/tinymce.min.js" :init="{
                                                         plugins: 'lists link image table code help wordcount'
-                                                    }"
-                                                    />
+                                                    }" />
                                             </v-col>
                                             <v-col cols="12">
-                                                <v-checkbox v-model="notificationData.sendNotif" label="Send notification also using email?"></v-checkbox>
+                                                <v-checkbox v-model="notificationData.sendNotif"
+                                                    label="Send notification also using email?"></v-checkbox>
                                             </v-col>
                                         </v-row>
                                     </v-form>
@@ -192,13 +180,9 @@ const formatTime = (timeString: string | null) => {
                                 <v-card-actions class="pa-4">
                                     <v-spacer></v-spacer>
                                     <v-btn color="error" @click="closeChangeNotes">Cancel</v-btn>
-                                    <v-btn
-                                        color="secondary"
+                                    <v-btn color="secondary"
                                         :disabled="changeNotesFormData.rta_title_notes == '' || changeNotesFormData.rta_notes == ''"
-                                        variant="flat"
-                                        @click="saveChangeNotes"
-                                        >Save</v-btn
-                                    >
+                                        variant="flat" @click="saveChangeNotes">Save</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-dialog>
@@ -213,22 +197,18 @@ const formatTime = (timeString: string | null) => {
                                 <v-card-title class="pa-4 bg-secondary">
                                     <span class="title text-white">Change Status</span>
                                 </v-card-title>
-                                <v-card-subtitle class="pb-4 bg-secondary text-subtitle-1" :style="{ 'white-space': 'preserve' }">
-                                    <span class="title text-white"
-                                        >To change the form status so that the driver can proceed to the next step.</span
-                                    >
+                                <v-card-subtitle class="pb-4 bg-secondary text-subtitle-1"
+                                    :style="{ 'white-space': 'preserve' }">
+                                    <span class="title text-white">To change the form status so that the driver can
+                                        proceed to the next
+                                        step.</span>
                                 </v-card-subtitle>
                                 <v-card-text>
                                     <v-form ref="form" lazy-validation>
                                         <v-row>
                                             <v-col cols="12" sm="12">
-                                                <v-select
-                                                    variant="outlined"
-                                                    hide-details
-                                                    :items="changeStatusEnums"
-                                                    v-model="changeStatusFormData.rta_status"
-                                                    label="Status"
-                                                ></v-select>
+                                                <v-select variant="outlined" hide-details :items="changeStatusEnums"
+                                                    v-model="changeStatusFormData.rta_status" label="Status"></v-select>
                                             </v-col>
                                         </v-row>
                                     </v-form>
@@ -237,13 +217,8 @@ const formatTime = (timeString: string | null) => {
                                 <v-card-actions class="pa-4">
                                     <v-spacer></v-spacer>
                                     <v-btn color="error" @click="closeChangeStatus">Cancel</v-btn>
-                                    <v-btn
-                                        color="secondary"
-                                        :disabled="changeStatusFormData.rta_status == ''"
-                                        variant="flat"
-                                        @click="saveChangeStatus"
-                                        >Save</v-btn
-                                    >
+                                    <v-btn color="secondary" :disabled="changeStatusFormData.rta_status == ''"
+                                        variant="flat" @click="saveChangeStatus">Save</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-dialog>
@@ -252,7 +227,7 @@ const formatTime = (timeString: string | null) => {
             </v-col>
         </v-row>
 
-        <h2 class="mb-2">Driver RTA Information</h2>
+        <!-- <h2 class="mb-2">Driver RTA Information</h2>
         <v-row>
             <v-col cols="12" md="6" class="mb-1">
                 <v-label class="font-weight-medium">RTA Status</v-label>
@@ -262,37 +237,44 @@ const formatTime = (timeString: string | null) => {
                 <v-label class="font-weight-medium">RTA Permit Status</v-label>
                 <v-text-field variant="outlined" type="text" hide-details :value="driverRta?.rta_permit_status" readonly />
             </v-col>
-        </v-row>
-
-        <h2 class="mb-2 mt-4">Training Information</h2>
-        <v-row>
-            <v-col cols="12" md="3" class="mb-1">
-                <v-label class="font-weight-medium">Training Start Date</v-label>
-                <v-text-field variant="outlined" type="text" hide-details :value="formatDate(driverRta?.training_start_date)" readonly />
-            </v-col>
-            <v-col cols="12" md="3" class="mb-1">
-                <v-label class="font-weight-medium">Training Start Time</v-label>
-                <v-text-field variant="outlined" type="text" hide-details :value="formatTime(driverRta?.training_start_time)" readonly />
-            </v-col>
-            <v-col cols="12" md="3" class="mb-1">
-                <v-label class="font-weight-medium">Training End Date</v-label>
-                <v-text-field variant="outlined" type="text" hide-details :value="formatDate(driverRta?.training_end_date)" readonly />
-            </v-col>
-            <v-col cols="12" md="3" class="mb-1">
-                <v-label class="font-weight-medium">Training End Time</v-label>
-                <v-text-field variant="outlined" type="text" hide-details :value="formatTime(driverRta?.training_end_time)" readonly />
-            </v-col>
-            <v-col cols="12" md="6" class="mb-1">
-                <v-label class="font-weight-medium">Training Location</v-label>
-                <v-text-field variant="outlined" type="text" hide-details :value="driverRta?.training_location" readonly />
-            </v-col>
-            <v-col cols="12" md="6" class="mb-1">
+        </v-row> -->
+        <v-card elevation="10" class="mt-4">
+            <v-card-item>
+                <h2 class="mb-2 mt-4">Training Information</h2>
+                <v-row>
+                    <v-col cols="12" md="3" class="mb-1">
+                        <v-label class="mb-2 font-weight-medium">Training Start Date</v-label>
+                        <v-text-field variant="outlined" type="text" hide-details
+                            :value="formatDate(driverRta?.training_start_date)" readonly />
+                    </v-col>
+                    <v-col cols="12" md="3" class="mb-1">
+                        <v-label class="mb-2 font-weight-medium">Training Start Time</v-label>
+                        <v-text-field variant="outlined" type="text" hide-details
+                            :value="formatTime(driverRta?.training_start_time)" readonly />
+                    </v-col>
+                    <v-col cols="12" md="3" class="mb-1">
+                        <v-label class="mb-2 font-weight-medium">Training End Date</v-label>
+                        <v-text-field variant="outlined" type="text" hide-details
+                            :value="formatDate(driverRta?.training_end_date)" readonly />
+                    </v-col>
+                    <v-col cols="12" md="3" class="mb-1">
+                        <v-label class="mb-2 font-weight-medium">Training End Time</v-label>
+                        <v-text-field variant="outlined" type="text" hide-details
+                            :value="formatTime(driverRta?.training_end_time)" readonly />
+                    </v-col>
+                    <v-col cols="12" md="12" class="mb-1">
+                        <v-label class="mb-2 font-weight-medium">Training Location</v-label>
+                        <v-text-field variant="outlined" type="text" hide-details :value="driverRta?.training_location"
+                            readonly />
+                    </v-col>
+                    <!-- <v-col cols="12" md="6" class="mb-1">
                 <v-label class="font-weight-medium">URL Location</v-label>
                 <v-text-field variant="outlined" type="text" hide-details :value="driverRta?.url_location || 'N/A'" readonly />
-            </v-col>
-        </v-row>
-
-        <h2 class="mb-2 mt-4">Medical Information</h2>
+            </v-col> -->
+                </v-row>
+            </v-card-item>
+        </v-card>
+        <!-- <h2 class="mb-2 mt-4">Medical Information</h2>
         <v-row>
             <v-col cols="12" md="6" class="mb-1">
                 <v-label class="font-weight-medium">Medical Status</v-label>
@@ -330,27 +312,34 @@ const formatTime = (timeString: string | null) => {
                 <v-label class="font-weight-medium">RTA Notes</v-label>
                 <v-text-field variant="outlined" type="text" hide-details :value="driverRta?.rta_notes || 'N/A'" readonly />
             </v-col>
-        </v-row>
+        </v-row> -->
 
-        <h2 class="mb-2 mt-4">Letter Documents</h2>
-        <v-table>
-            <thead>
-                <tr>
-                    <th class="text-left">Filename</th>
-                    <th class="text-left">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(item, key) in Array.from(medicalTests.entries())" :key="`letter-${item[1].id}-${key}`">
-                    <td>{{ item[1].name }}</td>
-                    <td>
-                        <v-btn icon color="secondary" variant="flat" size="x-small" @click="nativeWindow.open(item[1].byteUrl, '_blank')">
-                            <ArrowDownCircleIcon size="16" />
-                        </v-btn>
-                    </td>
-                </tr>
-            </tbody>
-        </v-table>
+        <v-card elevation="10" class="mt-4">
+            <v-card-item>
+                <h2 class="mb-2 mt-4">Letter Documents</h2>
+                <v-table>
+                    <thead>
+                        <tr>
+                            <th class="text-left">Filename</th>
+                            <th class="text-left">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, key) in Array.from(medicalTests.entries())"
+                            :key="`letter-${item[1].id}-${key}`">
+                            <td>{{ item[1].name }}</td>
+                            <td>
+                                <v-btn icon color="secondary" variant="flat" size="x-small"
+                                    @click="nativeWindow.open(item[1].byteUrl, '_blank')">
+                                    <ArrowDownCircleIcon size="16" />
+                                </v-btn>
+                            </td>
+                        </tr>
+                    </tbody>
+                </v-table>
+            </v-card-item>
+        </v-card>
+
     </v-container>
     <div v-else>Offer Letter is currently not available</div>
 </template>

@@ -4,7 +4,7 @@ import { useDriverStore } from '@/stores/driver';
 import { useUploadStore } from '@/stores/apps/upload';
 import { type RtaPermitVo, type RtaPermitIdVo, getDefaultRtaPermitVo } from '@/contracts/vo/RtaPermit.vo';
 import { type UploadDto } from '@/contracts/response/UploadRelated.response';
-import type { DriverItemDto } from '@/contracts/response/DriverRelated.response';
+import type { DriverItemDto, DriverRtaItemDto } from '@/contracts/response/DriverRelated.response';
 import type { UpdateRtaPermitRequest } from '@/contracts/request/DriverRelated.request';
 
 const store = useDriverStore();
@@ -18,16 +18,23 @@ const fileToUpload = ref<File | null>(null);
 const props = defineProps({
     driverProp: { type: Object as PropType<DriverItemDto>, required: true }
 });
-const driver = toRef(props, 'driverProp');
 
-onMounted(() => {
-    // pass
+const driver = toRef(props, 'driverProp');
+const driverRta = ref<DriverRtaItemDto | null>();
+const driverStore = useDriverStore();
+
+onMounted(async () => {
+    await fetchData();
 });
 
 // Methods
 function close() {
     dialog.value = false;
 }
+
+const fetchData = async () => {
+    driverRta.value = await driverStore.retrieveLatestRtaTraining(driver.value.id);
+};
 
 async function save() {
     if (fileToUpload.value) {
@@ -46,8 +53,8 @@ async function save() {
                     }
                 ]
             };
-
-            await store.updateRtaPermit(driver.value.id, updateRtaPermitRequest);
+            if (!driverRta.value) return;
+            await store.updateRtaPermit(driverRta.value.id, updateRtaPermitRequest);
         }
     }
     close();
@@ -62,38 +69,34 @@ function onFileChange(e: any) {
     <v-container>
         <div class="text-center">
             <v-dialog v-model="dialog" max-width="500">
-            <template v-slot:activator="{ props }">
-                <v-btn color="primary" v-bind="props" flat>
-                    <v-icon class="mr-2">mdi-cloud-upload</v-icon>Upload RTA Test
-                </v-btn>
-            </template>
-            <v-card>
-                <v-card-title class="pa-4 bg-secondary">
-                    <span class="title text-white">Upload RTA Permit</span>
-                </v-card-title>
+                <template v-slot:activator="{ props }">
+                    <v-btn color="primary" v-bind="props" flat>
+                        <v-icon class="mr-2">mdi-cloud-upload</v-icon>Upload RTA Test
+                    </v-btn>
+                </template>
+                <v-card>
+                    <v-card-title class="pa-4 bg-secondary">
+                        <span class="title text-white">Upload RTA Permit</span>
+                    </v-card-title>
 
-                <v-card-text>
-                    <v-form ref="form" v-model="valid" lazy-validation>
-                        <v-row>
-                            <v-col cols="12">
-                                <v-file-input
-                                    label="File input"
-                                    density="compact"
-                                    variant="outlined"
-                                    @change="onFileChange"
-                                ></v-file-input>
-                            </v-col>
-                        </v-row>
-                    </v-form>
-                </v-card-text>
+                    <v-card-text>
+                        <v-form ref="form" v-model="valid" lazy-validation>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-file-input label="File input" density="compact" variant="outlined"
+                                        @change="onFileChange"></v-file-input>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
 
-                <v-card-actions class="pa-4">
-                    <v-spacer></v-spacer>
-                    <v-btn color="error" @click="close">Cancel</v-btn>
-                    <v-btn color="secondary" variant="flat" @click="save">Save</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
+                    <v-card-actions class="pa-4">
+                        <v-spacer></v-spacer>
+                        <v-btn color="error" @click="close">Cancel</v-btn>
+                        <v-btn color="secondary" variant="flat" @click="save">Save</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </div>
     </v-container>
 </template>

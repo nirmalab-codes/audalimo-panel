@@ -36,12 +36,14 @@ function transformStatus(status: string): string {
 
 function processStepData(stepData: string): string {
     const [step, status] = stepData.split('-');
+    if(stepData === 'STEP6-APPROVED' ) return 'VERIFIED';
     const transformedStatus = transformStatus(status as string);
     return `${step} - ${transformedStatus}`;
 }
 
 function processStepColor(stepData: string): string {
     const [step, status] = stepData.split('-');
+    if(stepData === 'STEP6-APPROVED' ) return 'success';
     return getColor(status as string);
 }
 
