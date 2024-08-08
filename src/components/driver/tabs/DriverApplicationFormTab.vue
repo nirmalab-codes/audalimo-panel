@@ -75,25 +75,25 @@ const closeChangeNotes = () => {
 };
 const saveChangeNotes = async () => {
     if (!driverApplicationForm.value) return;
-    const data = await driverStore.updateApplicationFormNotes(driverApplicationForm.value.id, {
-        application_title_notes: changeNotesFormData.value.application_title_notes,
-        application_notes: changeNotesFormData.value.application_notes
-    });
-    if (notificationData.value.sendNotif) {
-        await notificationStore.sendNotification({
-            driver_id: driver.value.id,
-            user_id: authStore.user.uid,
-            step: "step1",
-            message: changeNotesFormData.value.application_notes,
-            title: changeNotesFormData.value.application_title_notes,
-            content: notificationData.value.content,
-            status: status.value.status_step,
-            withEmail: true,
-        })
-    }
-    if (data) {
-        await fetchData();
-    }
+    // const data = await driverStore.updateApplicationFormNotes(driverApplicationForm.value.id, {
+    //     application_title_notes: changeNotesFormData.value.application_title_notes,
+    //     application_notes: changeNotesFormData.value.application_notes
+    // });
+    // if (notificationData.value.sendNotif) {
+    await notificationStore.sendNotification({
+        driver_id: driver.value.id,
+        user_id: authStore.user.uid,
+        step: "step1",
+        message: changeNotesFormData.value.application_notes,
+        title: changeNotesFormData.value.application_title_notes,
+        content: notificationData.value.content,
+        status: status.value.status_step,
+        withEmail: true,
+    })
+    // }
+    // if (data) {
+    await fetchData();
+    // }
     closeChangeNotes();
 };
 
@@ -173,7 +173,7 @@ const saveChangeStatus = async () => {
                                     <v-btn color="error" @click="closeChangeNotes">Cancel</v-btn>
                                     <v-btn color="secondary"
                                         :disabled="changeNotesFormData.application_title_notes == '' || changeNotesFormData.application_notes == ''"
-                                        variant="flat" @click="saveChangeNotes">Save</v-btn>
+                                        variant="flat" @click="saveChangeNotes">Send</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-dialog>

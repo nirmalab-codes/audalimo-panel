@@ -73,25 +73,25 @@ const closeChangeNotes = () => {
 };
 const saveChangeNotes = async () => {
     if (!driverRta.value) return;
-    const data = await driverStore.updateRtaNotes(driverRta.value.id, {
-        rta_title_notes: changeNotesFormData.value.rta_title_notes,
-        rta_notes: changeNotesFormData.value.rta_notes
-    });
-    if (notificationData.value.sendNotif) {
-        await notificationStore.sendNotification({
-            driver_id: driver.value.id,
-            user_id: authStore.user.uid,
-            step: "step1",
-            message: changeNotesFormData.value.rta_notes,
-            title: changeNotesFormData.value.rta_title_notes,
-            content: notificationData.value.content,
-            status: status.value.status_step,
-            withEmail: true,
-        })
-    }
-    if (data) {
-        await fetchData();
-    }
+    // const data = await driverStore.updateRtaNotes(driverRta.value.id, {
+    //     rta_title_notes: changeNotesFormData.value.rta_title_notes,
+    //     rta_notes: changeNotesFormData.value.rta_notes
+    // });
+    // if (notificationData.value.sendNotif) {
+    await notificationStore.sendNotification({
+        driver_id: driver.value.id,
+        user_id: authStore.user.uid,
+        step: "step1",
+        message: changeNotesFormData.value.rta_notes,
+        title: changeNotesFormData.value.rta_title_notes,
+        content: notificationData.value.content,
+        status: status.value.status_step,
+        withEmail: true,
+    })
+    // }
+    // if (data) {
+    await fetchData();
+    // }
     closeChangeNotes();
 };
 
@@ -182,7 +182,7 @@ const formatTime = (timeString: string | null) => {
                                     <v-btn color="error" @click="closeChangeNotes">Cancel</v-btn>
                                     <v-btn color="secondary"
                                         :disabled="changeNotesFormData.rta_title_notes == '' || changeNotesFormData.rta_notes == ''"
-                                        variant="flat" @click="saveChangeNotes">Save</v-btn>
+                                        variant="flat" @click="saveChangeNotes">Send</v-btn>
                                 </v-card-actions>
                             </v-card>
                         </v-dialog>
