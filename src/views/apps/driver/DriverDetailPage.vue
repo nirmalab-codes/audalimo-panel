@@ -57,12 +57,12 @@ const stepLabelMap: Record<string, string> = {
 
 // computed property to map status to badge details
 const tabBadges = computed(() => {
-    const statusMap: Record<string, { label: string; color: string }> = {
-        [StatusStep.Open]: { label: 'not filled', color: 'warning' },
-        [StatusStep.Pending]: { label: 'not filled', color: 'warning' },
-        [StatusStep.Review]: { label: 'need to be review', color: 'secondary' },
-        [StatusStep.Approved]: { label: '✔', color: 'success' },
-        [StatusStep.Rejected]: { label: 'rejected', color: 'error' }
+    const statusMap: Record<string, { label: string; color: string, disabled: boolean }> = {
+        [StatusStep.Open]: { label: 'not filled', color: 'info', disabled: true },
+        [StatusStep.Pending]: { label: 'not filled', color: 'info', disabled: true },
+        [StatusStep.Review]: { label: 'need to review', color: 'warning', disabled: false },
+        [StatusStep.Approved]: { label: '✔', color: 'success', disabled: false },
+        [StatusStep.Rejected]: { label: 'rejected', color: 'error', disabled: false }
     };
 
     return allStatus.value.reduce((acc, status) => {
@@ -71,50 +71,65 @@ const tabBadges = computed(() => {
             acc[stepLabel] = statusMap[status.status_step];
         }
         return acc;
-    }, {} as Record<string, { label: string; color: string }>);
+    }, {} as Record<string, { label: string; color: string, disabled: boolean }>);
 });
+
 </script>
 
 <template>
     <BaseBreadcrumb :title="page.title" :description="driver?.email"></BaseBreadcrumb>
     <v-card elevation="10" class=" " rounded="md">
         <v-tabs v-model="tab" bg-color="transparent" color="primary">
-            <v-tab value="Documents" class="text-medium-emphasis">
-                <span class="mr-2">Documents</span>
-                <v-chip v-if="tabBadges.Documents" :color="tabBadges.Documents.color" size="small" class="ml-auto">
-                    {{ tabBadges.Documents.label }}
-                </v-chip>
-            </v-tab>
-            <v-tab value="ApplicationForm" class="text-medium-emphasis">
-                Application Form
-                <v-chip v-if="tabBadges.ApplicationForm" :color="tabBadges.ApplicationForm.color" size="small" class="ml-2">
-                    {{ tabBadges.ApplicationForm.label }}
-                </v-chip>
-            </v-tab>
-            <v-tab value="OfferLetter" class="text-medium-emphasis">
-                Offer Letter
-                <v-chip v-if="tabBadges.OfferLetter" :color="tabBadges.OfferLetter.color" size="small" class="ml-2">
-                    {{ tabBadges.OfferLetter.label }}
-                </v-chip>
-            </v-tab>
-            <v-tab value="EmploymentResidency" class="text-medium-emphasis">
-                Employment & Residency
-                <v-chip v-if="tabBadges.EmploymentResidency" :color="tabBadges.EmploymentResidency.color" size="small" class="ml-2">
-                    {{ tabBadges.EmploymentResidency.label }}
-                </v-chip>
-            </v-tab>
-            <v-tab value="RtaTraining" class="text-medium-emphasis">
-                RTA Training
-                <v-chip v-if="tabBadges.RtaTraining" :color="tabBadges.RtaTraining.color" size="small" class="ml-2">
-                    {{ tabBadges.RtaTraining.label }}
-                </v-chip>
-            </v-tab>
-            <v-tab value="RtaTest" class="text-medium-emphasis">
-                RTA Test
-                <v-chip v-if="tabBadges.RtaTest" :color="tabBadges.RtaTest.color" size="small" class="ml-2">
-                    {{ tabBadges.RtaTest.label }}
-                </v-chip>
-            </v-tab>
+            <template v-if="tabBadges.Documents">
+                <v-tab value="Documents" class="text-medium-emphasis" :disabled="tabBadges?.Documents?.disabled">
+                    <span class="mr-2">Documents</span>
+                    <v-chip :color="tabBadges.Documents.color" size="small" class="ml-auto">
+                        <small>{{ tabBadges.Documents.label }}</small>
+                    </v-chip>
+                </v-tab>
+            </template>
+            <template v-if="tabBadges.ApplicationForm">
+                <v-tab value="ApplicationForm" class="text-medium-emphasis"
+                    :disabled="tabBadges?.ApplicationForm?.disabled">
+                    Application Form
+                    <v-chip :color="tabBadges.ApplicationForm.color" size="small" class="ml-2">
+                        <small>{{ tabBadges.ApplicationForm.label }}</small>
+                    </v-chip>
+                </v-tab>
+            </template>
+            <template v-if="tabBadges.OfferLetter">
+                <v-tab value="OfferLetter" class="text-medium-emphasis" :disabled="tabBadges?.OfferLetter?.disabled">
+                    Offer Letter
+                    <v-chip :color="tabBadges.OfferLetter.color" size="small" class="ml-2">
+                        <small>{{ tabBadges.OfferLetter.label }}</small>
+                    </v-chip>
+                </v-tab>
+            </template>
+            <template v-if="tabBadges.EmploymentResidency">
+                <v-tab value="EmploymentResidency" class="text-medium-emphasis"
+                    :disabled="tabBadges.EmploymentResidency.disabled">
+                    {{ "Employment & Residency" }}
+                    <v-chip :color="tabBadges?.EmploymentResidency?.color" size="small" class="ml-2">
+                        <small>{{ tabBadges.EmploymentResidency.label }}</small>
+                    </v-chip>
+                </v-tab>
+            </template>
+            <template v-if="tabBadges.RtaTraining">
+                <v-tab value="RtaTraining" class="text-medium-emphasis" :disabled="tabBadges?.RtaTraining?.disabled">
+                    RTA Training
+                    <v-chip :color="tabBadges.RtaTraining.color" size="small" class="ml-2">
+                        <small>{{ tabBadges.RtaTraining.label }}</small>
+                    </v-chip>
+                </v-tab>
+            </template>
+            <template v-if="tabBadges.RtaTest">
+                <v-tab value="RtaTest" class="text-medium-emphasis" :disabled="tabBadges?.RtaTest?.disabled">
+                    RTA Test
+                    <v-chip :color="tabBadges.RtaTest.color" size="small" class="ml-2">
+                        <small>{{ tabBadges.RtaTest.label }}</small>
+                    </v-chip>
+                </v-tab>
+            </template>
         </v-tabs>
         <v-divider></v-divider>
         <v-card-text class="pa-sm-6 pa-3 pb-sm-6 pb-6">
