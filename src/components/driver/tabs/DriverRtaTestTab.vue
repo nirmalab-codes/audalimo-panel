@@ -68,8 +68,10 @@ function onFileChange(e: any) {
 <template>
     <v-container>
         <div class="text-center">
+            <p class="my-4 text-h2">Candidate already join the test confirmed at {{ driverRta?.joined_rta_date }}</p>
             <v-dialog v-model="dialog" max-width="500">
                 <template v-slot:activator="{ props }">
+                    <p class="my-4">After you upload the RTA Permit, the candidate will be verified as a new driver.</p>
                     <v-btn color="primary" v-bind="props" flat>
                         <v-icon class="mr-2">mdi-cloud-upload</v-icon>Upload RTA Test
                     </v-btn>

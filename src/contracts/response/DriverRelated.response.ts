@@ -213,6 +213,7 @@ export type DriverRtaItemDto = {
     link_medical_test: string | null,
     medical_test_id: Array<DocumentItemDto>,
     medical_status: string,
+    joined_rta_date: Date | null,
     link_rta_test: string | null,
     rta_permit_id: string | null,
     rta_permit_status: string,

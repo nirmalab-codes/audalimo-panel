@@ -31,11 +31,21 @@ const changeStatusEnums = ref(['rejected', 'approved']);
 onMounted(async () => {
     await fetchData();
     await fetchMedicalTests();
+    await fetchSchedule();
 });
 
 const fetchData = async () => {
     driverRta.value = await driverStore.retrieveLatestRtaTraining(driver.value.id);
 };
+
+const fetchSchedule = async () => {
+    if (!driverRta.value) return;
+    changeScheduleFormData.value.training_start_date = driverRta.value.training_start_date;
+    changeScheduleFormData.value.training_end_date = driverRta.value.training_end_date;
+    changeScheduleFormData.value.training_start_time = driverRta.value.training_start_time;
+    changeScheduleFormData.value.training_end_time = driverRta.value.training_end_time;
+    changeScheduleFormData.value.training_location = driverRta.value.training_location;
+}
 
 const fetchMedicalTests = async () => {
     let medicalTestIdRaw = driverRta.value?.medical_test_id || [];
@@ -51,6 +61,31 @@ const fetchMedicalTests = async () => {
     }
 };
 
+const dialogChangeSchedule = ref(false);
+const changeScheduleFormData: any = ref({
+    training_start_date: '',
+    training_end_date: '',
+    training_start_time: '',
+    training_end_time: '',
+    training_location: ''
+});
+
+const saveChangeSchedule = async () => {
+    if (!driverRta.value) return;
+    await notificationStore.updateRtaTrainingSchedule(driverRta.value.id, {
+        training_start_date: changeScheduleFormData.value.training_start_date,
+        training_end_date: changeScheduleFormData.value.training_end_date,
+        training_start_time: changeScheduleFormData.value.training_start_time,
+        training_end_time: changeScheduleFormData.value.training_end_time,
+        training_location: changeScheduleFormData.value.training_location,
+    })
+    await fetchData();
+    closeChangeSchedule();
+};
+
+const closeChangeSchedule = () => {
+    dialogChangeSchedule.value = false;
+};
 const dialogChangeNotes = ref(false);
 const changeNotesFormData = ref({
     rta_title_notes: '',
@@ -134,6 +169,62 @@ const formatTime = (timeString: string | null) => {
             <v-col cols="12">
                 <div class="d-flex justify-end">
                     <div class="actions d-flex gap-2">
+                        <v-dialog v-model="dialogChangeSchedule" max-width="1000">
+                            <template v-slot:activator="{ props }">
+                                <v-btn color="primary" v-bind="props" flat class="ml-auto">
+                                    <v-icon class="mr-2">mdi-calendar-account</v-icon>Change Schedule
+                                </v-btn>
+                            </template>
+                            <v-card>
+                                <v-card-title class="pa-4 bg-secondary">
+                                    <span class="title text-white">Change Schedule</span>
+                                </v-card-title>
+                                <v-card-subtitle class="pb-4 bg-secondary text-subtitle-1"
+                                    :style="{ 'white-space': 'preserve' }">
+                                    <span class="title text-white">You can change candidate schedule training.</span>
+                                </v-card-subtitle>
+                                <v-card-text>
+                                    <v-form ref="form" lazy-validation>
+                                        <v-row>
+                                            <v-col cols="6">
+                                                <v-text-field variant="outlined" type="date" hide-details
+                                                    v-model="changeScheduleFormData.training_start_date"
+                                                    label="Start Date"></v-text-field>
+                                            </v-col>
+                                            <v-col cols="6">
+                                                <v-text-field variant="outlined" type="date" hide-details
+                                                    v-model="changeScheduleFormData.training_end_date"
+                                                    label="End Date"></v-text-field>
+                                            </v-col>
+                                            <v-col cols="6">
+                                                <v-text-field variant="outlined" type="time" hide-details
+                                                    v-model="changeScheduleFormData.training_start_time"
+                                                    label="Start Time"></v-text-field>
+                                            </v-col>
+                                            <v-col cols="6">
+                                                <v-text-field variant="outlined" type="time" hide-details
+                                                    v-model="changeScheduleFormData.training_end_time"
+                                                    label="End Time"></v-text-field>
+                                            </v-col>
+                                            <v-col cols="12">
+                                                <v-text-field variant="outlined" hide-details
+                                                    v-model="changeScheduleFormData.training_location"
+                                                    label="Training Location"></v-text-field>
+                                            </v-col>
+                                        </v-row>
+                                    </v-form>
+                                </v-card-text>
+
+                                <v-card-actions class="pa-4">
+                                    <v-spacer></v-spacer>
+                                    <v-btn color="error" @click="closeChangeSchedule">Cancel</v-btn>
+                                    <v-btn color="secondary"
+                                        :disabled="changeScheduleFormData.training_start_date == '' || changeScheduleFormData.training_end_date == '' || changeScheduleFormData.training_start_time == '' || changeScheduleFormData.training_end_time == '' || changeScheduleFormData.training_location == ''"
+                                        variant="flat" @click="saveChangeSchedule">Save Schedule</v-btn>
+                                </v-card-actions>
+                            </v-card>
+                        </v-dialog>
+
                         <v-dialog v-model="dialogChangeNotes" max-width="1000">
                             <template v-slot:activator="{ props }">
                                 <v-btn color="primary" v-bind="props" flat class="ml-auto">

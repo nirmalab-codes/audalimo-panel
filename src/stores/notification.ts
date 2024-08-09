@@ -21,7 +21,8 @@ import type {
     UpdateRtaNotesRequest,
     UpdateApplicationFormStatusRequest,
     UpdateApplicationFormNotesRequest,
-    UpdateRtaPermitRequest
+    UpdateRtaPermitRequest,
+    UpdateRtaTrainingRequest
 } from '@/contracts/request/DriverRelated.request';
 import { toast } from 'vue3-toastify';
 import type { SendNotificationRequest } from '@/contracts/request/NotificationRelated.request';
@@ -78,6 +79,12 @@ export const useNotificationStore = defineStore({
         async updateEmploymentResidencyNotes(documentId: string, payload: UpdateEmploymentResidencyNotesRequest) {
             const rawResponse = await ApiService.put(`/v1/kyc-residency/notes/${documentId}`, payload);
             const parsedResponse = rawResponse.data as SingleResponse<DriverEmploymentResidencyItemDto>;
+            toast.success(parsedResponse.message);
+            return parsedResponse.data;
+        },
+        async updateRtaTrainingSchedule(documentId: string, payload: UpdateRtaTrainingRequest) {
+            const rawResponse = await ApiService.put(`/v1/kyc-rta/${documentId}`, payload);
+            const parsedResponse = rawResponse.data as SingleResponse<DriverRtaItemDto>;
             toast.success(parsedResponse.message);
             return parsedResponse.data;
         },

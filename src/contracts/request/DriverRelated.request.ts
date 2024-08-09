@@ -36,6 +36,14 @@ export type UpdateEmploymentResidencyNotesRequest = {
     residency_notes: string;
 };
 
+export type UpdateRtaTrainingRequest = {
+    training_start_date: string;
+    training_end_date: string;
+    training_start_time: string;
+    training_end_time: string;
+    training_location: string;
+};
+
 export type UpdateRtaStatusRequest = {
     rta_status: string;
 };
