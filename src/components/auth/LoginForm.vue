@@ -10,8 +10,8 @@ import facebook from '@/assets/images/svgs/facebook-icon.svg';
 const checkbox = ref(false);
 const valid = ref(false);
 const show1 = ref(false);
-const password = ref('Padang123');
-const username = ref('admin@mail.com');
+const password = ref('');
+const username = ref('');
 const passwordRules = ref([
     (v: string) => !!v || 'Password is required',
 ]);
