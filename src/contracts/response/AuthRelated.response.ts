@@ -11,4 +11,6 @@ export type LoginResponse = BaseResponse & {
     user: UserLoginDto,
     email: string,
     fullname: string,
+    role_id: string,
+    role: object
 }

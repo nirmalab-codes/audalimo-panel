@@ -5,11 +5,18 @@ import { profileDD } from '@/_mockApis/headerData';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
 
-import VueAvatar from "@webzlodimir/vue-avatar";
-import "@webzlodimir/vue-avatar/dist/style.css";
+import VueAvatar from '@webzlodimir/vue-avatar';
+import '@webzlodimir/vue-avatar/dist/style.css';
 
 const authStore = useAuthStore();
-const { user } = storeToRefs(authStore)
+const { user } = storeToRefs(authStore);
+
+const role = [
+    { name: 'Superadmin', value: '673c0385-d8d3-4f6f-8c42-f53f5a16c234' },
+    { name: 'Admin', value: '61b9e035-9289-48e0-9b2f-7ac2f7348266' },
+    { name: 'SPV', value: '2dff426e-82ae-458c-91fd-0d4123038a07' },
+    { name: 'Finance', value: '2dff426e-82ae-458c-91fd-0d4123038a08' }
+]
 </script>
 
 <template>
@@ -35,17 +42,16 @@ const { user } = storeToRefs(authStore)
                     </v-avatar>
                     <div class="ml-3">
                         <h6 class="text-h6 mb-n1">{{ user.fullname }}</h6>
-                        <small class="text-subtitle-1 d-block mt-1 textSecondary">{{ user.email }}</small>
-                        <!-- <span class="text-subtitle-1 font-weight-regular textSecondary">Designer</span>
+                        <span class="text-subtitle-1 font-weight-regular textSecondary">{{ role.find(r => r.value === user.role_id)?.name || 'N/A' }}</span>
                         <div class="d-flex align-center mt-1">
                             <MailIcon size="18" stroke-width="1.5" />
-                            <span class="text-subtitle-1 font-weight-regular textSecondary ml-2">info@modernize.com</span>
-                        </div> -->
+                            <span class="text-subtitle-1 font-weight-regular textSecondary ml-2">{{ user.email }}</span>
+                        </div>
                     </div>
                 </div>
                 <v-divider></v-divider>
             </div>
-            <!-- <perfect-scrollbar style="height: calc(100vh - 240px); max-height: 240px">
+            <perfect-scrollbar style="height: calc(100vh - 240px); max-height: 240px">
                 <v-list class="py-0 theme-list" lines="two">
                     <v-list-item v-for="item in profileDD" :key="item.title" class="py-4 px-8 custom-text-primary" :to="item.href">
                         <template v-slot:prepend>
@@ -59,7 +65,7 @@ const { user } = storeToRefs(authStore)
                         <p class="text-subtitle-1 font-weight-regular textSecondary">{{ item.subtitle }}</p>
                     </v-list-item>
                 </v-list>
-            </perfect-scrollbar> -->
+            </perfect-scrollbar>
             <!-- <div class="px-8 py-3">
                 <div class="bg-lightprimary rounded-md pa-5 overflow-hidden position-relative">
                     <h5 class="text-h6">

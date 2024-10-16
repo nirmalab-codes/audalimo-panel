@@ -5,6 +5,8 @@ import type { AxiosError, AxiosResponse } from 'axios';
 import AuthService from './AuthService';
 import { toast } from 'vue3-toastify';
 import { type BaseResponse } from '@/contracts/response/Base.response';
+import SecureStorageService from './SecureStorageService';
+import { useRouter } from 'vue-router';
 
 /**
  * @description service to call HTTP request via Axios
@@ -42,26 +44,39 @@ class ApiService {
             // Any status codes that falls outside the range of 2xx cause this function to trigger
             // Do something with response error
 
-            if(error.response){ // Toastable error
-                const is4xxError = error.response.status >= 400 &&  error.response.status < 500
-                const is5xxError = error.response.status >= 500 &&  error.response.status < 600
-                let errMessage = ""
-                if(is4xxError){
-                    let baseResponse = error.response.data as BaseResponse
-                    if(baseResponse?.errors){
-                        errMessage = baseResponse?.errors[Object.keys(baseResponse?.errors)[0]]
-                    }else if(baseResponse?.message){
-                        errMessage = baseResponse?.message
-                    }else{
-                        errMessage = error.message
-                    }
-                }else if(is5xxError){
-                    errMessage = "Oops... something went wrong"
+            if (error.response) {
+                const status = error.response.status;
+
+                if (status === 401) {
+                    // Handle 401 error
+                    SecureStorageService.removeItem(AuthService.USER_DATA_KEY);
+                    ApiService.setHeader();
+
+                    // Redirect to login page
+                    const router = useRouter(); // Get the router instance
+                    router.push({ name: 'auth/login' }); // Redirect to the login route
                 }
 
-                toast.error(errMessage)
+                // Toastable error handling
+                const is4xxError = status >= 400 && status < 500;
+                const is5xxError = status >= 500 && status < 600;
+                let errMessage = "";
+                if (is4xxError) {
+                    let baseResponse = error.response.data as BaseResponse;
+                    if (baseResponse?.errors) {
+                        errMessage = baseResponse?.errors[Object.keys(baseResponse?.errors)[0]];
+                    } else if (baseResponse?.message) {
+                        errMessage = baseResponse?.message;
+                    } else {
+                        errMessage = error.message;
+                    }
+                } else if (is5xxError) {
+                    errMessage = "Oops... something went wrong";
+                }
+
+                toast.error(errMessage);
             }
-            
+
             return Promise.reject(error);
         });
 

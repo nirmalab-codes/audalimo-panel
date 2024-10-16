@@ -47,16 +47,18 @@ function validate(values: any, { setErrors }: any) {
         </div>  
     </div> -->
     <Form @submit="validate" v-slot="{ errors, isSubmitting }" class="mt-5">
-        <v-label class="text-subtitle-1 font-weight-semibold pb-2 text-lightText">Username</v-label>
+        <v-label class="text-subtitle-1 font-weight-semibold pb-2 text-lightText">Email</v-label>
         <VTextField
+            placeholder="Enter your email"
             v-model="username"
             :rules="emailRules"
-            class="mb-8"
+            class="mb-4"
             required
             hide-details="auto"
         ></VTextField>
         <v-label class="text-subtitle-1 font-weight-semibold pb-2 text-lightText">Password</v-label>
         <VTextField
+            placeholder="Enter your password"
             v-model="password"
             :rules="passwordRules"
             required

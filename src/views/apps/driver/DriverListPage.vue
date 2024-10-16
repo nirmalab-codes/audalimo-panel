@@ -8,7 +8,7 @@ const page = ref({ title: 'Driver List' });
 
 const breadcrumbs = ref([
     {
-        text: 'Driver List',
+        text: 'Manage review and approval of driver',
         disabled: true,
         href: '#'
     }

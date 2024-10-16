@@ -26,12 +26,15 @@ export const useAuthStore = defineStore({
                 fullname: parsedResponse.fullname,
                 email: parsedResponse.email,
                 accessToken: parsedResponse.access_token,
+                role_id: parsedResponse.role_id,
+                role: parsedResponse.role,
             } as UserVo;
             // store user details and jwt in local storage to keep user logged in between page refreshes
             SecureStorageService.setItem(AuthService.USER_DATA_KEY, JSON.stringify(this.user))
             ApiService.setHeader()
             // redirect to previous url or default to home page
-            router.push(this.returnUrl || '/dashboards/modern');
+            window.location.href = this.returnUrl || '/dashboards';
+            // router.push(this.returnUrl || '/dashboards/modern');
         },
         async logout() {
             try {

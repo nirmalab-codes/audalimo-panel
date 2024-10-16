@@ -23,6 +23,11 @@ const MainRoutes = {
             component: () => import('@/views/apps/driver/DriverDetailPage.vue')
         },
         {
+            name: 'User',
+            path: '/apps/user',
+            component: () => import('@/views/apps/user/UserListPage.vue')
+        },
+        {
             name: 'Location',
             path: '/apps/location',
             component: () => import('@/views/apps/location/LocationListPage.vue')

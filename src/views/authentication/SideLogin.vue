@@ -5,34 +5,24 @@ import LoginForm from '@/components/auth/LoginForm.vue';
 </script>
 
 <template>
-    <div class="pa-3">
-        <v-row class="h-100vh mh-100 auth">
-            <!-- <v-col cols="12" lg="7" xl="8"
-                class="d-lg-flex align-center justify-center authentication position-relative">
-                <div class="auth-header pt-lg-6 pt-2 px-sm-6 px-3 pb-lg-6 pb-0">
-                    <div class="position-relative">
-                        <Logo />
-                    </div>
-                </div>
-                <div class="">
-                    <img src="@/assets/images/backgrounds/login-bg.svg" class="position-relative d-none d-lg-flex"
-                        alt="login-background" />
-                </div>
-            </v-col> -->
-
-            <v-col cols="12" lg="12" xl="12" class="d-flex align-center justify-center">
-                <div class="mt-xl-0 mt-5 mw-100">
-                    <Logo />
-                    <h2 class="text-h3 font-weight-bold mb-2 mt-5">Welcome to Audalimo</h2>
-                    <div class="text-subtitle-1 mb-6">Login to dashboard</div>
-                    <LoginForm />
-                    <!-- <h6 class="text-h6  d-flex align-center mt-6 font-weight-medium">
-                        New to Modernize?
-                        <v-btn class="pl-0 text-primary text-body-1 opacity-1 pl-2 font-weight-medium" height="auto"
-                            to="/auth/register" variant="plain">Create an account</v-btn>
-                    </h6> -->
-                </div>
-            </v-col>
-        </v-row>
+    <div class="authentication">
+        <v-container fluid class="pa-3">
+            <v-row class="h-100vh d-flex justify-center align-center">
+                <v-col cols="12" class="d-flex align-center">
+                    <v-card rounded="md" elevation="10" class="px-sm-1 px-0 mx-auto" max-width="450">
+                        <v-card-item class="pa-sm-8">
+                            <div class="d-flex justify-center py-4 mb-5"><Logo /></div>
+                            <!-- <div class="text-h6 text-medium-emphasis text-center mb-6">Your Social Campaigns</div> -->
+                            <div class="d-flex align-center text-center mb-6">
+                                <div class="text-h6 w-100 px-5 font-weight-regular auth-divider position-relative">
+                                    <span class="bg-surface px-5 py-3 position-relative">welcome to audalimo</span>
+                                </div>
+                            </div>
+                            <LoginForm />
+                        </v-card-item>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
     </div>
 </template>

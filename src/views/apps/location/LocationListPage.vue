@@ -8,7 +8,7 @@ const page = ref({ title: 'Location List' });
 
 const breadcrumbs = ref([
     {
-        text: 'Location List',
+        text: 'Manage create, edit, and delete location for onboarding',
         disabled: true,
         href: '#'
     }

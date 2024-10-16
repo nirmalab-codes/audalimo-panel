@@ -2,13 +2,13 @@
 import { ref } from 'vue';
 // common components
 import BaseBreadcrumb from '@/components/shared/BaseBreadcrumb.vue';
-import DocumentListTable from '@/components/document/DocumentListTable.vue';
+import UserListTable from '@/components/user/UserListTable.vue';
 // theme breadcrumb
-const page = ref({ title: 'Document List' });
+const page = ref({ title: 'User List' });
 
 const breadcrumbs = ref([
     {
-        text: 'Manage create, edit, and delete document for onboarding',
+        text: 'Manage create, edit, and delete user',
         disabled: true,
         href: '#'
     }
@@ -19,7 +19,7 @@ const breadcrumbs = ref([
     <BaseBreadcrumb :title="page.title" :breadcrumbs="breadcrumbs"></BaseBreadcrumb>
     <v-card elevation="10">
         <v-card-text>
-            <DocumentListTable />
+            <UserListTable />
         </v-card-text>
     </v-card>
 </template>

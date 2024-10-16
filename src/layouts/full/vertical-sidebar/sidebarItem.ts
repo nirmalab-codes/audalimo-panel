@@ -1,11 +1,8 @@
-import {
-    CalendarIcon,
-    ChartLineIcon,
-    FileTextIcon,
-    GpsIcon,
-    NotificationIcon,
-    UserPlusIcon
-} from 'vue-tabler-icons';
+import { useAuthStore } from '@/stores/auth';
+import ConstRole from '@/utils/constrole';
+import { storeToRefs } from 'pinia';
+import { onMounted } from 'vue';
+import { CalendarIcon, ChartLineIcon, FileTextIcon, GpsIcon, NotificationIcon, UserIcon, UserPlusIcon } from 'vue-tabler-icons';
 
 export interface menu {
     header?: string;
@@ -24,7 +21,7 @@ export interface menu {
 }
 
 const sidebarItem: menu[] = [
-    { header: 'Home' },
+    { header: 'Onboarding' },
     {
         title: 'Dashboard',
         icon: ChartLineIcon,
@@ -44,7 +41,27 @@ const sidebarItem: menu[] = [
         title: 'Documents',
         icon: FileTextIcon,
         to: '/apps/documents'
-    },
+    }
+    // { header: 'Settings' },
+    // {
+    //     title: 'Users',
+    //     icon: UserIcon,
+    //     to: '/apps/user'
+    // },
 ];
+
+const authStore = useAuthStore();
+const { user } = storeToRefs(authStore);
+
+if (user.value.role_id === ConstRole.ID_SUPER_ADMIN) {
+    sidebarItem.push(
+        { header: 'Settings' },
+        {
+            title: 'Users',
+            icon: UserIcon,
+            to: '/apps/user'
+        }
+    );
+}
 
 export default sidebarItem;
