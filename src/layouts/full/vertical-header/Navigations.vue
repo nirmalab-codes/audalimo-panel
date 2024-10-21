@@ -5,7 +5,7 @@
     <!-- ---------------------------------------------- -->
     <!-- mega menu DD -->
     <!-- ---------------------------------------------- -->
-    <router-link to="/dashboards" class="text-decoration-none">
+    <!-- <router-link to="/dashboards" class="text-decoration-none">
         <v-btn variant="text" color="primary">Dashboard </v-btn>
     </router-link>
     <router-link to="/apps/driver" class="text-decoration-none">
@@ -16,5 +16,5 @@
     </router-link>
     <router-link to="/apps/documents" class="text-decoration-none">
         <v-btn variant="text" color="primary">Documents </v-btn>
-    </router-link>
+    </router-link> -->
 </template>
