@@ -6,13 +6,14 @@ import contact from '@/_mockApis/apps/contact';
 import { useDriverStore } from '@/stores/driver';
 import { storeToRefs } from 'pinia';
 
-import VueAvatar from "@webzlodimir/vue-avatar";
-import "@webzlodimir/vue-avatar/dist/style.css";
+import VueAvatar from '@webzlodimir/vue-avatar';
+import '@webzlodimir/vue-avatar/dist/style.css';
 
+import countries from '@/utils/json/countries.json';
 // const store = useContactStore();
 const driverStore = useDriverStore();
 
-const { driverList } = storeToRefs(driverStore)
+const { driverList } = storeToRefs(driverStore);
 
 onMounted(() => {
     // store.fetchContacts();
@@ -36,14 +37,14 @@ function transformStatus(status: string): string {
 
 function processStepData(stepData: string): string {
     const [step, status] = stepData.split('-');
-    if(stepData === 'STEP6-APPROVED' ) return 'VERIFIED';
+    if (stepData === 'STEP6-APPROVED') return 'VERIFIED';
     const transformedStatus = transformStatus(status as string);
     return `${step} - ${transformedStatus}`;
 }
 
 function processStepColor(stepData: string): string {
     const [step, status] = stepData.split('-');
-    if(stepData === 'STEP6-APPROVED' ) return 'success';
+    if (stepData === 'STEP6-APPROVED') return 'success';
     return getColor(status as string);
 }
 
@@ -61,8 +62,6 @@ function getColor(status: string): string {
     }
 }
 
-
-
 const valid = ref(true);
 const dialog = ref(false);
 const search = ref('');
@@ -70,36 +69,50 @@ const rolesbg = ref(['primary', 'secondary', 'error', 'success', 'warning']);
 const desserts = ref(contact);
 const editedIndex = ref(-1);
 const editedItem = ref({
-    id: '',
-    avatar: '1.jpg',
-    userinfo: '',
-    usermail: '',
+    new_password: '',
+    confirm_new_password: '',
+    is_active: false,
+    date_of_birth: '',
+    gender: null,
+    national: '',
+    experience: 0,
+    is_verified: false,
+    first_name: '',
+    middle_name: '',
+    last_name: '',
+    phone_home: '',
     phone: '',
-    jdate: '',
-    role: '',
-    rolestatus: ''
+    email: ''
 });
 const defaultItem = ref({
-    id: '',
-    avatar: '1.jpg',
-    userinfo: '',
-    usermail: '',
+    new_password: '',
+    confirm_new_password: '',
+    is_active: false,
+    date_of_birth: '',
+    gender: null,
+    national: '',
+    experience: 0,
+    is_verified: false,
+    first_name: '',
+    middle_name: '',
+    last_name: '',
+    phone_home: '',
     phone: '',
-    jdate: '',
-    role: '',
-    rolestatus: ''
+    email: ''
 });
 
 //Methods
 const filteredList = computed(() => {
     return driverList.value.filter((driver: any) => {
-        return driver.first_name?.toLowerCase().includes(search.value.toLowerCase())
-            || driver.middle_name?.toLowerCase().includes(search.value.toLowerCase())
-            || driver.last_name?.toLowerCase().includes(search.value.toLowerCase())
-            || driver.phone?.toLowerCase().includes(search.value.toLowerCase())
-            || driver.phone_home?.toLowerCase().includes(search.value.toLowerCase())
-            || driver.email?.toLowerCase().includes(search.value.toLowerCase())
-            || driver.status_step?.toLowerCase().includes(search.value.toLowerCase())
+        return (
+            driver.first_name?.toLowerCase().includes(search.value.toLowerCase()) ||
+            driver.middle_name?.toLowerCase().includes(search.value.toLowerCase()) ||
+            driver.last_name?.toLowerCase().includes(search.value.toLowerCase()) ||
+            driver.phone?.toLowerCase().includes(search.value.toLowerCase()) ||
+            driver.phone_home?.toLowerCase().includes(search.value.toLowerCase()) ||
+            driver.email?.toLowerCase().includes(search.value.toLowerCase()) ||
+            driver.status_step?.toLowerCase().includes(search.value.toLowerCase())
+        );
     });
 });
 
@@ -110,12 +123,9 @@ function close() {
         editedIndex.value = -1;
     }, 300);
 }
-function save() {
-    if (editedIndex.value > -1) {
-        Object.assign(desserts.value[editedIndex.value], editedItem.value);
-    } else {
-        desserts.value.push(editedItem.value);
-    }
+async function save() {
+    await driverStore.createDriver(editedItem.value);
+    driverStore.retrieveList();
     close();
 }
 
@@ -127,63 +137,157 @@ const formTitle = computed(() => {
 <template>
     <v-row>
         <v-col cols="12" lg="4" md="6">
-            <v-text-field density="compact" v-model="search" label="Search Driver" hide-details
-                variant="outlined"></v-text-field>
+            <v-text-field density="compact" v-model="search" label="Search Driver" hide-details variant="outlined"></v-text-field>
         </v-col>
-        <!-- <v-col cols="12" lg="8" md="6" class="text-right">
-            <v-dialog v-model="dialog" max-width="500">
+        <v-col cols="12" lg="8" md="6" class="text-right">
+            <v-dialog v-model="dialog" max-width="1024">
                 <template v-slot:activator="{ props }">
                     <v-btn color="primary" v-bind="props" flat class="ml-auto">
                         <v-icon class="mr-2">mdi-account-multiple-plus</v-icon>Add Driver
                     </v-btn>
                 </template>
-<v-card>
-    <v-card-title class="pa-4 bg-secondary">
-        <span class="title text-white">{{ formTitle }}</span>
-    </v-card-title>
+                <v-card>
+                    <v-card-title class="pa-4 bg-secondary">
+                        <span class="title text-white">{{ formTitle }}</span>
+                    </v-card-title>
 
-    <v-card-text>
-        <v-form ref="form" v-model="valid" lazy-validation>
-            <v-row>
-                <v-col cols="12" sm="6">
-                    <v-text-field variant="outlined" hide-details v-model="editedItem.id" label="Id"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6">
-                    <v-text-field variant="outlined" hide-details v-model="editedItem.userinfo"
-                        label="User info"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6">
-                    <v-text-field variant="outlined" hide-details v-model="editedItem.usermail" label="User email"
-                        type="email"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6">
-                    <v-text-field variant="outlined" hide-details v-model="editedItem.phone" label="Phone"
-                        type="phone"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6">
-                    <v-text-field variant="outlined" hide-details v-model="editedItem.jdate"
-                        label="Joining Date"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6">
-                    <v-text-field variant="outlined" hide-details v-model="editedItem.role" label="Role"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="12">
-                    <v-select variant="outlined" hide-details :items="rolesbg" v-model="editedItem.rolestatus"
-                        label="Role Background"></v-select>
-                </v-col>
-            </v-row>
-        </v-form>
-    </v-card-text>
+                    <v-card-text>
+                        <v-form ref="form" v-model="valid" lazy-validation>
+                            <v-row>
+                                <v-col cols="4" sm="4">
+                                    <v-text-field
+                                        variant="outlined"
+                                        hide-details
+                                        v-model="editedItem.first_name"
+                                        label="First Name"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="4" sm="4">
+                                    <v-text-field
+                                        variant="outlined"
+                                        hide-details
+                                        v-model="editedItem.middle_name"
+                                        label="Middle Name (Optional)"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="4" sm="4">
+                                    <v-text-field
+                                        variant="outlined"
+                                        hide-details
+                                        v-model="editedItem.last_name"
+                                        label="Last Name"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6">
+                                    <v-text-field
+                                        variant="outlined"
+                                        hide-details
+                                        v-model="editedItem.phone"
+                                        label="Phone"
+                                        type="tel"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6">
+                                    <v-text-field
+                                        variant="outlined"
+                                        hide-details
+                                        type="tel"
+                                        v-model="editedItem.phone_home"
+                                        label="Home Phone"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6">
+                                    <v-text-field
+                                        variant="outlined"
+                                        hide-details
+                                        type="date"
+                                        v-model="editedItem.date_of_birth"
+                                        label="Date of Birth"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6">
+                                    <v-select
+                                        variant="outlined"
+                                        hide-details
+                                        item-title="name"
+                                        item-value="value"
+                                        v-model="editedItem.gender"
+                                        :items="[
+                                            { name: 'Male', value: 1 },
+                                            { name: 'Female', value: 0 }
+                                        ]"
+                                        label="Gender"
+                                    ></v-select>
+                                </v-col>
+                                <v-col cols="12" sm="6">
+                                    <v-autocomplete
+                                        variant="outlined"
+                                        hide-details
+                                        v-model="editedItem.national"
+                                        label="National"
+                                        :items="countries"
+                                        item-title="nationality"
+                                        item-value="nationality"
+                                    ></v-autocomplete>
+                                </v-col>
+                                <v-col cols="12" sm="6">
+                                    <v-text-field
+                                        variant="outlined"
+                                        hide-details
+                                        v-model.number="editedItem.experience"
+                                        label="Driving Experience"
+                                        type="number"
+                                        :min="0"
+                                    ></v-text-field>
+                                </v-col>
 
-    <v-card-actions class="pa-4">
-        <v-spacer></v-spacer>
-        <v-btn color="error" @click="close">Cancel</v-btn>
-        <v-btn color="secondary" :disabled="editedItem.userinfo == '' || editedItem.usermail == ''" variant="flat"
-            @click="save">Save</v-btn>
-    </v-card-actions>
-</v-card>
-</v-dialog>
-</v-col> -->
+                                <v-col cols="12" sm="12">
+                                    <v-text-field
+                                        variant="outlined"
+                                        hide-details
+                                        v-model="editedItem.email"
+                                        label="Email"
+                                        type="email"
+                                        autocomplete="email"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6">
+                                    <v-text-field
+                                        variant="outlined"
+                                        hide-details
+                                        v-model="editedItem.new_password"
+                                        label="New Password"
+                                        type="password"
+                                        autocomplete="new-password"
+                                    ></v-text-field>
+                                </v-col>
+                                <v-col cols="12" sm="6">
+                                    <v-text-field
+                                        variant="outlined"
+                                        hide-details
+                                        v-model="editedItem.confirm_new_password"
+                                        label="Confirm New Password"
+                                        type="password"
+                                    ></v-text-field>
+                                </v-col>
+                            </v-row>
+                        </v-form>
+                    </v-card-text>
+
+                    <v-card-actions class="pa-4">
+                        <v-spacer></v-spacer>
+                        <v-btn color="error" @click="close">Cancel</v-btn>
+                        <v-btn
+                            color="secondary"
+                            :disabled="editedItem.first_name == '' || editedItem.email == ''"
+                            variant="flat"
+                            @click="save"
+                            >Save</v-btn
+                        >
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+        </v-col>
     </v-row>
     <v-table class="mt-5">
         <thead>
@@ -202,21 +306,23 @@ const formTitle = computed(() => {
                 <td>
                     <div class="d-flex align-center py-4">
                         <div>
-                            <vue-avatar v-if="item.first_name && item.last_name"
-                                :username="`${item.first_name || ''} ${item.last_name || ''}`" />
+                            <vue-avatar
+                                v-if="item.first_name && item.last_name"
+                                :username="`${item.first_name || ''} ${item.last_name || ''}`"
+                            />
                             <vue-avatar v-else username="Unknown User" />
                         </div>
 
                         <div class="ml-5">
-                            <h4 class="text-h6 font-weight-semibold">{{ item.first_name || '' }} {{ item.middle_name
-                                ||''}}
-                                {{ item.last_name || '' }}</h4>
+                            <h4 class="text-h6 font-weight-semibold">
+                                {{ item.first_name || '' }} {{ item.middle_name || '' }} {{ item.last_name || '' }}
+                            </h4>
                             <span class="text-subtitle-1 d-block mt-1 textSecondary">{{ item.email }}</span>
                         </div>
                     </div>
                 </td>
                 <td class="text-subtitle-1">{{ item.phone }}</td>
-                <td class="text-subtitle-1">{{ (new Date(item.created_at)).toLocaleDateString() }}</td>
+                <td class="text-subtitle-1">{{ new Date(item.created_at).toLocaleDateString() }}</td>
                 <td>
                     <!-- <v-chip :color="item.rolestatus" size="small" label>{{ item.role }}</v-chip> -->
                     <v-chip :color="processStepColor(item.status_step)" size="small" label>

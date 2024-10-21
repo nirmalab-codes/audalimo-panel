@@ -101,7 +101,7 @@ class ApiService {
      * @param params: AxiosRequestConfig
      * @returns Promise<AxiosResponse>
      */
-    public static query(resource: string, params: any): Promise<AxiosResponse> {
+    public static query(resource: string, params?: any | void): Promise<AxiosResponse> {
         return ApiService.vueInstance.axios.get(resource, params);
     }
 

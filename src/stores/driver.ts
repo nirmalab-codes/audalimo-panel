@@ -21,20 +21,34 @@ import type {
     UpdateRtaNotesRequest,
     UpdateApplicationFormStatusRequest,
     UpdateApplicationFormNotesRequest,
-    UpdateRtaPermitRequest
+    UpdateRtaPermitRequest,
+    CreateDriverRequest
 } from '@/contracts/request/DriverRelated.request';
 import { toast } from 'vue3-toastify';
 
 export const useDriverStore = defineStore({
     id: 'driver',
     state: () => ({
-        driverList: [] as Array<DriverItemDto>
+        driverList: [] as Array<DriverItemDto>,
+        verifiedDrivers: [] as Array<DriverItemDto>
     }),
     actions: {
         async retrieveList() {
-            const rawResponse = await ApiService.query('/v1/driver', {});
+            const rawResponse = await ApiService.query('/v1/driver');
             const parsedResponse = rawResponse.data as ListResponse<DriverItemDto>;
             this.driverList = parsedResponse.data;
+        },
+        async retrieveAllVerifiedDrivers() {
+            const rawResponse = await ApiService.query('/v1/driver/all-verified');
+            const parsedResponse = rawResponse.data as ListResponse<DriverItemDto>;
+            this.verifiedDrivers = parsedResponse.data;
+        },
+        async createDriver(payload: CreateDriverRequest) {
+            console.log(payload);
+            const rawResponse = await ApiService.post('/v1/driver/sign-up', payload);
+            const parsedResponse = rawResponse.data as SingleResponse<DriverItemDto>;
+            toast.success(parsedResponse.message);
+            return parsedResponse.data;
         },
         // TODO: Apakah ada satu endpoint untuk mendapatkan semua status dari dokumen sampai RTA training
         async retrieveLatestDocuments(id: string) {

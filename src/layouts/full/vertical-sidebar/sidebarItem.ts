@@ -2,7 +2,7 @@ import { useAuthStore } from '@/stores/auth';
 import ConstRole from '@/utils/constrole';
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
-import { CalendarIcon, ChartLineIcon, FileTextIcon, GpsIcon, NotificationIcon, UserIcon, UserPlusIcon } from 'vue-tabler-icons';
+import { CalendarIcon, CarIcon, ChartLineIcon, FileTextIcon, GpsIcon, NotificationIcon, UserIcon, UserPlusIcon } from 'vue-tabler-icons';
 
 export interface menu {
     header?: string;
@@ -52,6 +52,17 @@ const sidebarItem: menu[] = [
 
 const authStore = useAuthStore();
 const { user } = storeToRefs(authStore);
+
+if ([ConstRole.ID_SUPER_ADMIN, ConstRole.ID_ADMIN].some((roleId) => user.value.role_id === roleId)) {
+    sidebarItem.push(
+        { header: 'Management' },
+        {
+            title: 'Vehicle',
+            icon: CarIcon,
+            to: '/apps/vehicle'
+        }
+    );
+}
 
 if (user.value.role_id === ConstRole.ID_SUPER_ADMIN) {
     sidebarItem.push(

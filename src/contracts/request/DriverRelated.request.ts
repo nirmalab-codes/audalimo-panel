@@ -56,3 +56,19 @@ export type UpdateRtaNotesRequest = {
 export type UpdateRtaPermitRequest = {
     rta_permit_id: DocId[]
 }
+
+export type CreateDriverRequest = {
+    first_name: string;
+    middle_name: string | null;
+    last_name: string;
+    email: string;
+    phone: string;
+    phone_home: string | null;
+    new_password: string;
+    confirm_new_password: string;
+    date_of_birth: string;
+    gender: number | null;
+    national: string;
+    experience: number;
+    is_verified: boolean;
+}

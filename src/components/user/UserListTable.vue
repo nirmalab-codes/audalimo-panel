@@ -151,7 +151,7 @@ watch(dialog, (newValue) => {
                                         variant="outlined"
                                         hide-details
                                         v-model="editedItem.email"
-                                        autocomplete="off"
+                                        autocomplete="email"
                                         label="Email"
                                     ></v-text-field>
                                 </v-col>
@@ -207,7 +207,7 @@ watch(dialog, (newValue) => {
                                 </v-col>
                                 <v-col cols="12" sm="12">
                                     <v-text-field
-                                        autocomplete="off"
+                                        autocomplete="new-password"
                                         variant="outlined"
                                         hide-details
                                         v-model="editedItem.new_password"
