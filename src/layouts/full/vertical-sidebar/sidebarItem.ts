@@ -2,7 +2,7 @@ import { useAuthStore } from '@/stores/auth';
 import ConstRole from '@/utils/constrole';
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
-import { CalendarIcon, CarIcon, ChartLineIcon, FileTextIcon, GpsIcon, NotificationIcon, UserIcon, UserPlusIcon } from 'vue-tabler-icons';
+import { CalendarIcon, CarIcon, ChartLineIcon, FileTextIcon, GpsIcon, NoteIcon, NotificationIcon, UserIcon, UserPlusIcon } from 'vue-tabler-icons';
 
 export interface menu {
     header?: string;
@@ -60,6 +60,11 @@ if ([ConstRole.ID_SUPER_ADMIN, ConstRole.ID_ADMIN].some((roleId) => user.value.r
             title: 'Vehicle',
             icon: CarIcon,
             to: '/apps/vehicle'
+        },
+        {
+            title: 'Trip',
+            icon: NoteIcon,
+            to: '/apps/trip'
         }
     );
 }

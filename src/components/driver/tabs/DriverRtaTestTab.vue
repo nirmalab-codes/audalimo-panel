@@ -85,7 +85,7 @@ function onFileChange(e: any) {
                         <v-form ref="form" v-model="valid" lazy-validation>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-file-input label="File input" density="compact" variant="outlined"
+                                    <v-file-input label="Drop files here or click to upload" density="compact" variant="outlined"
                                         @change="onFileChange"></v-file-input>
                                 </v-col>
                             </v-row>

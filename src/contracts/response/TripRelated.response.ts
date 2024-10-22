@@ -1,0 +1,26 @@
+import { type ListResponse, type BaseDto } from "./Base.response";
+
+export type TripDto = BaseDto & {
+    trip_date: Date;
+    start_time: string;
+    payment_type: string;
+    distance_km: number;
+    duration_minutes: number;
+    total_fare: number;
+    commission: number;
+    toll: number;
+    taxes: number;
+    service_fee: number;
+    rta_fee: number;
+    refunds: number;
+    tips: number;
+    app_used: string;
+    start_location_name: string;
+    start_latitude?: number | null;
+    start_longitude?: number | null;
+    end_location_name: string;
+    end_latitude?: number | null;
+    end_longitude?: number | null;
+    upload_id: string;
+    driver_id: string;
+}
