@@ -57,6 +57,11 @@ if ([ConstRole.ID_SUPER_ADMIN, ConstRole.ID_ADMIN].some((roleId) => user.value.r
     sidebarItem.push(
         { header: 'Management' },
         {
+            title: 'Attendance',
+            icon: CalendarIcon,
+            to: '/apps/attendance'
+        },
+        {
             title: 'Vehicle',
             icon: CarIcon,
             to: '/apps/vehicle'

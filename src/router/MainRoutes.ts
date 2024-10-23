@@ -43,6 +43,11 @@ const MainRoutes = {
             component: () => import('@/views/apps/trip/TripListPage.vue')
         },
         {
+            name: 'Attendance',
+            path: '/apps/attendance',
+            component: () => import('@/views/apps/attendance/AttendanceListPage.vue')
+        },
+        {
             name: 'Documents',
             path: '/apps/documents',
             component: () => import('@/views/apps/document/DocumentListPage.vue')

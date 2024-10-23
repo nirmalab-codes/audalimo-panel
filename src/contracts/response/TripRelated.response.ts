@@ -1,4 +1,6 @@
-import { type ListResponse, type BaseDto } from "./Base.response";
+import { type BaseDto } from './Base.response';
+import type { DriverItemDto } from './DriverRelated.response';
+import type { UploadDto } from './UploadRelated.response';
 
 export type TripDto = BaseDto & {
     trip_date: Date;
@@ -23,4 +25,6 @@ export type TripDto = BaseDto & {
     end_longitude?: number | null;
     upload_id: string;
     driver_id: string;
-}
+    driver: DriverItemDto | null;
+    upload: UploadDto | null;
+};

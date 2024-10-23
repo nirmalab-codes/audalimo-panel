@@ -29,7 +29,7 @@ const trips = computed(() => store.trips);
 const drivers = computed(() => driverStore.verifiedDrivers);
 const formTitle = computed(() => (editedItem.value.id ? 'Edit Trip' : 'New Trip'));
 const filteredList = computed(() =>
-    trips.value.filter((trip: TripVo) => trip.trip_date.toLowerCase().includes(search.value.toLowerCase()))
+    trips.value.filter((trip: TripVo) => trip.driver.first_name.toLowerCase().includes(search.value.toLowerCase()))
 );
 const fileToUpload = ref<File | null>(null);
 const uploadStore = useUploadStore();
@@ -78,7 +78,8 @@ function downloadDocument(trip: TripVo) {
                 a.download = trip.upload.filename;
                 document.body.appendChild(a);
                 a.click();
-                window.URL.revokeObjectURL(url);            })
+                window.URL.revokeObjectURL(url);
+            })
             .catch(() => alert('oh no!'));
     } else {
         console.error('No signed URL available for this document.');
@@ -117,7 +118,7 @@ const formatDate = (date: Date) => {
 <template>
     <v-row>
         <v-col cols="12" lg="4" md="6">
-            <v-text-field density="compact" v-model="search" label="Search Trip" hide-details variant="outlined"></v-text-field>
+            <v-text-field density="compact" v-model="search" label="Search Driver" hide-details variant="outlined"></v-text-field>
         </v-col>
         <v-col cols="12" lg="8" md="6" class="text-right">
             <v-dialog v-model="dialog" max-width="728">
@@ -283,8 +284,14 @@ const formatDate = (date: Date) => {
                                     ></v-text-field>
                                 </v-col>
                                 <!-- Trip Details -->
-                                <v-col cols="12" md="12">
+                                <v-col cols="12" md="6">
                                     <span class="text-h6 color-light col">Attachments Trip</span>
+                                </v-col>
+                                <v-col cols="12" md="6" v-if="editedItem.upload" class="d-flex justify-end">
+                                    <v-chip @click="downloadDocument(editedItem)">
+                                        <v-icon left>mdi-file-document-outline</v-icon>
+                                        Download
+                                    </v-chip>
                                 </v-col>
                                 <v-col cols="12" md="12">
                                     <v-file-input

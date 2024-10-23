@@ -18,7 +18,9 @@ export function getDefaultTripVo(): TripVo {
         start_location_name: '',
         end_location_name: '',
         upload_id: '',
-        driver_id: ''
+        driver_id: '',
+        upload: null,
+        driver: null,
     };
 }
 
@@ -46,4 +48,6 @@ export type TripVo = {
     end_longitude?: number | null;
     upload_id: string;
     driver_id: string;
+    upload?: any | null;
+    driver?: any | null;
 };
