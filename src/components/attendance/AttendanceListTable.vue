@@ -3,10 +3,8 @@ import { ref, computed, onMounted } from 'vue';
 import { useAttendanceStore } from '@/stores/apps/attendance';
 import { type AttendanceVo, getDefaultAttendanceVo } from '@/contracts/vo/Attendance.vo';
 import { useDriverStore } from '@/stores/driver';
-import type { UploadDto } from '@/contracts/response/UploadRelated.response';
 import { useUploadStore } from '@/stores/apps/upload';
 import { format } from 'date-fns'; // Import date-fns or any date formatting library
-import { DownloadIcon } from 'vue-tabler-icons';
 
 const store = useAttendanceStore();
 const driverStore = useDriverStore();
@@ -185,7 +183,11 @@ const formatDate = (date: Date) => {
                     <td class="text-subtitle-1">{{ item.driver.first_name }}</td>
                     <td class="text-subtitle-1">{{ formatDate(item.check_in_time) }}</td>
                     <td class="text-subtitle-1">{{ formatDate(item.check_out_time) }}</td>
-                    <td class="text-subtitle-1">{{ item.status }}</td>
+                    <td class="text-subtitle-1">
+                        <v-chip :color="item.status === 'On Going' ? 'primary' : 'success'" class="text-uppercase font-weight-semibold">
+                            {{ item.status }}
+                        </v-chip>
+                    </td>
                     <!-- <td>
                         <div class="d-flex align-center">
                             <v-tooltip text="Edit">
