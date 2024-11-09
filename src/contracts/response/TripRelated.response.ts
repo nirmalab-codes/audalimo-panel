@@ -9,7 +9,7 @@ export type TripDto = BaseDto & {
     distance_km: number;
     duration_minutes: number;
     total_fare: number;
-    commission: number;
+    tips: number;
     toll: number;
     taxes: number;
     service_fee: number;

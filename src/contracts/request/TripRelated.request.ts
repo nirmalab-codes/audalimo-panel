@@ -5,13 +5,12 @@ export type TripCreateRequest = {
     distance_km: number;
     duration_minutes: number;
     total_fare: number;
-    commission: number;
+    tips: number;
     toll: number;
     taxes: number;
     service_fee: number;
     rta_fee: number;
     refunds: number;
-    tips: number;
     app_used: string;
     start_location_name: string;
     start_latitude?: number | null;
@@ -21,6 +20,8 @@ export type TripCreateRequest = {
     end_longitude?: number | null;
     upload_id: string;
     driver_id: string;
+    verified?: boolean | null;
+    verified_by?: string | null;
 };
 
 export type TripUpdateRequest = {
@@ -30,13 +31,12 @@ export type TripUpdateRequest = {
     distance_km: number;
     duration_minutes: number;
     total_fare: number;
-    commission: number;
+    tips: number;
     toll: number;
     taxes: number;
     service_fee: number;
     rta_fee: number;
     refunds: number;
-    tips: number;
     app_used: string;
     start_location_name: string;
     start_latitude?: number | null;
@@ -46,4 +46,6 @@ export type TripUpdateRequest = {
     end_longitude?: number | null;
     upload_id: string;
     driver_id: string;
+    verified?: boolean | null;
+    verified_by?: string | null;
 };

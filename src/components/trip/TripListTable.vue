@@ -5,12 +5,13 @@ import { type TripVo, getDefaultTripVo } from '@/contracts/vo/Trip.vo';
 import { useDriverStore } from '@/stores/driver';
 import type { UploadDto } from '@/contracts/response/UploadRelated.response';
 import { useUploadStore } from '@/stores/apps/upload';
-import type { DocIdVo } from '@/contracts/vo/Document.vo';
-import { format } from 'date-fns'; // Import date-fns or any date formatting library
-import { DownloadIcon } from 'vue-tabler-icons';
+import { format, parseISO } from 'date-fns'; // Import date-fns or any date formatting library
+import { useAuthStore } from '@/stores/auth';
+import { api as viewerApi } from 'v-viewer';
 
 const store = useTripStore();
 const driverStore = useDriverStore();
+const authStore = useAuthStore();
 
 const valid = ref(true);
 const dialog = ref(false);
@@ -43,6 +44,11 @@ const resetEditedItem = () => {
 
 function editItem(trip: TripVo) {
     editedItem.value = { ...trip };
+
+    // Parse the original date and format it
+    const parsedDate = parseISO(trip.trip_date.toString());
+    editedItem.value.trip_date = format(parsedDate, "yyyy-MM-dd'T'HH:mm");
+    editedItem.value.verified_by = authStore.user.uid;
     isEdit.value = true;
     dialog.value = true;
 }
@@ -62,6 +68,10 @@ function close() {
     setTimeout(() => {
         resetEditedItem();
     }, 300);
+}
+
+function seeDocument(trip: TripVo) {
+    viewerApi({ images: [trip.upload.signed_url] });
 }
 
 function downloadDocument(trip: TripVo) {
@@ -112,7 +122,7 @@ async function save() {
 
 // Method to format date with AM/PM
 const formatDate = (date: Date) => {
-    return format(new Date(date), 'yyyy-MM-dd hh:mm:ss a'); // Adjust format to include AM/PM
+    return format(new Date(date), 'dd MMM yy, HH:mm a'); // Adjust format to include AM/PM
 };
 </script>
 <template>
@@ -208,7 +218,7 @@ const formatDate = (date: Date) => {
                                         variant="outlined"
                                         hide-details
                                         v-model.number="editedItem.distance_km"
-                                        label="Distance (km)"
+                                        label="Distance"
                                         type="number"
                                         required
                                     ></v-text-field>
@@ -218,7 +228,7 @@ const formatDate = (date: Date) => {
                                         variant="outlined"
                                         hide-details
                                         v-model.number="editedItem.duration_minutes"
-                                        label="Duration (minutes)"
+                                        label="Duration"
                                         type="number"
                                         required
                                     ></v-text-field>
@@ -237,8 +247,8 @@ const formatDate = (date: Date) => {
                                     <v-text-field
                                         variant="outlined"
                                         hide-details
-                                        v-model.number="editedItem.commission"
-                                        label="Commission"
+                                        v-model.number="editedItem.tips"
+                                        label="Tips"
                                         type="number"
                                         required
                                     ></v-text-field>
@@ -288,6 +298,10 @@ const formatDate = (date: Date) => {
                                     <span class="text-h6 color-light col">Attachments Trip</span>
                                 </v-col>
                                 <v-col cols="12" md="6" v-if="editedItem.upload" class="d-flex justify-end">
+                                    <v-chip @click="seeDocument(editedItem)" class="mr-2">
+                                        <v-icon left>mdi-file-eye</v-icon>
+                                        View
+                                    </v-chip>
                                     <v-chip @click="downloadDocument(editedItem)">
                                         <v-icon left>mdi-file-document-outline</v-icon>
                                         Download
@@ -300,6 +314,13 @@ const formatDate = (date: Date) => {
                                         variant="outlined"
                                         @change="onFileChange"
                                     ></v-file-input>
+                                </v-col>
+                                <v-col cols="12" md="12">
+                                    <p class="text-sm">
+                                        Please verify the trip if it is correct, make sure the trip is verified and the fare is correct
+                                        before saving.
+                                    </p>
+                                    <v-checkbox v-model="editedItem.verified" label="I Agree if the trip is correct"></v-checkbox>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -325,12 +346,13 @@ const formatDate = (date: Date) => {
             <tr>
                 <th class="text-subtitle-1 font-weight-semibold">Trip Date</th>
                 <th class="text-subtitle-1 font-weight-semibold">Driver</th>
-                <th class="text-subtitle-1 font-weight-semibold">Start Location Name</th>
-                <th class="text-subtitle-1 font-weight-semibold">End Location Name</th>
-                <th class="text-subtitle-1 font-weight-semibold">Distance (km)</th>
-                <th class="text-subtitle-1 font-weight-semibold">Duration (minutes)</th>
-                <th class="text-subtitle-1 font-weight-semibold">Total Fare</th>
-                <th class="text-subtitle-1 font-weight-semibold">App Used</th>
+                <th class="text-subtitle-1 font-weight-semibold">Pickup</th>
+                <th class="text-subtitle-1 font-weight-semibold">Distance</th>
+                <th class="text-subtitle-1 font-weight-semibold">Duration</th>
+                <th class="text-subtitle-1 font-weight-semibold">Fare</th>
+                <th class="text-subtitle-1 font-weight-semibold">App</th>
+                <th class="text-subtitle-1 font-weight-semibold">OCR Status</th>
+                <th class="text-subtitle-1 font-weight-semibold">Verified</th>
                 <th class="text-subtitle-1 font-weight-semibold">Actions</th>
             </tr>
         </thead>
@@ -349,23 +371,47 @@ const formatDate = (date: Date) => {
             </template>
             <template v-else>
                 <tr v-for="item in filteredList" :key="item.id">
-                    <td class="text-subtitle-1">{{ formatDate(item.trip_date) }}</td>
+                    <td class="text-truncate">{{ formatDate(item.trip_date) }}</td>
                     <!-- Updated to format date -->
-                    <td class="text-subtitle-1">{{ item.driver.first_name }}</td>
-                    <td class="text-subtitle-1">{{ item.start_location_name }} ({{ item.start_latitude }}, {{ item.start_longitude }})</td>
-                    <td class="text-subtitle-1">{{ item.end_location_name }} ({{ item.end_latitude }}, {{ item.end_longitude }})</td>
-                    <td class="text-subtitle-1">{{ item.distance_km }}</td>
-                    <td class="text-subtitle-1">{{ item.duration_minutes }}</td>
-                    <td class="text-subtitle-1">{{ item.total_fare }}</td>
-                    <td class="text-subtitle-1">{{ item.app_used }}</td>
+                    <td class="text-truncate">{{ item.driver.first_name }}</td>
+                    <td class="text-truncate">
+                        <div class="d-flex align-center">
+                            <v-icon size="16" class="mr-1 text-warning">mdi-flag-variant</v-icon>
+                            {{ item.start_location_name }}
+                        </div>
+                        <div class="d-flex align-center">
+                            <v-icon size="16" class="mr-1 text-success">mdi-map-marker</v-icon>
+                            {{ item.end_location_name }}
+                        </div>
+                    </td>
+                    <td class="text-truncate">{{ item.distance_km }} km</td>
+                    <td class="text-truncate">{{ item.duration_minutes }} min</td>
+                    <td class="text-truncate">{{ item.total_fare }} <sub>AED</sub></td>
+                    <td class="text-truncate">{{ item.app_used }}</td>
+                    <!-- <td class="text-truncate">{{ item.status_ocr }}</td> -->
+                    <td class="text-truncate">
+                        <v-chip
+                            size="small"
+                            class="text-small text-capitalize"
+                            :color="item.ocr_status === 'success' ? 'success' : item.ocr_status === 'pending' ? 'warning' : 'error'"
+                        >
+                            {{ item.ocr_status }}
+                        </v-chip>
+                    </td>
+                    <td class="text-truncate">
+                        <v-chip size="small" class="text-sm" :color="item.verified ? 'success' : 'error'">
+                            {{ item.verified ? 'Verified' : 'Not Verified' }}
+                        </v-chip>
+                    </td>
                     <td>
                         <div class="d-flex align-center">
-                            <v-btn icon flat @click="downloadDocument(item)">
+                            <!-- <v-btn icon flat @click="downloadDocument(item)">
                                 <DownloadIcon stroke-width="1.5" size="20" class="text-secondary" />
-                            </v-btn>
+                            </v-btn> -->
                             <v-tooltip text="Edit">
                                 <template v-slot:activator="{ props }">
-                                    <v-btn icon flat @click="editItem(item)" v-bind="props">
+                                    <!-- <v-btn icon flat @click="editItem(item)" v-bind="props"> -->
+                                    <v-btn icon flat @click="$router.push(`/apps/trip/${item.id}`)" v-bind="props">
                                         <PencilIcon stroke-width="1.5" size="20" class="text-primary" />
                                     </v-btn>
                                 </template>

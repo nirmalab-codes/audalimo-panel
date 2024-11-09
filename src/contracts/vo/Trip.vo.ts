@@ -7,13 +7,12 @@ export function getDefaultTripVo(): TripVo {
         distance_km: 0,
         duration_minutes: 0,
         total_fare: 0,
-        commission: 0,
+        tips: 0,
         toll: 0,
         taxes: 0,
         service_fee: 0,
         rta_fee: 0,
         refunds: 0,
-        tips: 0,
         app_used: '',
         start_location_name: '',
         end_location_name: '',
@@ -21,6 +20,8 @@ export function getDefaultTripVo(): TripVo {
         driver_id: '',
         upload: null,
         driver: null,
+        verified: null,
+        ocr_status: null,
     };
 }
 
@@ -32,13 +33,12 @@ export type TripVo = {
     distance_km: number;
     duration_minutes: number;
     total_fare: number;
-    commission: number;
+    tips: number;
     toll: number;
     taxes: number;
     service_fee: number;
     rta_fee: number;
     refunds: number;
-    tips: number;
     app_used: string;
     start_location_name: string;
     start_latitude?: number | null;
@@ -50,4 +50,7 @@ export type TripVo = {
     driver_id: string;
     upload?: any | null;
     driver?: any | null;
+    verified?: boolean | null;
+    verified_by?: string | null;
+    ocr_status?: string | null;
 };

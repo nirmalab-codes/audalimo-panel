@@ -1,23 +1,45 @@
 export type VehicleCreateRequest = {
-  name: string
-  registration_date: Date
-  license_plate: string
-  ownership: string
-  vehicle_type: string
-  rta_office: string
-  driver_ids: Array<string>
-  vehicle_drivers: Array<string>
-  seat: number
-}
+    vehicle_type: string;
+    vehicle_number: string;
+    year_model: number;
+    registration_date: Date;
+    expiration_date: Date;
+    insurance_date: Date;
+    insurance_number: string;
+    traffic_plate: string;
+    upload_id: string;
+    seat: number;
+    qat_latitude?: number | null;
+    qat_longitude?: number | null;
+    qat_speed?: number | null;
+    qat_odometer?: number | null;
+    qat_direction?: number | null;
+    qat_ignition?: boolean | null;
+    qat_passenger_count?: number | null;
+    qat_seat_count?: number | null;
+    status: boolean;
+    driver_ids: Array<string>;
+};
 
 export type VehicleUpdateRequest = {
-  name: string
-  registration_date: Date
-  license_plate: string
-  ownership: string
-  vehicle_type: string
-  rta_office: string
-  driver_ids: Array<string>
-  vehicle_drivers: Array<string>
-  seat: number
-}
+    vehicle_type: string;
+    vehicle_number: string;
+    year_model: number;
+    registration_date: Date;
+    expiration_date: Date;
+    insurance_date: Date;
+    insurance_number: string;
+    traffic_plate: string;
+    upload_id: string;
+    seat: number;
+    qat_latitude?: number | null;
+    qat_longitude?: number | null;
+    qat_speed?: number | null;
+    qat_odometer?: number | null;
+    qat_direction?: number | null;
+    qat_ignition?: boolean | null;
+    qat_passenger_count?: number | null;
+    qat_seat_count?: number | null;
+    status: boolean;
+    driver_ids: Array<string>;
+};

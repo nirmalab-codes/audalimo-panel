@@ -18,18 +18,7 @@ export const useVehicleStore = defineStore({
             const rawResponse = await ApiService.query('/v1/vehicle', {});
             const parsedResponse = rawResponse.data as ListResponse<VehicleDto>;
             const vehicles: Array<VehicleVo> = parsedResponse.data.map((vehicle) => {
-                return {
-                    id: vehicle.id,
-                    name: vehicle.name,
-                    registrationDate: vehicle.registration_date,
-                    licensePlate: vehicle.license_plate,
-                    ownership: vehicle.ownership,
-                    vehicleType: vehicle.vehicle_type,
-                    rtaOffice: vehicle.rta_office,
-                    driverIds: vehicle.driver_ids,
-                    driverNames: vehicle.vehicle_drivers,
-                    seat: vehicle.seat
-                };
+                return vehicle;
             });
             this.vehicles = vehicles;
         },
@@ -64,28 +53,50 @@ export const useVehicleStore = defineStore({
 
 function toCreateRequest(vehicle: VehicleVo): VehicleCreateRequest {
     return {
-        name: vehicle.name,
-        registration_date: vehicle.registrationDate,
-        license_plate: vehicle.licensePlate,
-        ownership: vehicle.ownership,
-        vehicle_type: vehicle.vehicleType,
-        rta_office: vehicle.rtaOffice,
-        driver_ids: vehicle.driverIds,
-        vehicle_drivers: vehicle.driverNames,
-        seat: vehicle.seat
+        vehicle_type: vehicle.vehicle_type,
+        vehicle_number: vehicle.vehicle_number,
+        year_model: vehicle.year_model,
+        registration_date: vehicle.registration_date,
+        expiration_date: vehicle.expiration_date,
+        insurance_date: vehicle.insurance_date,
+        insurance_number: vehicle.insurance_number,
+        traffic_plate: vehicle.traffic_plate,
+        upload_id: vehicle.upload_id,
+        seat: vehicle.seat,
+        qat_latitude: vehicle.qat_latitude,
+        qat_longitude: vehicle.qat_longitude,
+        qat_speed: vehicle.qat_speed,
+        qat_odometer: vehicle.qat_odometer,
+        qat_direction: vehicle.qat_direction,
+        qat_ignition: vehicle.qat_ignition,
+        qat_passenger_count: vehicle.qat_passenger_count,
+        qat_seat_count: vehicle.qat_seat_count,
+        status: vehicle.status,
+        driver_ids: vehicle.driver_ids
     };
 }
 
 function toUpdateRequest(vehicle: VehicleVo): VehicleUpdateRequest {
     return {
-        name: vehicle.name,
-        registration_date: vehicle.registrationDate,
-        license_plate: vehicle.licensePlate,
-        ownership: vehicle.ownership,
-        vehicle_type: vehicle.vehicleType,
-        rta_office: vehicle.rtaOffice,
-        driver_ids: vehicle.driverIds,
-        vehicle_drivers: vehicle.driverNames,
-        seat: vehicle.seat
+        vehicle_type: vehicle.vehicle_type,
+        vehicle_number: vehicle.vehicle_number,
+        year_model: vehicle.year_model,
+        registration_date: vehicle.registration_date,
+        expiration_date: vehicle.expiration_date,
+        insurance_date: vehicle.insurance_date,
+        insurance_number: vehicle.insurance_number,
+        traffic_plate: vehicle.traffic_plate,
+        upload_id: vehicle.upload_id,
+        seat: vehicle.seat,
+        qat_latitude: vehicle.qat_latitude,
+        qat_longitude: vehicle.qat_longitude,
+        qat_speed: vehicle.qat_speed,
+        qat_odometer: vehicle.qat_odometer,
+        qat_direction: vehicle.qat_direction,
+        qat_ignition: vehicle.qat_ignition,
+        qat_passenger_count: vehicle.qat_passenger_count,
+        qat_seat_count: vehicle.qat_seat_count,
+        status: vehicle.status,
+        driver_ids: vehicle.driver_ids
     };
 }

@@ -10,10 +10,16 @@ import { toast } from 'vue3-toastify';
 export const useTripStore = defineStore({
     id: 'Trip',
     state: () => ({
-        trips: [] as Array<TripVo>
+        trips: [] as Array<TripVo>,
+        trip: null as TripDto | null
     }),
     getters: {},
     actions: {
+        async fetchTrip(id: string) {
+            const rawResponse = await ApiService.query(`/v1/trip/${id}`);
+            const parsedResponse = rawResponse.data as SingleResponse<TripDto>;
+            this.trip = parsedResponse.data;
+        },
         async fetchTrips() {
             const rawResponse = await ApiService.query('/v1/trip', {});
             const parsedResponse = rawResponse.data as ListResponse<TripDto>;
@@ -59,18 +65,19 @@ function toCreateRequest(trip: TripVo): TripCreateRequest {
         distance_km: trip.distance_km,
         duration_minutes: trip.duration_minutes,
         total_fare: trip.total_fare,
-        commission: trip.commission,
+        tips: trip.tips,
         toll: trip.toll,
         taxes: trip.taxes,
         service_fee: trip.service_fee,
         rta_fee: trip.rta_fee,
         refunds: trip.refunds,
-        tips: trip.tips,
         app_used: trip.app_used,
         start_location_name: trip.start_location_name,
         end_location_name: trip.end_location_name,
         upload_id: trip.upload_id,
-        driver_id: trip.driver_id
+        driver_id: trip.driver_id,
+        verified: trip.verified,
+        verified_by: trip.verified_by
     };
 }
 
@@ -82,17 +89,18 @@ function toUpdateRequest(trip: TripVo): TripUpdateRequest {
         distance_km: trip.distance_km,
         duration_minutes: trip.duration_minutes,
         total_fare: trip.total_fare,
-        commission: trip.commission,
+        tips: trip.tips,
         toll: trip.toll,
         taxes: trip.taxes,
         service_fee: trip.service_fee,
         rta_fee: trip.rta_fee,
         refunds: trip.refunds,
-        tips: trip.tips,
         app_used: trip.app_used,
         start_location_name: trip.start_location_name,
         end_location_name: trip.end_location_name,
         driver_id: trip.driver_id,
-        upload_id: trip.upload_id
+        upload_id: trip.upload_id,
+        verified: trip.verified,
+        verified_by: trip.verified_by
     };
 }

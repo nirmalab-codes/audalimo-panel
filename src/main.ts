@@ -37,6 +37,9 @@ import ApiService from './services/ApiService';
 import Vue3Toastify, { type ToastContainerOptions } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
+import 'viewerjs/dist/viewer.css';
+import VueViewer from 'v-viewer';
+
 const i18n = createI18n({
     locale: 'en',
     messages: messages,
@@ -58,22 +61,29 @@ app.use(VueRecaptcha, {
     siteKey: '6LdzqbcaAAAAALrGEZWQHIHUhzJZc8O-KSTdTTh_',
     alterDomain: false // default: false
 });
+app.use(VueViewer, {
+    defaultOptions: {
+        movable: false,
+        rotatable: false,
+        tooltip: false,
+        navbar: false
+    }
+});
 app.use(i18n);
 app.use(Maska);
 app.use(VueApexCharts);
 app.use(Vue3Toastify, {
     theme: 'auto',
-    autoClose: 3000,
-  } as ToastContainerOptions);
+    autoClose: 3000
+} as ToastContainerOptions);
 app.use(vuetify).mount('#app');
 
 //ScrollTop Use
 // app.use(VueScrollTo);
 app.use(VueScrollTo, {
     duration: 1000,
-    easing: "ease"
+    easing: 'ease'
 });
 
 //Lightbox
-app.use(VueEasyLightbox)
-
+app.use(VueEasyLightbox);
