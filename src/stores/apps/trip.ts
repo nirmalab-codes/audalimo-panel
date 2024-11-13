@@ -3,28 +3,35 @@ import { defineStore } from 'pinia';
 import { type TripCreateRequest, type TripUpdateRequest } from '@/contracts/request/TripRelated.request';
 import { type BaseResponse, type ListResponse, type SingleResponse } from '@/contracts/response/Base.response';
 import { type TripDto } from '@/contracts/response/TripRelated.response';
-import { type TripVo } from '@/contracts/vo/Trip.vo';
+import { getDefaultTripVo, type TripVo } from '@/contracts/vo/Trip.vo';
 import ApiService from '@/services/ApiService';
 import { toast } from 'vue3-toastify';
+import { format } from 'date-fns';
 
 export const useTripStore = defineStore({
     id: 'Trip',
     state: () => ({
         trips: [] as Array<TripVo>,
-        trip: null as TripDto | null
+        trip: getDefaultTripVo() as TripVo
     }),
     getters: {},
     actions: {
         async fetchTrip(id: string) {
             const rawResponse = await ApiService.query(`/v1/trip/${id}`);
             const parsedResponse = rawResponse.data as SingleResponse<TripDto>;
-            this.trip = parsedResponse.data;
+            this.trip = {
+                ...parsedResponse.data,
+                trip_date: format(new Date(parsedResponse.data.trip_date), 'yyyy-MM-dd HH:mm').toString()
+            };
         },
         async fetchTrips() {
             const rawResponse = await ApiService.query('/v1/trip', {});
             const parsedResponse = rawResponse.data as ListResponse<TripDto>;
             const trips: Array<TripVo> = parsedResponse.data.map((trip) => {
-                return trip;
+                return {
+                    ...trip,
+                    trip_date: format(new Date(trip.trip_date), 'yyyy-MM-dd HH:mm').toString()
+                };
             });
             this.trips = trips;
         },

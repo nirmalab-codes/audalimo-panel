@@ -167,11 +167,11 @@
                                     :src="vehicle.upload.signed_url"
                                     height="150"
                                     cover
-                                    class="rounded mb-2"
+                                    class="rounded mb-2 cursor-pointer"
                                     @click="seeDocument(vehicle.upload.signed_url)"
                                 ></v-img>
                                 <v-file-input
-                                    class="text-truncate"
+                                    class="text-truncate cursor-pointer"
                                     label="Upload car img"
                                     density="compact"
                                     variant="outlined"

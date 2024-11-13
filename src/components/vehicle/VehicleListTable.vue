@@ -372,7 +372,7 @@ function getDriverName(driverId: string) {
             </template>
             <template v-else>
                 <tr v-for="item in filteredList" :key="item.id">
-                    <td class="text-subtitle-1">
+                    <td class="text-subtitle-1 cursor-pointer" @click="editItem(item)">
                         <div class="d-flex align-center py-4">
                             <div>
                                 <v-img :src="item.upload?.signed_url" width="45px" class="rounded img-fluid"></v-img>
@@ -404,14 +404,14 @@ function getDriverName(driverId: string) {
                             <v-tooltip text="Edit">
                                 <template v-slot:activator="{ props }">
                                     <v-btn icon flat @click="editItem(item)" v-bind="props">
-                                        <v-icon>mdi-pencil</v-icon>
+                                        <PencilIcon stroke-width="1.5" size="20" class="text-primary" />
                                     </v-btn>
                                 </template>
                             </v-tooltip>
                             <v-tooltip text="Delete">
                                 <template v-slot:activator="{ props }">
                                     <v-btn icon flat @click="deleteItem(item)" v-bind="props">
-                                        <v-icon>mdi-delete</v-icon>
+                                        <TrashIcon stroke-width="1.5" size="20" class="text-error" />
                                     </v-btn>
                                 </template>
                             </v-tooltip>

@@ -63,7 +63,7 @@ app.use(VueRecaptcha, {
 });
 app.use(VueViewer, {
     defaultOptions: {
-        movable: false,
+        movable: true,
         rotatable: false,
         tooltip: false,
         navbar: false

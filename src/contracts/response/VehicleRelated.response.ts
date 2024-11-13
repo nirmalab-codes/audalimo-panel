@@ -1,4 +1,5 @@
 import { type BaseDto } from './Base.response';
+import type { UploadDto } from './UploadRelated.response';
 
 export type VehicleDto = BaseDto & {
     vehicle_type: string;
@@ -19,8 +20,12 @@ export type VehicleDto = BaseDto & {
     qat_ignition?: boolean | null;
     qat_passenger_count?: boolean | null;
     qat_seat_count?: number | null;
+    maintenance_km?: number | null;
     status: boolean;
     driver_ids: Array<ScheduleDto>;
+    mulkiya_upload_id: string | null;
+    mulkiya_upload: UploadDto | null;
+    upload: UploadDto | null;
 };
 
 interface ScheduleDto {

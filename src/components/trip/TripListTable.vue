@@ -393,10 +393,10 @@ const formatDate = (date: Date) => {
             </template>
             <template v-else>
                 <tr v-for="item in filteredList" :key="item.id">
-                    <td class="text-truncate">{{ formatDate(item.trip_date) }}</td>
+                    <td class="text-subtitle-1">{{ formatDate(item.trip_date) }}</td>
                     <!-- Updated to format date -->
-                    <td class="text-truncate">{{ item.driver.first_name }}</td>
-                    <td class="text-truncate">
+                    <td class="text-subtitle-1">{{ item.driver.first_name }}</td>
+                    <td class="text-subtitle-1">
                         <div class="d-flex align-center">
                             <v-icon size="16" class="mr-1 text-warning">mdi-flag-variant</v-icon>
                             {{ item.start_location_name }}
@@ -406,12 +406,12 @@ const formatDate = (date: Date) => {
                             {{ item.end_location_name }}
                         </div>
                     </td>
-                    <td class="text-truncate">{{ item.distance_km }} km</td>
-                    <td class="text-truncate">{{ item.duration_minutes }} min</td>
-                    <td class="text-truncate">{{ item.total_fare }} <sub>AED</sub></td>
-                    <td class="text-truncate">{{ item.app_used }}</td>
+                    <td class="text-subtitle-1">{{ item.distance_km }} km</td>
+                    <td class="text-subtitle-1">{{ item.duration_minutes }} min</td>
+                    <td class="text-subtitle-1">{{ item.total_fare }} <sub>AED</sub></td>
+                    <td class="text-subtitle-1">{{ item.app_used }}</td>
                     <!-- <td class="text-truncate">{{ item.status_ocr }}</td> -->
-                    <td class="text-truncate">
+                    <td class="text-subtitle-1">
                         <v-chip
                             size="small"
                             class="text-small text-capitalize"
@@ -420,7 +420,7 @@ const formatDate = (date: Date) => {
                             {{ item.ocr_status }}
                         </v-chip>
                     </td>
-                    <td class="text-truncate">
+                    <td class="text-subtitle-1">
                         <v-chip size="small" class="text-sm" :color="item.verified ? 'success' : 'error'">
                             {{ item.verified ? 'Verified' : 'Not Verified' }}
                         </v-chip>

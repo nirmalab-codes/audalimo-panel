@@ -57,11 +57,3 @@ export type VehicleVo = {
     upload: UploadDto | null;
     mulkiya_upload: UploadDto | null;
 };
-
-interface DriverShiftVo {
-    driver_id: string;
-    start_date: string;
-    end_date: string;
-    start_time: string;
-    end_time: string;
-}

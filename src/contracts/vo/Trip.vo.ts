@@ -1,3 +1,5 @@
+import type { UserVo } from "./User.vo";
+
 export function getDefaultTripVo(): TripVo {
     return {
         id: '',
@@ -23,6 +25,8 @@ export function getDefaultTripVo(): TripVo {
         driver: null,
         verified: null,
         ocr_status: null,
+        user: null,
+        updated_at: null
     };
 }
 
@@ -39,7 +43,6 @@ export type TripVo = {
     taxes: number;
     service_fee: number;
     rta_fee: number;
-    net_fare: number;
     refunds: number;
     app_used: string;
     start_location_name: string;
@@ -48,6 +51,7 @@ export type TripVo = {
     end_location_name: string;
     end_latitude?: number | null;
     end_longitude?: number | null;
+    net_fare: number;
     upload_id: string;
     driver_id: string;
     upload?: any | null;
@@ -55,4 +59,6 @@ export type TripVo = {
     verified?: boolean | null;
     verified_by?: string | null;
     ocr_status?: string | null;
+    user?: UserVo | null;
+    updated_at?: Date | null;
 };
