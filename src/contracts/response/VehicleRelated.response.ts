@@ -17,8 +17,17 @@ export type VehicleDto = BaseDto & {
     qat_odometer?: number | null;
     qat_direction?: number | null;
     qat_ignition?: boolean | null;
-    qat_passenger_count?: number | null;
+    qat_passenger_count?: boolean | null;
     qat_seat_count?: number | null;
     status: boolean;
-    driver_ids: Array<string>;
+    driver_ids: Array<ScheduleDto>;
 };
+
+interface ScheduleDto {
+    id: string;
+    vehicle_id: string;
+    start_date: string;
+    end_date: string;
+    start_time: string;
+    end_time: string;
+}

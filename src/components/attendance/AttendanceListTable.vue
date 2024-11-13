@@ -170,7 +170,7 @@ const formatDate = (date: Date) => {
                 <tr>
                     <td colspan="8" class="text-center">
                         <div class="d-flex flex-column align-center py-8">
-                            <h2 class="text-h4 mb-4">Nothing found 🧐</h2>
+                            <h2 class="text-h4 mb-4">Nothing found </h2>
                             <p class="text-gray-600">
                                 No item match your search criteria, please input different <br />keyword or refresh the page.
                             </p>

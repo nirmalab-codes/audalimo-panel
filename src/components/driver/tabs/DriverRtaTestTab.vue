@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, type PropType, toRef } from 'vue';
 import { useDriverStore } from '@/stores/driver';
 import { useUploadStore } from '@/stores/apps/upload';
-import { type RtaPermitVo, type RtaPermitIdVo, getDefaultRtaPermitVo } from '@/contracts/vo/RtaPermit.vo';
+import { type RtaPermitIdVo } from '@/contracts/vo/RtaPermit.vo';
 import { type UploadDto } from '@/contracts/response/UploadRelated.response';
 import type { DriverItemDto, DriverRtaItemDto } from '@/contracts/response/DriverRelated.response';
 import type { UpdateRtaPermitRequest } from '@/contracts/request/DriverRelated.request';

@@ -194,7 +194,12 @@ const formatDate = (date: Date) => {
                                         variant="outlined"
                                         hide-details
                                         v-model="editedItem.payment_type"
-                                        :items="['CASH', 'CARD']"
+                                        item-title="text"
+                                        item-value="value"
+                                        :items="[
+                                            { text: 'CASH', value: 'cash' },
+                                            { text: 'CARD', value: 'card' },
+                                        ]"
                                         label="Payment Type"
                                         required
                                     ></v-select>
@@ -205,7 +210,14 @@ const formatDate = (date: Date) => {
                                         hide-details
                                         v-model="editedItem.app_used"
                                         label="App Used"
-                                        :items="['Uber', 'Careem']"
+                                        item-title="text"
+                                        item-value="value"
+                                        :items="[
+                                            { text: 'UBER', value: 'uber' },
+                                            { text: 'CAREEM', value: 'careem' },
+                                            { text: 'YANGO', value: 'yango' },
+                                            { text: 'OTHER', value: 'other' },
+                                        ]"
                                         required
                                     ></v-select>
                                 </v-col>
@@ -293,6 +305,16 @@ const formatDate = (date: Date) => {
                                         required
                                     ></v-text-field>
                                 </v-col>
+                                <v-col cols="12" md="12">
+                                    <v-text-field
+                                        variant="outlined"
+                                        hide-details
+                                        v-model.number="editedItem.net_fare"
+                                        label="Net Fare"
+                                        type="number"
+                                        required
+                                    ></v-text-field>
+                                </v-col>
                                 <!-- Trip Details -->
                                 <v-col cols="12" md="6">
                                     <span class="text-h6 color-light col">Attachments Trip</span>
@@ -359,9 +381,9 @@ const formatDate = (date: Date) => {
         <tbody>
             <template v-if="filteredList.length === 0">
                 <tr>
-                    <td colspan="8" class="text-center">
+                    <td colspan="10" class="text-center">
                         <div class="d-flex flex-column align-center py-8">
-                            <h2 class="text-h4 mb-4">Nothing found 🧐</h2>
+                            <h2 class="text-h4 mb-4">Nothing found </h2>
                             <p class="text-gray-600">
                                 No item match your search criteria, please input different <br />keyword or refresh the page.
                             </p>

@@ -14,8 +14,8 @@ export type TripDto = BaseDto & {
     taxes: number;
     service_fee: number;
     rta_fee: number;
+    net_fare: number;
     refunds: number;
-    tips: number;
     app_used: string;
     start_location_name: string;
     start_latitude?: number | null;

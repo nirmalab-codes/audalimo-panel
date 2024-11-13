@@ -8,14 +8,16 @@ export type VehicleCreateRequest = {
     insurance_number: string;
     traffic_plate: string;
     upload_id: string;
+    mulkiya_upload_id: string;
     seat: number;
+    maintenance_km: number;
     qat_latitude?: number | null;
     qat_longitude?: number | null;
     qat_speed?: number | null;
     qat_odometer?: number | null;
     qat_direction?: number | null;
     qat_ignition?: boolean | null;
-    qat_passenger_count?: number | null;
+    qat_passenger_count?: boolean | null;
     qat_seat_count?: number | null;
     status: boolean;
     driver_ids: Array<string>;
@@ -31,7 +33,9 @@ export type VehicleUpdateRequest = {
     insurance_number: string;
     traffic_plate: string;
     upload_id: string;
+    mulkiya_upload_id: string;
     seat: number;
+    maintenance_km: number;
     qat_latitude?: number | null;
     qat_longitude?: number | null;
     qat_speed?: number | null;

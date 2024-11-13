@@ -38,6 +38,11 @@ const MainRoutes = {
             component: () => import('@/views/apps/vehicle/VehicleListPage.vue')
         },
         {
+            name: 'Vehicle Detail',
+            path: '/apps/vehicle/:id',
+            component: () => import('@/views/apps/vehicle/VehicleDetailPage.vue')
+        },
+        {
             name: 'Trip',
             path: '/apps/trip',
             component: () => import('@/views/apps/trip/TripListPage.vue')

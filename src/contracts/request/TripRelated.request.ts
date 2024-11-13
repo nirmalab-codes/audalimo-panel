@@ -10,6 +10,7 @@ export type TripCreateRequest = {
     taxes: number;
     service_fee: number;
     rta_fee: number;
+    net_fare: number;
     refunds: number;
     app_used: string;
     start_location_name: string;
@@ -36,6 +37,7 @@ export type TripUpdateRequest = {
     taxes: number;
     service_fee: number;
     rta_fee: number;
+    net_fare: number;
     refunds: number;
     app_used: string;
     start_location_name: string;

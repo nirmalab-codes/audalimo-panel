@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { useContactStore } from '@/stores/apps/contact';
 
 import contact from '@/_mockApis/apps/contact';
 import { useDriverStore } from '@/stores/driver';
@@ -301,8 +300,21 @@ const formTitle = computed(() => {
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(item, k) in filteredList" :key="item.id">
-                <td class="text-subtitle-1">{{ k + 1 }}</td>
+            <template v-if="filteredList.length === 0">
+                <tr>
+                    <td colspan="8" class="text-center">
+                        <div class="d-flex flex-column align-center py-8">
+                            <h2 class="text-h4 mb-4">Nothing found </h2>
+                            <p class="text-gray-600">
+                                No item match your search criteria, please input different <br />keyword or refresh the page.
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </template>
+            <template v-else>
+                <tr v-for="(item, k) in filteredList" :key="item.id">
+                    <td class="text-subtitle-1">{{ k + 1 }}</td>
                 <td>
                     <div class="d-flex align-center py-4">
                         <div>
@@ -341,8 +353,9 @@ const formTitle = computed(() => {
                             </template>
                         </v-tooltip>
                     </div>
-                </td>
-            </tr>
+                    </td>
+                </tr>
+            </template>
         </tbody>
     </v-table>
 </template>

@@ -3,8 +3,6 @@ import { ref, computed, onMounted } from 'vue';
 import { useTripStore } from '@/stores/apps/trip';
 import { type TripVo, getDefaultTripVo } from '@/contracts/vo/Trip.vo';
 import { useDriverStore } from '@/stores/driver';
-import { useUploadStore } from '@/stores/apps/upload';
-import { useAuthStore } from '@/stores/auth';
 import { api as viewerApi } from 'v-viewer';
 import { useRoute } from 'vue-router';
 
@@ -21,8 +19,6 @@ onMounted(() => {
 const drivers = computed(() => driverStore.verifiedDrivers);
 const fileToUpload = ref<File | null>(null);
 const trip = computed(() => store.trip || getDefaultTripVo());
-
-const uploadStore = useUploadStore();
 
 function onFileChange(e: any) {
     fileToUpload.value = e.target.files[0];
@@ -116,7 +112,12 @@ async function save() {
                     variant="outlined"
                     hide-details
                     v-model="trip.payment_type"
-                    :items="['CASH', 'CARD']"
+                    item-title="text"
+                    item-value="value"
+                    :items="[
+                        { text: 'CASH', value: 'cash' },
+                        { text: 'CARD', value: 'card' },
+                    ]"
                     label="Payment Type"
                     required
                 ></v-select>
@@ -127,7 +128,14 @@ async function save() {
                     hide-details
                     v-model="trip.app_used"
                     label="App Used"
-                    :items="['Uber', 'Careem']"
+                    item-title="text"
+                    item-value="value"
+                    :items="[
+                        { text: 'UBER', value: 'uber' },
+                        { text: 'CAREEM', value: 'careem' },
+                        { text: 'YANGO', value: 'yango' },
+                        { text: 'OTHER', value: 'other' },
+                    ]"
                     required
                 ></v-select>
             </v-col>
@@ -204,6 +212,16 @@ async function save() {
                     hide-details
                     v-model.number="trip.rta_fee"
                     label="RTA Fee"
+                    type="number"
+                    required
+                ></v-text-field>
+            </v-col>
+            <v-col cols="12" md="6">
+                <v-text-field
+                    variant="outlined"
+                    hide-details
+                    v-model.number="trip.net_fare"
+                    label="Net Fare"
                     type="number"
                     required
                 ></v-text-field>

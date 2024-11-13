@@ -12,6 +12,7 @@ export function getDefaultTripVo(): TripVo {
         taxes: 0,
         service_fee: 0,
         rta_fee: 0,
+        net_fare: 0,
         refunds: 0,
         app_used: '',
         start_location_name: '',
@@ -38,6 +39,7 @@ export type TripVo = {
     taxes: number;
     service_fee: number;
     rta_fee: number;
+    net_fare: number;
     refunds: number;
     app_used: string;
     start_location_name: string;
